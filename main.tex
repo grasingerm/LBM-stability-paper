@@ -1,0 +1,106 @@
+\documentclass{article}
+
+\usepackage[affil-it]{authblk}
+\usepackage{lineno}
+\usepackage[square,numbers,sort&compress]{natbib}
+
+\title{A Comparision of Lattice Boltzmann Method Collision Operators for Accuracy, Stability and Efficiency in Simulating Non-Newtonian Flows}
+
+\author{{Matthew Grasinger}
+\thanks{Email: \textit{grasingerm@pitt.edu}}}
+
+\author{John Brigham
+\thanks{Email: \textit{brigham@pitt.edu}}}
+\affil{Civil and Environmental Engineering Department, University of Pittsburgh}
+
+\begin{document}
+
+\pagenumbering{gobble}
+\maketitle
+\newpage
+\tableofcontents
+\newpage
+\pagenumbering{arabic}
+
+%\linenumbers
+
+\section*{Abstract}
+
+The Lattice Boltzmann method (LBM) is a computational method that can be used for simulating fluid flow.
+It is well-suited for complex flows such as non-Newtonian, free surface, and multiphase multicomponent flows.
+Non-Newtonian flows are the primary focus of this paper, as many practical engineering problems such as the flow of cement slurries and concretes, the filling of molds by molten plastics, ETC, are best modeled as non-Newtonian fluids.
+LBM is a statistical mechanical approach and each time step consists of streaming particle distributions to neighboring nodes, and collisions of particle distributions at each node through a collision operator.
+The collision operator is of interest because it has a lot of control over the physics that are simulated, e.g. constitutive laws, interfacial dynamics, etc., and it has implications on numerical stability and computational efficiency.
+In this paper, variations of popular collision operators, namely the linear Bhatnagar--Gross--Krook collision operator and the multiple relaxation time collision operator, will be examined for their suitability for simulating non-Newtonian flows in terms of accuracy, numerical stability and computational efficiency.
+The structure of the paper will be as follows: 
+
+\section{Introduction}
+
+\subsection{Scratch}
+
+Lattice Boltzmann Method (LBM) is the greatest method ever invented.
+
+What is my story?:
+
+\begin{itemize}
+	\item Motivation for non-Newtonian flows
+	\item Lattice Boltzmann Method is good for non-Newtonian flow because the collision operator is entirely local to a node.
+	\item Parallelability, simplicity, etc. Allows the non-linear constitutive relationship to be solved in parallel.
+	\item Lattice Boltzmann Method can be unstable sometimes :(.
+	\item Literature review
+	\begin{itemize}
+		\item history of collision operators: BGK, MRT, etc.
+		\item stability analysis
+		\item methods of enhancing stability
+		\item non-Newtonian flow studies
+	\end{itemize}
+\end{itemize}
+
+\subsubsection{Motivation for non-Newtonian Flow Simulation}
+
+
+
+\section{Lattice Boltzmann Method}
+
+\subsection{Overview}
+
+Some overview of Lattice Boltzmann Method stuff~\cite{grasinger2015simulation}.
+
+\subsection{The Boltzmann Equation}
+
+\subsection{Hermite Polynomial Expansion}
+
+\subsection{Boundary Conditions}
+
+\subsection{Applied Forces}
+
+\subsection{Collision Operator}
+
+\subsubsection{Bhatnagar--Gross--Krook}
+
+\subsubsection{Multiple Relaxation Time}
+
+\subsubsection{Entropic Collisions and Entropy Balance}
+
+This would be sweet if I somehow found the time to study it \cite{gorban2014enhancement}.
+
+\section{Stability Analysis}
+
+\subsection{von Neumann Stability Analysis}
+
+\subsection{Matrix Method of Stability Analysis}
+
+\subsection{Other Possible Approaches}
+
+\section{Numerical Study}
+
+\subsection{Poiseuille Flow}
+
+\section{Conclusion}
+
+\section*{Acknowledgements}
+
+\bibliographystyle{abbrv}
+\bibliography{master}
+	
+\end{document}
