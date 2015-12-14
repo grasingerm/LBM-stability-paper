@@ -3,8 +3,12 @@
 \usepackage[affil-it]{authblk}
 \usepackage{lineno}
 \usepackage[square,numbers,sort&compress]{natbib}
+\usepackage{soul}
+\usepackage{color}
+\usepackage[utf8]{inputenc}
 
-\title{A Comparision of Lattice Boltzmann Method Collision Operators for Accuracy, Stability and Efficiency in Simulating Non-Newtonian Flows}
+\title{An Investigation into the Accuracy, Stability, and Efficiency of Lattice Boltzmann Models in Simulating Non-Newtonian Fluid Flows}
+%\title{A Comparison of Lattice Boltzmann Method Collision Operators for Accuracy, Stability and Efficiency in Simulating Non-Newtonian Flows}
 
 \author{{Matthew Grasinger}
 \thanks{Email: \textit{grasingerm@pitt.edu}}}
@@ -22,7 +26,10 @@
 \newpage
 \pagenumbering{arabic}
 
-%\linenumbers
+\linenumbers
+
+Note: anything in {\color{red}red} is just random garbage notes.
+You can ignore it for the most part.
 
 \section*{Abstract}
 
@@ -32,10 +39,98 @@ Non-Newtonian flows are the primary focus of this paper, as many practical engin
 LBM is a statistical mechanical approach and each time step consists of streaming particle distributions to neighboring nodes, and collisions of particle distributions at each node through a collision operator.
 The collision operator is of interest because it has a lot of control over the physics that are simulated, e.g. constitutive laws, interfacial dynamics, etc., and it has implications on numerical stability and computational efficiency.
 In this paper, variations of popular collision operators, namely the linear Bhatnagar--Gross--Krook collision operator and the multiple relaxation time collision operator, will be examined for their suitability for simulating non-Newtonian flows in terms of accuracy, numerical stability and computational efficiency.
-The structure of the paper will be as follows: 
+The structure of the paper will be as follows: blah, blah, blah.
 
-\section{Introduction}
+\section{Introduction} %MG: this intro will potentially be long. Should it be broken up into subsections (as it is now)?
 
+\subsection{Motivation for non-Newtonian Flow Simulation}
+
+{\color{red}
+Some random notes that may fit in to this section eventually:
+\begin{itemize}
+\item ``viscosity'' is a manifestation of friction between fluid particles.
+One would say substances which consist of particles that can more readily "slip" past one another have lower viscosities and substances with fluid particles that tend to have a higher resistance to sliding past one another have higher viscosities.
+
+\item ``Molten plastics, polymer solutions, dyes, varnishes, suspensions, and natural liquids like blood behave in a non-Newtonian manner.'' \cite{bohme1987non}.
+
+\item Constitutive form for generalized Newtonian fluids, $\tau = \mu(\dot{\gamma}) \dot{\gamma}$, where the apparent viscosity, $\mu$ is a function of the strain rate.
+\end{itemize}
+}
+
+There are a number of non-Newtonian flows in engineering applications.
+Cement slurries and concretes are best modeled as non-Newtonian fluids because they typically have a non-linear relationship between strain rate and shear stress.
+In particular, cement slurries and concretes can be categorized as yield stress fluids. 
+Yield stress fluids do not flow until a threshold value of stress, referred to as its yield stress, is exceeded.
+Understanding the flow of cement slurries and concretes is important because they are used in the cementing of oil and gas wellbores, in construction, and blah blah blah.
+If the cement job for an oil and gas wellbore is not completed successfully then gases and fluids can leak through the wellbore to contaminate ground water or the atmosphere ~\cite{grasinger2015simulation}.
+The goal of understanding cement slurry and concrete flows during construction is to understand how construction forms can be completely filled as voids can lead to structural deficiencies ~\cite{RARR}.
+Yield stress flow is relevant in many other disciplines and applications because of the many substances that can be modeled as Bingham plastics, e.g. pastes, paints, muds, molten plastics and metals, and blood \cite{wang2011lattice}. %MG: citation is for blood as non-Newtonian
+Non-Newtonian flow is therefor relevant in the engineering and development of pastes and paints, flow and deformation of mud and clay in geotechnical engineering, understanding blood circulation in biomedical applications, materials science and manufacturing of metal and plastic parts, and in particular, the molding and casting of molten metals and plastics.
+
+Power-law fluids are cool.
+Another non-Newtonian flow of interest is shear-thinning and shear-thickening fluids.
+These fluids can be modeled by another non-linear relationship, a power-law relationship.
+Shear-thinning fluids, also known as pseudoplastics, have a lower apparent viscosity at high shear, and a higher apparent viscosity at low shear.
+Shear-thickening fluids exhibit the opposite behavior.
+Examples of shear-thinning fluids are polymer mixes and molten plastics.
+
+Developing numerical methods for approximating these non-Newtonian flows is important because of how difficult it is, and often impossible it is, to derive analytical, closed-form solutions.
+
+\subsection{So why LBM?}
+
+Analytical solutions rarely exists for even the simplest non-Newtonian flows because of the complexity that a non-linear constitutive relationship entails.
+It is more practical to approximate non-Newtonian flows using numerical methods.
+However, the non-linear constitutive equation results in certain challenges for numerical methods as well.
+Determining the apparent viscosity and shear rate of a flow will often require an iterative solution, the general algorithm is:
+
+\begin{enumerate}
+	\item Start with initial guess for the apparent viscosity, $\mu_k = \mu_0$.
+	\item \label{step:solve-for-flow} Solve for the flow using the current value of apparent viscosity, $\dot{\gamma}_k = \tau_k / \mu_k$.
+	\item Update the apparent viscosity, $\mu_{k+1} = \mu(\dot{\gamma}_k)$.
+	\item Return to Step \ref{step:solve-for-flow} until convergence is met.
+\end{enumerate}
+
+Numerical solutions work by discretizing the equations that govern the physics of interest.
+When the solution for fluid flow problems vary in space and time, a numerical approximation requires breaking the problem up into discrete locations and discrete time steps.
+The significance of approximating a solution by discretizing the governing equations is that the iterative solution for the constitutive equation must be solved at each discrete location for each discrete time step, which becomes computationally expensive.
+
+The lattice Boltzmann method (LBM) is a numerical method for fluid flow.
+LBM has the unique advantage that the strain rate is local to each node, or each discrete location in the domain.
+This means that although an iterative solution is still required to determine the local strain rate and apparent viscosity, each iterative solution can be done in parallel, by a separate process, as they are independent of each other.
+Because high performance computing is shifting from single, sequential processes to massively parallel processes, the local nature of the stress--strain-rate relationship in LBM gives it a distinct advantage for simulating non-Newtonian flows over other numerical methods for fluid flow. %MG: consider moving literature review on LBM applied to non-Newtonian flows HERE 
+
+LBM does however, have its drawbacks.
+LBM can be considered as a type of finite-difference scheme for the continuous Boltzmann equation, and as such, has numerical properties in common with finite-difference schemes. %MG: is this precise enough? accurate enough?
+One such consideration associated with this view, is the possibility of numerical inaccuracies and instabilities ~\cite{sterling1993stability,sterling1996stability,bawazeer2013stability,lallemand2000theory}. %MG: are all relevant sources cited?
+Much work has been done to: (1) investigate the stability of lattice Boltzmann methods, (2) enhance the stability of lattice Boltzmann methods, and (3) apply LBM to study non-Newtonian flows.
+
+Sterling and Chen investigated the stability of LBM with the linear Bhatnagar--Gross--Krook (BGK) collision operator on 7-velocity and 9-velocity 2D lattices and a 15-velocity cubic lattice ~\cite{sterling1993stability,sterling1996stability}.
+The investigation was performed by linearizing all nonlinear terms about global equilibrium values and applying a von Neumann stability analysis on the resulting linearized equations.
+The spatial dependence of stability was analyzed by taking the Fourier transform of the linearized equations ~\cite{sterling1993stability}.
+Sterling and Chen concluded that the linear stability of LBM models depends on the mass distribution parameters, the mean velocity, the relaxation time, and the wave number. %MG: this probably requires some clarification
+%(Some misc notes from this study that probably don't fit here but are important to this work: ``... a Courant stability condition is superceded by a more stringent stability condition on the speeds. Another stability boundary common for finite-difference methods requires that the viscous diffusion speed be less than the lattice spacing divided by the time step. This boundary is not observed for LB methods because as the viscosity increases, errors of the scheme increase due to the presence of large nonequilibirum populations, but stability is still maintained''??).
+
+Worthing et. al. ~\cite{worthing1997stability} extended the stability analysis performed by Sterling and Chen.
+Instead of linearizing the LBM equations by expanding about global equilibrium values, Worthing et. al. \ul{does something else}.
+Their analysis discover both physical and nonphysical instabilities, and that setting the BGK relaxation time, $\tau = 1$ provides the optimal accuracy in time. %MG: is this actually relevant though?
+\ul{Expand a little more about what they did and its significance here.}
+%MG: all this stability talk is nice, but I need to figure out how to tie it back to non-Newtonian flows sooner rather than later. The problem is a lot of these studies focus on instability due to high Reynolds number flows, not really our problem. We're more concerned with instability due to higher relaxation rates and apparent viscosities. And how does MRT address this instability?
+
+{\color{red} Bawazeer wrote a thesis on the stability and accuracy of the lattice Boltzmann method. Perhaps I'll read it.}
+
+To improve upon the stability of LB models, d'Humi\`{e}res constructed an LBE model with a multiple-relaxation-time (MRT-LB) collision operator, in moment space \cite{d1994generalized}. %MG: make sure you fix the inconsistencies with LB, LBE, etc. I think just use LBE or LBM but think it over. Literature seems to vary.
+Lallemand and Luo investigated the dispersion, dissipation, isotropy, Galilean invariance, and stability of the newly constructed LB-MRT method by applying von Neumann stability analysis to it\cite{lallemand2000theory}.
+They concluded LBM with the MRT collision operator was more stable than with the BGK collision operator, but with increased computational expense. %MG: I think they have another paper that expands on this study, find and read it.
+Note that although this increased computational expense may not be too significant for Newtonian flows (10-20\% \cite{lallemand2000theory}), the issue is magnified for non-Newtonian flows because the iterative solution for the constitutive equation can require that the non-equilibrium distribution function be mapped back and forth from the velocity space to the momentum space multiple times (the strain rate tensor is determined from the non-equilibrium distribution function which must be mapped into momentum space when using the MRT collision operator). %MG: clean this sentence up, and maybe break it down. Too dense, introducing way too many terms the reader hasn't seen before
+
+{\color{red} If you have time to study/implement entropic LBM (very exciting stuff), a brief discussion of its development would go here.}
+
+Our contribution in all of this mess is to investigate the trade-off between computational efficiency and stability/accuracy for the various LBM schemes.
+The main advantage of LBM in simulating non-Newtonian flows is the local nature of the stress--strain-rate relationship, resulting in a numerical method that can be run massively in parallel \cite{something}.
+This advantage is much less realized if the collision operator is too computationally expensive.
+The aim of this paper is to determine approximate numerical values and simulation scenarios in which one LBM method may be more advantageous than another so that scientists and engineers that make use of LBM for simulating non-Newtonian flows can do so in both a computationally efficient and stable manner. %MG: do better than ``simulation scenarios''. what does that even mean?
+
+{\color{red}
 \subsection{Scratch}
 
 Lattice Boltzmann Method (LBM) is the greatest method ever invented.
@@ -55,17 +150,7 @@ What is my story?:
 		\item methods of enhancing stability
 	\end{itemize}
 \end{itemize}
-
-\subsubsection{Motivation for non-Newtonian Flow Simulation}
-
-There are a number of non-Newtonian flows in engineering applications.
-Cement slurries and concretes are best modeled as non-Newtonian fluids because they typically have a non-linear relationship between strain rate and shear stress.
-In particular, cement slurries and concretes can be categorized as yield stress fluids. 
-Yield stress fluids do not flow until a threshold value of stress, refered to as its yield stress, is exceeded.
-Understanding the flow of cement slurries and concretes is important because they are used in the cementing of oil and gas wellbores, in construction, and blah blah blah.
-If the cement job for an oil and gas wellbore is not completed successfully then gasses and fluids can leak through the wellbore to contaminate ground water or the atmosphere ~\cite{grasinger2015simulation}.
-The goal of understanding cement slurry and concrete flows during construction is to understand how construction forms can be completely filled as voids can lead to structural deficiencies ~\cite{RARR}.
-There are probably some other non-Newtonian form filling problems that are super important such as molten metal and plastics filling molds.
+}
 
 \section{Lattice Boltzmann Method}
 
@@ -89,7 +174,7 @@ Some overview of Lattice Boltzmann Method stuff~\cite{grasinger2015simulation}.
 
 \subsubsection{Entropic Collisions and Entropy Balance}
 
-This would be sweet if I somehow found the time to study it \cite{gorban2014enhancement}.
+{\color{red} This would be sweet if I somehow found the time to study it \cite{gorban2014enhancement}.}
 
 \section{Stability Analysis}
 
