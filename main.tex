@@ -35,7 +35,7 @@ You can ignore it for the most part.
 
 The Lattice Boltzmann method (LBM) is a computational method that can be used for simulating fluid flow.
 It is well-suited for complex flows such as non-Newtonian, free surface, and multiphase multicomponent flows.
-Non-Newtonian flows are the primary focus of this paper, as many practical engineering problems such as the flow of cement slurries and concretes, the filling of molds by molten plastics, ETC, are best modeled as non-Newtonian fluids.
+Non-Newtonian flows are the primary focus of this paper, as many practical engineering problems such as the flow of cement slurries and concretes, the filling of molds by molten plastics, ETC, are best modeled as non-Newtonian fluids, but can lead to numerical instabilities in LBM models.
 LBM is a statistical mechanical approach and each time step consists of streaming particle distributions to neighboring nodes, and collisions of particle distributions at each node through a collision operator.
 The collision operator is of interest because it has a lot of control over the physics that are simulated, e.g. constitutive laws, interfacial dynamics, etc., and it has implications on numerical stability and computational efficiency.
 In this paper, variations of popular collision operators, namely the linear Bhatnagar--Gross--Krook collision operator and the multiple relaxation time collision operator, will be examined for their suitability for simulating non-Newtonian flows in terms of accuracy, numerical stability and computational efficiency.
@@ -56,6 +56,14 @@ One would say substances which consist of particles that can more readily "slip"
 \item Constitutive form for generalized Newtonian fluids, $\tau = \mu(\dot{\gamma}) \dot{\gamma}$, where the apparent viscosity, $\mu$ is a function of the strain rate.
 \end{itemize}
 }
+
+The viscosity of a fluid is a measure of its resistance to deformation and is due to friction between fluid particles and inter-particle attraction.
+There are two types of viscosity: (1) dynamic viscosity, or shear viscosity, which is the fluid resistance to shear stress, and (2) bulk viscosity, or the fluid's resistance to compressive or tensile stresses.
+Outside of applications in sound, vibrations, and shock waves, the dynamic viscosity of a fluid is of primary interest because the flows that are typically studied are shear stress induced.
+For many fluids, at a constant temperature, the dynamic viscosity can be considered as constant.
+These fluids are known as Newtonian fluids.
+Non-Newtonian fluids are fluids in which their apparent dynamic viscosity, or apparent resistance to shear stress, is variable--even at a constant temperature--and can be expressed as a function of strain-rate.
+This paper will focus on the flow of non-Newtonian fluids because substances that are best modeled as non-Newtonian fluids are present in many scientific problems and engineering applications, and approximating the flow of non-Newtonian fluids has certain challenges to overcome.
 
 There are a number of non-Newtonian flows in scientific and engineering applications.
 Cement slurries and concretes are best modeled as non-Newtonian fluids because they exhibit a non-linear relationship between strain rate and shear stress.
@@ -81,7 +89,7 @@ Developing numerical methods for approximating these non-Newtonian flows is impo
 Analytical solutions rarely exists for even the simplest non-Newtonian flows because of the complexity that a non-linear constitutive relationship entails.
 It is more practical to approximate non-Newtonian flows using numerical methods.
 However, the non-linear constitutive equation results in certain challenges for numerical methods as well.
-Determining the apparent viscosity and shear rate of a flow will often require an iterative solution, the general algorithm is:
+Determining the apparent viscosity and shear rate of a flow will often require an iterative solution, a general Picard-type algorithm is:
 
 \begin{enumerate}
 	\item Start with initial guess for the apparent viscosity, $\mu_k = \mu_0$.
