@@ -7,7 +7,7 @@
 \usepackage{color}
 \usepackage[utf8]{inputenc}
 
-\title{Accuracy, Stability, and Efficiency of Lattice Boltzmann Models in Simulating Non-Newtonian Fluid Flows}
+\title{Accuracy, Stability, and Efficiency of Lattice Boltzmann Models in Simulating Non-Newtonian Flow}
 %\title{A Comparison of Lattice Boltzmann Method Collision Operators for Accuracy, Stability and Efficiency in Simulating Non-Newtonian Flows}
 
 \author{{Matthew Grasinger}
@@ -43,64 +43,36 @@ The structure of the paper will be as follows: blah, blah, blah.
 
 \section{Introduction} %MG: this intro will potentially be long. Should it be broken up into subsections (as it is now)?
 
-\subsection{Motivation for non-Newtonian Flow Simulation}
-
-{\color{red}
-Some random notes that may fit in to this section eventually:
-\begin{itemize}
-\item ``viscosity'' is a manifestation of friction between fluid particles.
-One would say substances which consist of particles that can more readily "slip" past one another have lower viscosities and substances with fluid particles that tend to have a higher resistance to sliding past one another have higher viscosities.
-
-\item ``Molten plastics, polymer solutions, dyes, varnishes, suspensions, and natural liquids like blood behave in a non-Newtonian manner.'' \cite{bohme1987non}.
-
-\item Constitutive form for generalized Newtonian fluids, $\tau = \mu(\dot{\gamma}) \dot{\gamma}$, where the apparent viscosity, $\mu$ is a function of the strain rate.
-\end{itemize}
-}
+\subsection{Applications of Non-Newtonian Flow}
 
 The viscosity of a fluid is a measure of its resistance to deformation.
-There are two types of viscosity: (1) dynamic viscosity, or shear viscosity, which is the fluid resistance to shear stress, and (2) bulk viscosity, or the fluid's resistance to compressive or tensile stresses.
+There are two types of viscosity: (1) dynamic viscosity, or shear viscosity, which is the fluid's resistance to shear stress, and (2) bulk viscosity, or the fluid's resistance to compressive and tensile stresses.
 Shear resistance, or dynamic viscosity, is predominately due to friction between fluid particles where as bulk viscosity is due to the packing of fluid particles, the contact that ensues, and more weakly, inter-particle potentials. % MJG: be more precise here.
 Outside of applications in sound, vibrations, and shock waves, the dynamic viscosity of a fluid is of primary interest because the flows that are typically studied are shear stress induced.
 For many fluids, at a constant temperature, the dynamic viscosity can be considered as constant.
 These fluids are known as Newtonian fluids.
 Non-Newtonian fluids are fluids in which their apparent dynamic viscosity, or apparent resistance to shear stress, is variable--even at a constant temperature--and can be expressed as a function of strain-rate.
-This paper will focus on the flow of non-Newtonian fluids because substances that are best modeled as non-Newtonian fluids are present in many scientific problems and engineering applications, and approximating the flow of non-Newtonian fluids has certain challenges associated with them.
+This paper will focus on the flow of non-Newtonian fluids because substances that are best modeled as non-Newtonian fluids are present in many scientific problems and engineering applications, and approximating the flow of non-Newtonian fluids has certain challenges.
 
-There are a number of complex fluids present in scientific problems and engineering applications that can be classified as non-Newtonian.
+There are a number of fluids present in scientific problems and engineering applications that can be classified as non-Newtonian.
 To name a few, pastes, slurries, molten plastics, polymer solutions, dyes, varnishes, suspensions, and some biomedical liquids like blood all behave in a non-Newtonian manner \cite{bohme1987non}.
-Of all of the different non-Newtonian behaviors that exist, there are two major categories under which many of the behaviors fall:
+Of all of the different non-Newtonian behaviors that exist, there are two models under which much of the behaviors may be idealized:
 \begin{enumerate}
-	\item \emph{Yield stress fluids}. Yield stress fluids do not flow until a threshold value of stress, referred to as its yield stress, is exceeded.
+	\item \emph{Yield stress fluids}. Yield stress fluids, also known as Bingham plastics, do not flow until a threshold value of stress, referred to as its yield stress, is exceeded.
+	Some examples of yield stress fluids are drilling muds, fresh cement slurries and concretes, and melted metal alloys \cite{ginzburg2002free}.
+	Understanding the flow of cement slurries and concretes is important because they are used in the cementing of oil and gas wellbores, and in construction.
+	If the cement job for an oil and gas wellbore is not completed successfully then gases and fluids can leak through the wellbore to contaminate ground water or the atmosphere ~\cite{grasinger2015simulation}.
+	The goal of understanding cement slurry and concrete flows during construction is to understand how construction forms can be completely filled as voids can lead to structural deficiencies ~\cite{RARR}.
+	Yield stress flow is relevant in many other disciplines and applications because of the many substances that can be modeled as Bingham plastics, e.g. pastes, paints, muds, molten plastics and metals, and blood \cite{wang2011lattice}. %MG: citation is for blood as non-Newtonian
+	Non-Newtonian flow is therefor relevant in the engineering and development of pastes and paints, flow and deformation of mud and clay in geotechnical engineering, understanding blood circulation in biomedical applications, materials science and manufacturing of metal and plastic parts, and in particular, the molding and casting of molten metals and plastics.
+	
 	\item \emph{Power-law fluids}. Power-law behavior is more commonly known as \emph{shear-thinning}--when the apparent viscosity decreases with increasing strain-rate--or \emph{shear-thickening}--when the apparent viscosity increases with increasing strain-rate. Shear-thinning fluids are also known as \emph{pseudoplastics}, some examples include polymer mixes and molten plastics.
 	Shear-thickening fluids are also known as \emph{dilatants}, some examples include quicksand, a cornstarch and water mixture, and a silica and polyethylene glycol mixture.
-	\item \emph{Other}. Many fluids have behavior that can be idealized as a combination of the two ways described above. Other fluids behave in another manner entirely.
 \end{enumerate}
-
-Yield stress fluids paragraph
-
-Power law fluids pargraph (lets keep this shit brief)
-
-Examples paragraph.
-
-Cement slurries and concretes are best modeled as non-Newtonian fluids because they exhibit a non-linear relationship between strain rate and shear stress.
-In particular, cement slurries and concretes can be categorized as yield stress fluids. 
-
-Understanding the flow of cement slurries and concretes is important because they are used in the cementing of oil and gas wellbores, in construction, and blah blah blah.
-If the cement job for an oil and gas wellbore is not completed successfully then gases and fluids can leak through the wellbore to contaminate ground water or the atmosphere ~\cite{grasinger2015simulation}.
-The goal of understanding cement slurry and concrete flows during construction is to understand how construction forms can be completely filled as voids can lead to structural deficiencies ~\cite{RARR}.
-Yield stress flow is relevant in many other disciplines and applications because of the many substances that can be modeled as Bingham plastics, e.g. pastes, paints, muds, molten plastics and metals, and blood \cite{wang2011lattice}. %MG: citation is for blood as non-Newtonian
-Non-Newtonian flow is therefor relevant in the engineering and development of pastes and paints, flow and deformation of mud and clay in geotechnical engineering, understanding blood circulation in biomedical applications, materials science and manufacturing of metal and plastic parts, and in particular, the molding and casting of molten metals and plastics.
-
-Power-law fluids are cool.
-Another non-Newtonian flow of interest is shear-thinning and shear-thickening fluids.
-These fluids can be modeled by another non-linear relationship, a power-law relationship.
-Shear-thinning fluids, also known as pseudoplastics, have a lower apparent viscosity at high shear, and a higher apparent viscosity at low shear.
-Shear-thickening fluids exhibit the opposite behavior.
-Examples of shear-thinning fluids are polymer mixes and molten plastics.
 
 Developing numerical methods for approximating these non-Newtonian flows is important because of how difficult it is, and often impossible it is, to derive analytical, closed-form solutions.
 
-\subsection{So why LBM?}
+\subsection{Lattice Boltzmann Method for non-Newtonian Flow}
 
 Analytical solutions rarely exists for even the simplest non-Newtonian flows because of the complexity that a non-linear constitutive relationship entails.
 It is more practical to approximate non-Newtonian flows using numerical methods.
@@ -154,26 +126,38 @@ The main advantage of LBM in simulating non-Newtonian flows is the local nature 
 This advantage is much less realized if the collision operator is too computationally expensive.
 The aim of this paper is to determine approximate numerical values and simulation scenarios in which one LBM method may be more advantageous than another so that scientists and engineers that make use of LBM for simulating non-Newtonian flows can do so in both a computationally efficient and stable manner. %MG: do better than ``simulation scenarios''. what does that even mean?
 
+%{\color{red}
+%\subsection{Scratch}
+%
+%Lattice Boltzmann Method (LBM) is the greatest method ever invented.
+%
+%What is my story?:
+%
+%\begin{itemize}
+%	\item Motivation for non-Newtonian flows
+%	\item Lattice Boltzmann Method is good for non-Newtonian flow because the collision operator is entirely local to a node.
+%	\item Parallelability, simplicity, etc. Allows the non-linear constitutive relationship to be solved in parallel.
+%	\item Lattice Boltzmann Method can be unstable sometimes :(.
+%	\item Literature review
+%	\begin{itemize}
+%		\item non-Newtonian flow studies
+%		\item history of collision operators: BGK, MRT, etc.
+%		\item stability analysis
+%		\item methods of enhancing stability
+%	\end{itemize}
+%\end{itemize}
+%}
+
 {\color{red}
-\subsection{Scratch}
-
-Lattice Boltzmann Method (LBM) is the greatest method ever invented.
-
-What is my story?:
-
-\begin{itemize}
-	\item Motivation for non-Newtonian flows
-	\item Lattice Boltzmann Method is good for non-Newtonian flow because the collision operator is entirely local to a node.
-	\item Parallelability, simplicity, etc. Allows the non-linear constitutive relationship to be solved in parallel.
-	\item Lattice Boltzmann Method can be unstable sometimes :(.
-	\item Literature review
+	Some random notes that may fit in to this section eventually:
 	\begin{itemize}
-		\item non-Newtonian flow studies
-		\item history of collision operators: BGK, MRT, etc.
-		\item stability analysis
-		\item methods of enhancing stability
+		\item ``viscosity'' is a manifestation of friction between fluid particles.
+		One would say substances which consist of particles that can more readily "slip" past one another have lower viscosities and substances with fluid particles that tend to have a higher resistance to sliding past one another have higher viscosities.
+		
+		\item ``Molten plastics, polymer solutions, dyes, varnishes, suspensions, and natural liquids like blood behave in a non-Newtonian manner.'' \cite{bohme1987non}.
+		
+		\item Constitutive form for generalized Newtonian fluids, $\tau = \mu(\dot{\gamma}) \dot{\gamma}$, where the apparent viscosity, $\mu$ is a function of the strain rate.
 	\end{itemize}
-\end{itemize}
 }
 
 \section{Lattice Boltzmann Method}
