@@ -94,12 +94,14 @@ The significance of approximating a solution by discretizing the governing equat
 The lattice Boltzmann method (LBM) is a numerical method for fluid flow.
 LBM has the unique advantage that computing the strain rate is local to each node, or each discrete location in the domain.
 This means that although an iterative solution is still required to determine the local strain rate and apparent viscosity, each iterative solution can be done in parallel, by a separate process, as they are independent of each other.
-Because high performance computing is shifting from single, sequential processes to massively parallel processes, the local nature of the stress--strain-rate relationship in LBM gives it a distinct advantage for simulating non-Newtonian flows over other numerical methods for fluid flow. %MG: consider moving literature review on LBM applied to non-Newtonian flows HERE 
+Because high performance computing is shifting from single, sequential processes to massively parallel processes, the local nature of the stress--strain-rate relationship in LBM gives it a distinct advantage for simulating non-Newtonian flows over other numerical methods for fluid flow. %MG: consider moving literature review on LBM applied to non-Newtonian flows HERE
+
+{\color{red} maybe we can put a brief lit review on LBM applied to non-Newtonian flows here. THEN discuss some drawbacks/instabilities}
 
 LBM does however, have its drawbacks.
 LBM can be considered as a type of finite-difference scheme for the continuous Boltzmann equation, and as such, has numerical properties in common with finite-difference schemes. %MG: is this precise enough? accurate enough?
 One such consideration associated with this view, is the possibility of numerical inaccuracies and instabilities ~\cite{sterling1993stability,sterling1996stability,bawazeer2013stability,lallemand2000theory}. %MG: are all relevant sources cited?
-Much work has been done to: (1) investigate the stability of lattice Boltzmann methods, (2) enhance the stability of lattice Boltzmann methods, and (3) apply LBM to study non-Newtonian flows.
+Much work has been done to investigate and develop ways to enhance the stability of lattice Boltzmann methods.
 
 Sterling and Chen investigated the stability of LBM with the linear Bhatnagar--Gross--Krook (BGK) collision operator on 7-velocity and 9-velocity 2D lattices and a 15-velocity cubic lattice~\cite{sterling1993stability,sterling1996stability}.
 The investigation was performed by linearizing all nonlinear terms about global equilibrium values and applying a von Neumann stability analysis on the resulting linearized equations.
@@ -134,43 +136,9 @@ Note that although this increased computational expense may not be too significa
 {\color{red} If you have time to study/implement entropic LBM (very exciting stuff), a brief discussion of its development would go here.}
 
 Our contribution in all of this mess is to investigate the trade-off between computational efficiency and stability/accuracy for the various LBM schemes.
-The main advantage of LBM in simulating non-Newtonian flows is the local nature of the stress--strain-rate relationship, resulting in a numerical method that can be run massively in parallel \cite{something}.
-This advantage is much less realized if the collision operator is too computationally expensive.
+The main advantage of LBM in simulating non-Newtonian flows is the local nature of the stress--strain-rate relationship, resulting in a numerical method that can be run massively in parallel~\cite{something}.
+This advantage is much less realized if the collision operator is too computationally expensive, or if instability ensues.
 The aim of this paper is to determine approximate numerical values and simulation scenarios in which one LBM method may be more advantageous than another so that scientists and engineers that make use of LBM for simulating non-Newtonian flows can do so in both a computationally efficient and stable manner. %MG: do better than ``simulation scenarios''. what does that even mean?
-
-%{\color{red}
-%\subsection{Scratch}
-%
-%Lattice Boltzmann Method (LBM) is the greatest method ever invented.
-%
-%What is my story?:
-%
-%\begin{itemize}
-%	\item Motivation for non-Newtonian flows
-%	\item Lattice Boltzmann Method is good for non-Newtonian flow because the collision operator is entirely local to a node.
-%	\item Parallelability, simplicity, etc. Allows the non-linear constitutive relationship to be solved in parallel.
-%	\item Lattice Boltzmann Method can be unstable sometimes :(.
-%	\item Literature review
-%	\begin{itemize}
-%		\item non-Newtonian flow studies
-%		\item history of collision operators: BGK, MRT, etc.
-%		\item stability analysis
-%		\item methods of enhancing stability
-%	\end{itemize}
-%\end{itemize}
-%}
-
-{\color{red}
-	Some random notes that may fit in to this section eventually:
-	\begin{itemize}
-		\item ``viscosity'' is a manifestation of friction between fluid particles.
-		One would say substances which consist of particles that can more readily "slip" past one another have lower viscosities and substances with fluid particles that tend to have a higher resistance to sliding past one another have higher viscosities.
-		
-		\item ``Molten plastics, polymer solutions, dyes, varnishes, suspensions, and natural liquids like blood behave in a non-Newtonian manner.'' \cite{bohme1987non}.
-		
-		\item Constitutive form for generalized Newtonian fluids, $\tau = \mu(\dot{\gamma}) \dot{\gamma}$, where the apparent viscosity, $\mu$ is a function of the strain rate.
-	\end{itemize}
-}
 
 \section{Lattice Boltzmann Method}
 
