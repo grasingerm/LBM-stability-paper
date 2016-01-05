@@ -47,7 +47,7 @@ The structure of the paper will be as follows: blah, blah, blah.
 
 The viscosity of a fluid is a measure of its resistance to deformation.
 There are two types of viscosity: (1) dynamic viscosity, or shear viscosity, which is the fluid's resistance to shear stress, and (2) bulk viscosity, or the fluid's resistance to compressive and tensile stresses.
-Shear resistance, or dynamic viscosity, is predominately due to friction between fluid particles where as bulk viscosity is due to the packing of fluid particles, the contact that ensues, and more weakly, inter-particle potentials. % MJG: be more precise here.
+Shear resistance, or dynamic viscosity, is predominately due to friction between fluid particles where as bulk viscosity is due to the packing of fluid particles, the contact that ensues, and more weakly, inter-particle potentials. % MG: be more precise here.
 Outside of applications in sound, vibrations, and shock waves, the dynamic viscosity of a fluid is of primary interest because the flows that are typically studied are shear stress induced.
 For many fluids, at a constant temperature, the dynamic viscosity can be considered as constant.
 These fluids are known as Newtonian fluids.
@@ -72,7 +72,7 @@ Of all of the different non-Newtonian behaviors that exist, there are two models
 
 Developing numerical methods for approximating these non-Newtonian flows is important because of how difficult it is, and often impossible it is, to derive analytical, closed-form solutions.
 
-\subsection{Lattice Boltzmann Method for non-Newtonian Flow}
+\subsection{Lattice Boltzmann Method for non-Newtonian Flow} %MG: should this be broken down into subsubsections? Maybe like 'Motivation', 'Stability', 'Recent Developments to Address Stability'
 
 Analytical solutions rarely exists for even the simplest non-Newtonian flows because of the complexity that a non-linear constitutive relationship entails.
 It is more practical to approximate non-Newtonian flows using numerical methods.
@@ -92,7 +92,7 @@ When the solution for fluid flow problems vary in space and time, a numerical ap
 The significance of approximating a solution by discretizing the governing equations is that the iterative solution for the constitutive equation must be solved at each discrete location for each discrete time step, which becomes computationally expensive.
 
 The lattice Boltzmann method (LBM) is a numerical method for fluid flow.
-LBM has the unique advantage that computing the strain rate is local to each node, or each discrete location in the domain.
+LBM has the unique advantage that computing the strain rate is local to each node.
 This means that although an iterative solution is still required to determine the local strain rate and apparent viscosity, each iterative solution can be done in parallel, by a separate process, as they are independent of each other.
 Because high performance computing is shifting from single, sequential processes to massively parallel processes, the local nature of the stress--strain-rate relationship in LBM gives it a distinct advantage for simulating non-Newtonian flows over other numerical methods for fluid flow. %MG: consider moving literature review on LBM applied to non-Newtonian flows HERE
 
@@ -118,18 +118,18 @@ Their analysis discover both physical and nonphysical instabilities, and that se
 Although much work has been done to characterize the stability of LBM models, these analyses have the following limitations to their applicability:
 
 \begin{itemize}
-	\item von Neumann stability analysis, and linear stability in general, which is what much of is found in literature, requires modifying the governing equations of the model so that they are linear.
+	\item von Neumann stability analysis, and linear stability analysis in general, which is what much of is found in literature, requires modifying the governing equations of the model so that they are linear. %MG: is there even a distinction between von Neumann stability analysis and linear stability analysis?
 	This linearization cannot be done without introducing some error into the analysis. %MG: linearization is probably not a word
-	\item Much of the analysis that exists in literature is done about a zero mean flow~\cite{worthing1997stability}. %MG: definitely cite and/or verify this more
+	\item Much of the analysis that exists in literature is done about a uniform flow~\cite{worthing1997stability,niu2004investigation}. %MG: definitely cite and/or verify this more
 	\item Analyses are most often carried out assuming periodic boundary conditions.
 	Periodic boundary conditions are advantageous because a stability analysis is generally conducted by performing a Fourier analysis on the propagation of error and the periodicity of Fourier modes allows the boundary conditions to automatically be satisfied.
-	Such an analysis, however, does not generalize well to instances when modes of the system are heavily influenced by the imposed boundary conditions~\cite{worthing1997stability}. %MG: so many questions: like what is an example of an instance when boundary conditions have a major effect and when are they more ``negligible'' or more like periodic BCs?
+	Such an analysis, however, does not generalize well to instances when modes of the system are heavily influenced by the boundary conditions~\cite{worthing1997stability}. %MG: so many questions: like what is an example of an instance when boundary conditions have a major effect and when are they more ``negligible'' or more like periodic BCs?
 \end{itemize}
 
 {\color{red} Bawazeer wrote a thesis on the stability and accuracy of the lattice Boltzmann method. Perhaps I'll read it.}
 
 To improve upon the stability of LB models, d'Humi\`{e}res constructed an LBE model with a multiple-relaxation-time (MRT-LB) collision operator, in moment space \cite{d1994generalized}. %MG: make sure you fix the inconsistencies with LB, LBE, etc. I think just use LBE or LBM but think it over. Literature seems to vary.
-Lallemand and Luo investigated the dispersion, dissipation, isotropy, Galilean invariance, and stability of the newly constructed LB-MRT method by applying von Neumann stability analysis to it\cite{lallemand2000theory}.
+Lallemand and Luo investigated the dispersion, dissipation, isotropy, Galilean invariance, and stability of the newly constructed LB-MRT method by applying von Neumann stability analysis to it~\cite{lallemand2000theory}.
 They concluded LBM with the MRT collision operator was more stable than with the BGK collision operator, but with increased computational expense. %MG: I think they have another paper that expands on this study, find and read it.
 Note that although this increased computational expense may not be too significant for Newtonian flows (10-20\% \cite{lallemand2000theory}), the issue is magnified for non-Newtonian flows because the iterative solution for the constitutive equation can require that the non-equilibrium distribution function be mapped back and forth from the velocity space to the momentum space multiple times (the strain rate tensor is determined from the non-equilibrium distribution function which must be mapped into momentum space when using the MRT collision operator). %MG: clean this sentence up, and maybe break it down. Too dense, introducing way too many terms the reader hasn't seen before
 
@@ -138,7 +138,7 @@ Note that although this increased computational expense may not be too significa
 Our contribution in all of this mess is to investigate the trade-off between computational efficiency and stability/accuracy for the various LBM schemes.
 The main advantage of LBM in simulating non-Newtonian flows is the local nature of the stress--strain-rate relationship, resulting in a numerical method that can be run massively in parallel~\cite{something}.
 This advantage is much less realized if the collision operator is too computationally expensive, or if instability ensues.
-The aim of this paper is to determine approximate numerical values and simulation scenarios in which one LBM method may be more advantageous than another so that scientists and engineers that make use of LBM for simulating non-Newtonian flows can do so in both a computationally efficient and stable manner. %MG: do better than ``simulation scenarios''. what does that even mean?
+The aim of this paper is to determine approximate numerical values and simulation scenarios in which one LBM method may be more advantageous than another so that scientists and engineers that make use of LBM for simulating non-Newtonian flows can do so git in both a computationally efficient and stable manner. %MG: do better than ``simulation scenarios''. what does that even mean?
 
 \section{Lattice Boltzmann Method}
 
@@ -154,7 +154,7 @@ Some overview of Lattice Boltzmann Method stuff~\cite{grasinger2015simulation}.
 
 \subsection{Applied Forces}
 
-\subsection{Collision Operator}
+\subsection{Collision Operator} %MG: if time allows, checkout differential lattice Bolzmann equation, the interpolation-supplemented lattice Boltzmann method, and the Taylor series expansion- and least square-based lattice Boltzmann method; Niu et. al. 2004
 
 \subsubsection{Bhatnagar--Gross--Krook}
 
