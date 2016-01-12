@@ -137,6 +137,12 @@ They concluded LBM with the MRT collision operator was more stable than with the
 Note that although this increased computational expense may not be too significant for Newtonian flows (10-20\% \cite{lallemand2000theory}), the issue is magnified for non-Newtonian flows because the iterative solution for the constitutive equation can require that the non-equilibrium distribution function be mapped back and forth from the velocity space to the momentum space multiple times (the strain rate tensor is determined from the non-equilibrium distribution function which must be mapped into momentum space when using the MRT collision operator). %MG: clean this sentence up, and maybe break it down. Too dense, introducing way too many terms the reader hasn't seen before
 
 {\color{red} If you have time to study/implement entropic LBM (very exciting stuff), a brief discussion of its development would go here.}
+The price of entropic lattice Boltzmann models for fluid flow is living with a bounded transport coefficient.
+Entropically stabilized collision operators ensure that entropy always increases, i.e. that the second law of thermodynamics is never violated.
+For BGK, this means that the relaxation time is bounded from below in certain instances~\cite{boghosian2001entropic}.
+{\color{red} ``it may be argued that we are relinquishing some control over the transport coefficients'' and ``of course, making $\tau$ a nontrivial function of the incoming state will impact the hydrodynamic equations derived from the model''~\cite{boghosian2001entropic}.
+``stability is guaranteed''?
+Define Lyapunov functional or Lyapunov stability condition.}
 
 Our contribution in all of this mess is to investigate the trade-off between computational efficiency and stability/accuracy for the various LBM schemes.
 The main advantage of LBM in simulating non-Newtonian flows is the local nature of the stress--strain-rate relationship, resulting in a numerical method that can be run massively in parallel~\cite{something}.
