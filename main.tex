@@ -101,6 +101,8 @@ Because high performance computing is shifting from single, sequential processes
 
 {\color{red} maybe we can put a brief lit review on LBM applied to non-Newtonian flows here. THEN discuss some drawbacks/instabilities}
 
+
+
 LBM does however, have its drawbacks.
 LBM can be considered as a type of finite-difference scheme for the continuous Boltzmann equation, and as such, has numerical properties in common with finite-difference schemes. %MG: is this precise enough? accurate enough?
 One such consideration associated with this view, is the possibility of numerical inaccuracies and instabilities ~\cite{sterling1993stability,sterling1996stability,bawazeer2013stability,lallemand2000theory}. %MG: are all relevant sources cited?
@@ -131,10 +133,10 @@ Although much work has been done to characterize the stability of LBM models, th
 
 {\color{red} Bawazeer wrote a thesis on the stability and accuracy of the lattice Boltzmann method. Perhaps I'll read it.}
 
-To improve upon the stability of LB models, d'Humi\`{e}res constructed an LBE model with a multiple-relaxation-time (MRT-LB) collision operator, in moment space \cite{d1994generalized}. %MG: make sure you fix the inconsistencies with LB, LBE, etc. I think just use LBE or LBM but think it over. Literature seems to vary.
+To improve upon the stability of LB models, d'Humi\`{e}res constructed an LBE model with a multiple-relaxation-time (MRT-LB) collision operator, in moment space \cite{d1994generalized}. %MG: make sure you fix the inconsistencies with LB, LBE, etc. I think just use LBE or LBM but think it over. Literature seems to vary. Also verify that d'Humieres is correct citation
 Lallemand and Luo investigated the dispersion, dissipation, isotropy, Galilean invariance, and stability of the newly constructed LB-MRT method by applying von Neumann stability analysis to it~\cite{lallemand2000theory}.
 They concluded LBM with the MRT collision operator was more stable than with the BGK collision operator, but with increased computational expense. %MG: I think they have another paper that expands on this study, find and read it.
-Note that although this increased computational expense may not be too significant for Newtonian flows (10-20\% \cite{lallemand2000theory}), the issue is magnified for non-Newtonian flows because the iterative solution for the constitutive equation can require that the non-equilibrium distribution function be mapped back and forth from the velocity space to the momentum space multiple times (the strain rate tensor is determined from the non-equilibrium distribution function which must be mapped into momentum space when using the MRT collision operator). %MG: clean this sentence up, and maybe break it down. Too dense, introducing way too many terms the reader hasn't seen before
+Note that although this increased computational expense may not be too significant for Newtonian flows (10-20\%~\cite{lallemand2000theory,d2002multiple}), the issue is magnified for non-Newtonian flows because the iterative solution for the constitutive equation can require that the non-equilibrium distribution function be mapped back and forth from the velocity space to the momentum space multiple times (the strain rate tensor is determined from the non-equilibrium distribution function which must be mapped into momentum space when using the MRT collision operator). %MG: clean this sentence up, and maybe break it down. Too dense, introducing way too many terms the reader hasn't seen before
 
 {\color{red} If you have time to study/implement entropic LBM (very exciting stuff), a brief discussion of its development would go here.}
 The price of entropic lattice Boltzmann models for fluid flow is living with a bounded transport coefficient.
