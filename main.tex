@@ -2,10 +2,10 @@
 
 \usepackage[affil-it]{authblk}
 \usepackage{lineno}
-\usepackage[square,numbers,sort&compress]{natbib}
 \usepackage{soul}
 \usepackage{color}
 \usepackage[utf8]{inputenc}
+\usepackage[square,numbers,sort&compress]{natbib}
 
 \title{Accuracy, Stability, and Efficiency of Lattice Boltzmann Models in Simulating Non-Newtonian Flow}
 %\title{A Comparison of Lattice Boltzmann Method Collision Operators for Accuracy, Stability and Efficiency in Simulating Non-Newtonian Flows}
@@ -97,9 +97,25 @@ The significance of approximating a solution by discretizing the governing equat
 The lattice Boltzmann method (LBM) is a numerical method for fluid flow.
 LBM has the unique advantage that computing the strain rate is local to each node.
 This means that although an iterative solution is still required to determine the local strain rate and apparent viscosity, each iterative solution can be done in parallel, by a separate process, as they are independent of each other.
-Because high performance computing is shifting from single, sequential processes to massively parallel processes, the local nature of the stress--strain-rate relationship in LBM gives it a distinct advantage for simulating non-Newtonian flows over other numerical methods for fluid flow. %MG: consider moving literature review on LBM applied to non-Newtonian flows HERE
+Because high performance computing is shifting from single, sequential processes to massively parallel processes, the local nature of the stress--strain-rate relationship in LBM gives it a distinct advantage for simulating non-Newtonian flows over other numerical methods for fluid flow.
 
-{\color{red} maybe we can put a brief lit review on LBM applied to non-Newtonian flows here. THEN discuss some drawbacks/instabilities}
+The lattice Boltzmann method has been studied and applied to modeling various non-Newtonian flows.
+~\cite{tang2011bingham,chai2011multiple,fallah2012multiple,chen2014simulations,vikhansky2008lattice,wang2008lattice} developed LBM models for simulating yield stress flows.
+The LBM model results agreed well when compared to analytical solutions for Bingham plastic Poiseuille flow, and values from literature for lid-driven cavity flows--showing the feasibility of using LBM models for yield-stress flows.
+LBM models for power-law fluid flows~\cite{wang2011lattice,wang2015localized,boyd2006second,chai2011multiple}, and blood flows using the K-L, Casson, and Carreau-Yasuda constitutive relationships~\cite{ashrafizaadeh2009comparison}, have also been successfully developed and verified.
+
+Various schemes and strategies for incorporating the physics of a shear-rate dependent viscosity have been developed and studied.
+The simplest approach, used in~\cite{boyd2006second,chen2014simulations,fallah2012multiple,tang2011bingham,svec2011flow,svec2012free}, is to make the relaxation time--which is proportional to apparent viscosity--variable and dependent on the local strain rate.
+A potential issue with the variable relaxation time approach is that as the relaxation time, $\tau$, approaches $\frac{1}{2}$ the viscosity approaches zero and the LBM approximation becomes unstable, or alternatively, if the relaxation time is much greater than one the accuracy and stability of the method also degrades~\cite{latt2007hydrodynamic}.
+In order to ensure that the variable relaxation times did not approach values leading to numerical inaccuracies and/or instabilities,~\cite{svec2011flow,svec2012free,gabbanelli2005lattice} set upper and lower bounds on allowable relaxation times.
+Although bounding the relaxation time was shown to be effective, it is also nonphysical and can lead to approximations that are inaccurate, not because of round-off error or numerical instability, but because the relaxation time does not reflect the proper constitutive relationship.
+Another scheme for incorporating non-Newtonian effects into LBM is to use a constant relaxation rate, typically unity, and to instead incorporate the local shear-rate effect into equilibrium distribution functions.
+This means particle distribution functions will always relax toward equilibrium at the same rate, but that the definition of equilibrium is modified to represent the correct stress--strain-rate relationship.
+The equilibrium distribution function is derived for the constitutive relationship of interest using the Chapman-Enskog multiscale expansion.
+The equilibrium distribution function for Bingham plastic flow was derived, implemented, and verified in~\cite{wang2008lattice}; and the equilibrium distribution functions for power-law fluids and Carreau fluids were derived, implemented, and verified in~\cite{yoshino2007numerical}.
+The strategy of using an equilibrium distribution function that incorporates the local shear-rate effect has the advantage that, because the relaxation time is constant (at unity), the local relaxation time will not approach values that are too small or too large, and so there is no reason to bound the relaxation time in a way that is nonphysical.
+\cite{wang2011lattice} developed another constant-relaxation time LBM scheme for non-Newtonian flows by splitting the constitutive relationship into Newtonian and non-Newtonian parts--for example, considering the plastic viscosity and yield stress for a Bingham plastic separately--then incorporating the Newtonian part in the usual way, namely scaling the relaxation time to achieve the macroscopic (Newtonian) viscosity, and the non-Newtonian part as a source of momentum, i.e. as an external forcing term, that is dependent on local shear-rate.
+The variable relaxation time scheme is used in the present study because of its simplicity, popularity, and flexibility.
 
 LBM does however, have its drawbacks.
 LBM can be considered as a type of finite-difference scheme for the continuous Boltzmann equation, and as such, has numerical properties in common with finite-difference schemes. %MG: is this precise enough? accurate enough?
@@ -131,6 +147,7 @@ Although much work has been done to characterize the stability of LBM models, th
 
 {\color{red} Bawazeer wrote a thesis on the stability and accuracy of the lattice Boltzmann method. Perhaps I'll read it.}
 
+% MG: list studies using BGK vs. MRT in this paragraph
 To improve upon the stability of LB models, d'Humi\`{e}res constructed an LBE model with a multiple-relaxation-time (MRT-LB) collision operator, in moment space \cite{d1994generalized}. %MG: make sure you fix the inconsistencies with LB, LBE, etc. I think just use LBE or LBM but think it over. Literature seems to vary.
 Lallemand and Luo investigated the dispersion, dissipation, isotropy, Galilean invariance, and stability of the newly constructed LB-MRT method by applying von Neumann stability analysis to it~\cite{lallemand2000theory}.
 They concluded LBM with the MRT collision operator was more stable than with the BGK collision operator, but with increased computational expense. %MG: I think they have another paper that expands on this study, find and read it.
@@ -191,7 +208,7 @@ Some overview of Lattice Boltzmann Method stuff~\cite{grasinger2015simulation}.
 
 \section*{Acknowledgements}
 
-\bibliographystyle{abbrv}
+\bibliographystyle{abbrvnat}
 \bibliography{master}
 	
 \end{document}
