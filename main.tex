@@ -88,7 +88,7 @@ Determining the apparent viscosity and shear rate of a flow will often require a
 Numerical solutions work by discretizing the equations that govern the physics of interest.
 When the solution for fluid flow problems vary in space and time, a numerical approximation requires breaking the problem up into discrete locations and discrete time steps.
 The significance of approximating a solution by discretizing the governing equations is that the iterative solution for the constitutive equation must be solved at each discrete location for each discrete time step, which becomes computationally expensive.
-The lattice Boltzmann method (LBM) is a numerical method for fluid flow that has the unique advantage that computing the strain rate is local to each node.
+The lattice Boltzmann method (LBM) is a numerical method for fluid flow that has the advantage that computing the strain rate is second-order accurate and local to each node~\cite{kruger2010second}.
 This means that although an iterative solution is still required to determine the local strain rate and apparent viscosity, each iterative solution can be done in parallel, by a separate process, as they are independent of each other.
 Because hardware architectures have shifted from single, sequential processing systems to parallel processing systems, the local nature of the stress--strain-rate relationship in LBM gives it a distinct advantage for simulating non-Newtonian flows over other numerical methods.
 
@@ -97,8 +97,7 @@ The lattice Boltzmann method has been studied and successively applied to modeli
 The LBM model results agreed well when compared to analytical solutions for Bingham plastic Poiseuille flow, and values from literature for lid-driven cavity flows--showing the feasibility of using LBM models for yield-stress flows.
 LBM models for power-law fluid flows~\cite{wang2011lattice,wang2015localized,boyd2006second,chai2011multiple}, and blood flows using the K-L, Casson, and Carreau-Yasuda constitutive relationships~\cite{ashrafizaadeh2009comparison}, have also been successfully developed and verified.
 
-
-
+%MG: probably include a discussion of the work done by Conrad et. al. 2015 here
 LBM does however, have its drawbacks.
 LBM can be considered as a type of finite-difference scheme for the continuous Boltzmann equation, and as such, has numerical properties in common with finite-difference schemes. %MG: is this precise enough? accurate enough?
 One such consideration associated with this view, is the potential for numerical inaccuracies and instabilities ~\cite{sterling1993stability,sterling1996stability,bawazeer2013stability,lallemand2000theory}. %MG: are all relevant sources cited?
