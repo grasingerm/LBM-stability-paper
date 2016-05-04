@@ -167,6 +167,19 @@ A numerical study can help to determine approximate numerical values, domains, a
 
 Some overview of Lattice Boltzmann Method stuff~\cite{grasinger2015simulation}.
 
+The Lattice Boltzmann method is a numerical approach that uses statistical mechanics to represent a variety of physical processes, such as fluid flow.
+More specifically, LBM can be thought of as a special finite difference discretization of the lattice Boltzmann equation~\cite{chen1998lattice}.
+The length scale of LBM is unique in contrast to most common numerical methods, and is referred to as the mesoscale.
+In contrast to continuum based methods, LBM simulates the kinetics of microscopic particles, and so it reaches a finer length scale than the macroscopic domain of continuum mechanics; and in contrast to molecular dynamics, discrete element method, and other particle scale approaches, LBM does not deal with a complete description of the degrees of freedom for each individual particle.
+LBM instead relies on a statistical description of particle distributions, making LBM, in general, more computationally efficient and requiring less memory than other particle methods.
+In addition, the Boltzmann equation is continuous, so LBM inherits the smoothness and stability of continuum methods.
+Thus, LBM can be seen as a compromise between continuum and particle methods, combining strengths from each.
+
+LBM has some advantages over other methods of CFD.
+For example, LBM is a computationally efficient approach for some CFD.
+This efficiency is a consequence of two distinct features of LBM: (1) the convective operator is linear, as opposed to the nonlinear convection terms that appear in continuum mechanics approaches; and (2) the fluid pressure is given by an equation of state.
+Solving for the fluid pressure in traditional method sis more computationally expensive and requires special treatment such as iteration and/or relaxation~\cite{chen1998lattice}.
+
 \subsection{The Boltzmann Equation}
 
 \subsection{Boundary Conditions}
