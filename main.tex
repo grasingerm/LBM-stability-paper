@@ -7,6 +7,18 @@
 \usepackage[utf8]{inputenc}
 \usepackage[square,numbers,sort&compress]{natbib}
 
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{mathtools}
+\usepackage{mathabx}
+\usepackage{bm}
+
+\newcommand{\pos}{\mathbf{x}}
+\newcommand{\pvel}{\boldsymbol{\xi}}
+\newcommand{\mvel}{\mathbf{u}}
+\newcommand{\copt}{\boldsymbol{\Omega}}
+\newcommand{\grad}{\boldsymbol{\nabla}}
+
 \title{Accuracy, Stability, and Efficiency of Lattice Boltzmann Models in Simulating Non-Newtonian Flow}
 %\title{A Comparison of Lattice Boltzmann Method Collision Operators for Accuracy, Stability and Efficiency in Simulating Non-Newtonian Flows}
 
@@ -14,7 +26,7 @@
 \thanks{Email: \textit{grasingerm@pitt.edu}}}
 
 \author{{Scott Overacker}
-	\thanks{Email: \textit{sdo10@pitt.edu}}}
+\thanks{Email: \textit{sdo10@pitt.edu}}}
 
 \author{John Brigham
 \thanks{Email: \textit{brigham@pitt.edu}}}
@@ -178,9 +190,34 @@ Thus, LBM can be seen as a compromise between continuum and particle methods, co
 LBM has some advantages over other methods of CFD.
 For example, LBM is a computationally efficient approach for some CFD.
 This efficiency is a consequence of two distinct features of LBM: (1) the convective operator is linear, as opposed to the nonlinear convection terms that appear in continuum mechanics approaches; and (2) the fluid pressure is given by an equation of state.
-Solving for the fluid pressure in traditional method sis more computationally expensive and requires special treatment such as iteration and/or relaxation~\cite{chen1998lattice}.
+Solving for the fluid pressure in traditional method is more computationally expensive and requires special treatment such as iteration and/or relaxation~\cite{chen1998lattice}.
 
 \subsection{The Boltzmann Equation}
+The Boltzmann equation (BE) can be thought of as a conservation of particle distributions.
+The BE is given as $\frac{\partial f}{\partial t} + \pvel \cdot \grad f = \copt$, where $f = f(\pos, \pvel, t)$ is the particle velocity distribution function, $\pos$ is the spatial position vector, $\pvel$ is the particle velocity, $\mvel$ is the macroscopic velocity, and $\copt$ is the collision operator.
+The lattice part of LBM refers to the way in which the BE is discretized.
+The lattice discretizes the spatial domain with nodes that are connected to their neighbors through discrete lattice velocity vectors.
+The velocity vectors act as pathways for particle distributions to travel along.
+Each time step in LBM consists of two distinct actions:
+
+\begin{itemize}
+\item Streaming: particle distribution propagate to their neighbors along the lattice velocity vectors.
+The particles can only move along the vectors in their specified direction and can only move at a specific speed.
+\item Collision: particle distributions meet at a node and ``collide''.
+In LBM, collisions are not simulated in a realistic sense, meaning that each individual particle does not exist and glance off of, or interact with, one another.
+Instead the collision operator is formulated in such a way that particle distributions are relaxed toward equilibrium.
+What defines equilibrium depends on the mechanics of interest to be modeled.
+\end{itemize}
+
+The D2Q9 lattice was used in the current work (shown in Figure \ref{fig:d2q9}), which is commonly used for two-dimensional, incompressible flow simulations~\cite{Suc01}. % MG: do we even need this citation?
+The lattice is two-dimensional with nine discrete velocities at each node.
+There is a stationary particle, there are four discrete velocities of magnitude 1, $(\pm1,0)$, $(0,\pm1)$, and there are four discrete velocities of magnitude $\sqrt{2}$, $(\pm1, \pm1)$.
+
+\begin{figure}
+  \includegraphics[]{figs/d2q9}
+  \caption{D2Q9 lattice}
+  \label{fig:d2q9}
+\end{figure}
 
 \subsection{Boundary Conditions}
 
