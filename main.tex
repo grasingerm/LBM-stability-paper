@@ -1,11 +1,11 @@
 \documentclass{article}
 
-\usepackage[affil-it]{authblk}
-\usepackage{lineno}
-\usepackage{soul}
-\usepackage{color}
-\usepackage[utf8]{inputenc}
-\usepackage[square,numbers,sort&compress]{natbib}
+%\usepackage[affil-it]{authblk}
+%\usepackage{lineno}
+%\usepackage{soul}
+%\usepackage{color}
+%\usepackage[utf8]{inputenc}
+%\usepackage[square,numbers,sort&compress]{natbib}
 
 \title{Accuracy, Stability, and Efficiency of Lattice Boltzmann Models in Simulating Non-Newtonian Flow}
 %\title{A Comparison of Lattice Boltzmann Method Collision Operators for Accuracy, Stability and Efficiency in Simulating Non-Newtonian Flows}
@@ -190,13 +190,38 @@ Some overview of Lattice Boltzmann Method stuff~\cite{grasinger2015simulation}.
 \subsection{Other Possible Approaches}
 
 \section{Numerical Study}
-Two different flow simulations, Poiseuille flow and lid-driven flow, and two different non-Newtonian behaviors, yield stress fluids and power-law fluids,  served as the basis for the numerical study. 
+Two different flow simulations, Poiseuille flow and lid-driven flow, and two different non-Newtonian behaviors, yield stress fluids and power-law fluids,  served as the basis for the numerical study comparing LBM for non-Newtonian fluid flow simulation.  
+Within these physical models and constitutive relationships, multiple parameters were evaluated.
 \subsection{Poiseuille Flow} 
 Computational Efficiency
 
 Numerical Stability
 \subsection{Lid-driven Flow}
-Lid-driven cavity flow was simulated using Bingham numbers of 1, 10, and 100 for Reynolds numbers of 100, 1000, 5000, and 10000.  In the simulations, a constant velocity of $u_0$ was fixed at 0.1 across the lid.  No slip boundary conditions were fixed to the remaining walls of the cavity.  To validate the model used for the comparison, the results had to be compared with results from [...,...,...].  As shown in the table, it can be seen that the results of the present simulations match the benchmark results well (hopefully).
+In the simulations, a constant velocity of $u_0$ was fixed at 0.1 across the lid. 
+No slip boundary conditions were fixed to the remaining walls of the cavity.
+To validate the model used for the comparison, the results had to be compared with results from [...,...,...]. 
+As shown in the table (show table of our vortex centers compared with other papers), it can be seen that the results of the present simulations match the benchmark results well.
+The previous results of [...] showed grid independence between 256x256 grids and 512x512 grids, and it was found that stability or accuracy were not markedly enhanced between a 256x256 grid and a 100x100 grid for material properties evaluated in these tests. 
+For computational efficiency, subsequent tests were performed on a 100x100 grid.
+
+
+For the yield stress lid-driven cavity flow, Bingham numbers of 1, 10, and 100 for Reynolds numbers of 100, 1000, 5000, and 10000 were used for the simulations that varied the stress growth parameter, $m$, and utilized either entropic filtering, placing bounds of 0.501 and 8.0 on the relaxation time, or no stability enhancement strategies. %SDO-What are the units here, seconds?  
+Stability enhancements were used on both the BGK and MRT collision operators.
+For all tests, more stable and efficient results were found when the flow was closer to laminar Newtonian flow behavior. 
+Additionally, with these fluid properties the effect of the stress growth parameter and any stability enhancement was negligible in terms of stability or accuracy.  
+All collision operators with or without stability enhancements yielded very similar streamlines, stream functions, and locations and strengths of the primary vortex.
+However, computational time between the tests varied widely, with the tests using a stress growth exponent of $10^8$ taking about 10\% longer than the tests with a stress growth exponent of $10^5$.  
+Bounding the relaxation time actually increased the computational time by about 5\% and using entropic filtering with the BGK operator decreased computational time by nearly 18\%.
+Finally, using the MRT operator with or without entropic filtering decreased the computational efficiency by about 300\%.
+
+As the Reynolds number and Bingham numbers increased when plastic viscosity was decreased and yield stress was increased, respectively, it was seen that the stability of flow models conducted with the BGK operator lost stability and accuracy while maintaining computational efficiency.
+With $Re \geq 5000$, the tests using the standard BGK operator and the BGK operator with bounds on the relaxation time were unstable to the point that the solution was divergent, regardless of the Bingham number.  
+Entropic filtering stabilized the BGK collision operator tests effectively, yielding streamlines and a stream function that was mimicked the results of the tests using the MRT operator and previous results [...] well. %SDO-Good place to show a figure.
+However, as the Reynolds and Bingham numbers increased, the location and strength of the entropic-filtered BGK operator primary vortex deviated from that determined with the MRT operator, and the smoothness of the stream function of the MRT operator was lost. %SDO-Another good place for a picture, maybe a table showing the locations and strengths of the central vortices.
+As has been found in previous studies [...,...], the multiple-relaxation time operator markedly increased stability and computational inefficiency. 
+With the relatively coarse grid used for this study, the results never became unstable and the efficiency was about a third of that of the BGK operator. 
+For finer grids the margin increased further, and the MRT operator required substantially more iterations to reach a steady-state solution (actually a steady state condition was never met for any MRT test).
+
 
 Computational Efficiency/Time
 
@@ -205,9 +230,6 @@ Numerical Stability
 Effect of entropic filtering
 
 Effect of m (stress growth exponent)
-\subsection{Poiseuille Flow}
-
-\subsection{Lid-driven Flow}
 
 \section{Conclusion}
 
