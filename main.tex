@@ -16,8 +16,9 @@
 \newcommand{\pos}{\mathbf{x}}
 \newcommand{\pvel}{\boldsymbol{\xi}}
 \newcommand{\mvel}{\mathbf{u}}
-\newcommand{\copt}{\boldsymbol{\Omega}}
+\newcommand{\cop}{\boldsymbol{\Omega}}
 \newcommand{\grad}{\boldsymbol{\nabla}}
+\newcommand{\mmom}{\mathbf{j}}
 
 \title{Accuracy, Stability, and Efficiency of Lattice Boltzmann Models in Simulating Non-Newtonian Flow}
 %\title{A Comparison of Lattice Boltzmann Method Collision Operators for Accuracy, Stability and Efficiency in Simulating Non-Newtonian Flows}
@@ -194,7 +195,7 @@ Solving for the fluid pressure in traditional method is more computationally exp
 
 \subsection{The Boltzmann Equation}
 The Boltzmann equation (BE) can be thought of as a conservation of particle distributions.
-The BE is given as $\frac{\partial f}{\partial t} + \pvel \cdot \grad f = \copt$, where $f = f(\pos, \pvel, t)$ is the particle velocity distribution function, $\pos$ is the spatial position vector, $\pvel$ is the particle velocity, $\mvel$ is the macroscopic velocity, and $\copt$ is the collision operator.
+The BE is given as $\frac{\partial f}{\partial t} + \pvel \cdot \grad f = \cop$, where $f = f(\pos, \pvel, t)$ is the particle velocity distribution function, $\pos$ is the spatial position vector, $\pvel$ is the particle velocity, $\mvel$ is the macroscopic velocity, and $\cop$ is the collision operator.
 The lattice part of LBM refers to the way in which the BE is discretized.
 The lattice discretizes the spatial domain with nodes that are connected to their neighbors through discrete lattice velocity vectors.
 The velocity vectors act as pathways for particle distributions to travel along.
@@ -219,25 +220,77 @@ There is a stationary particle, there are four discrete velocities of magnitude 
   \label{fig:d2q9}
 \end{figure}
 
+The discretized version of the Boltzmann equation, or the lattice Boltzmann equation (LBE), is given as: $f_i(\pos + \pvel_i, t + \Delta t) = f_i(\pos, t) + \cop_i(f)$, where, for D2Q9, $i = 0, 1, ..., 8$.
+
+The macroscopic variables of interest can be calculated from the particle distribution functions, $f(\pos, \pvel, t)$, by integrating moments of $f$ over velocity space.
+Due to the discrete nature of velocity in LBM, the integrals simply become summations.
+The mass density is given by the sum of the particle distributions and the momentum density is given by the first moment of the particle distributions over the velocity space:
+
+\begin{align}
+\label{eq:rho} \rho(\pos, t) =& \sum_{i} f_i(\pos, t), \\
+\label{eq:mom} \mmom(\pos, t) = \rho(\pos, t) \mvel(\pos, t) =& \sum_{i} \pvel_i(\pos, t) f_i(\pos, t)
+\end{align}
+
+The fluid pressure is related to macroscopic density through an equation of state:
+
+\begin{equation}
+\label{eq:pres} p(\pos, t) = \rho(\pos, t) c_s^2,
+\end{equation}
+
+\noindent where $c_s$ is the lattice speed of sound ($c_s = \frac{1}{\sqrt{3}}$, for D2Q9).
+
 \subsection{Boundary Conditions}
+
+No slip, or zero velocity, which is commonly imposed at walls in a domain, is accomplished by simulating the particle distributions as "bouncing back" at the walls in the opposite direction from which they stream.
+For example, for a particle distribution streaming in the direction of a south wall, $f_2 = f_4$, $f_5 = f_7$, and $f_6 = f_8$.
+For velocity or pressure boundary conditions, the method proposed by \citet{zou1997pressure} can be used.
+The particle distributions that are missing after the streaming step are solved for by assuming a bounceback of the non-equilibrium distribution in the direction normal to the boundary; e.g., for a south inlet or outlet, $f_2 - f_2^{eq} = f_4 - f_4^{eq}$.
 
 \subsection{Applied Forces}
 
+Incorporating external forces, such as gravity, pressure gradients, etc., is done by adding a source of particle distributions in the direction of the force.
+The increase in particle distributions leads to the desired macroscopic result--an increase in momentum.
+The LBE with external forces is:
+
+\begin{equation}
+f_i(\pos + \pvel_i, t + \Delta t) = f_i(\pos, t) + \Omega_i(f) + \frac{w_i \Delta t}{c_s^2} \mathbf{F} \cdot \pvel_i
+\end{equation}
+
+\noindent where $\mathbf{F}$ is the body force vector.
+
 \subsection{Collision Operator} %MG: if time allows, checkout differential lattice Bolzmann equation, the interpolation-supplemented lattice Boltzmann method, and the Taylor series expansion- and least square-based lattice Boltzmann method; Niu et. al. 2004
 
-\subsubsection{Bhatnagar--Gross--Krook}
+The collision operator, in the case of the continuous BE, attempts to describe the change in particle momentums and trajectories due to pairwise particle collisions (based on their respective momentums and trajectories just prior to collision) \cite{Cer90}.
+In LBM, the collision operator causes particle distributions to relax toward a local equilibrium. This equilibrium is determined by the macroscopic physical behavior of interest.
+In the case of incompressible flow, the equilibrium particle distribution, $f_i^{eq}$, is given by:
 
-\subsubsection{Multiple Relaxation Time}
+\begin{equation}
+f_i^{eq} = w_i \rho \left[1 + \frac{\pvel_i \cdot \mvel}{c_s^2} + \frac{(\pvel_i \cdot \mvel)^2}{2c_s^2} - \frac{\mvel^2}{2c_s^2} \right]
+\end{equation}
+
+\noindent where $w_i$ is the weight in the $i^{th}$ direction.
+
+\begin{equation*}
+w_i = \begin{cases}
+    \frac{4}{9}, & i = 0 \\
+    \frac{1}{9}, & i = 1, 2, 3, 4 \\
+    \frac{1}{36}, & i = 5, 6, 7, 8
+\end{cases}
+\end{equation*}
+
+Due to its simplicity and computational efficiency, the most common collision operator is the Bhatnagar--Gross--Krook (BGK) operator.
+BGK consists of a single relaxation time and is a linear relaxation of particle distributions toward equilibrium.
+The BGK is expressed as:
+
+\begin{equation}
+\Omega_i = -\frac{1}{\tau} (f_i(\pos, t) - f_i^{eq}),
+\end{equation}
+
+\noindent where $\tau$ is the relaxation time \cite{Bha54}.
+The relaxation time can be related to macroscopic constitutive properties through Chapman-Enskog multiscale analysis.
+For incompressible Newtonian flow, the relaxation time is related to the kinematic viscosity by $\nu = c_s^2(\tau - \frac{1}{2})$.
 
 \subsubsection{Entropic Collisions and Entropy Balance}
-
-\section{Stability Analysis}
-
-\subsection{von Neumann Stability Analysis}
-
-\subsection{Matrix Method of Stability Analysis}
-
-\subsection{Other Possible Approaches}
 
 \section{Numerical Study}
 
