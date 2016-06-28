@@ -5,6 +5,7 @@
 \usepackage{soul}
 \usepackage{color}
 \usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
 \usepackage[square,numbers,sort&compress]{natbib}
 
 \usepackage{amsthm}
@@ -19,6 +20,7 @@
 \newcommand{\cop}{\boldsymbol{\Omega}}
 \newcommand{\grad}{\boldsymbol{\nabla}}
 \newcommand{\mmom}{\mathbf{j}}
+\newcommand{\transM}{\mathbf{M}}
 
 \title{Accuracy, Stability, and Efficiency of Lattice Boltzmann Models in Simulating Non-Newtonian Flow}
 %\title{A Comparison of Lattice Boltzmann Method Collision Operators for Accuracy, Stability and Efficiency in Simulating Non-Newtonian Flows}
@@ -289,6 +291,34 @@ The BGK is expressed as:
 \noindent where $\tau$ is the relaxation time \cite{Bha54}.
 The relaxation time can be related to macroscopic constitutive properties through Chapman-Enskog multiscale analysis.
 For incompressible Newtonian flow, the relaxation time is related to the kinematic viscosity by $\nu = c_s^2(\tau - \frac{1}{2})$.
+
+An alternative to the BGK collision operator is the multiple-relaxation-time (MRT) collision operator.
+%In the BGK collision scheme, high values of viscosity--such as those found in some cement slurry mixes--can lead to numerical instabilities \cite{svec2011flow,lallemand2000theory}.
+Because the apparent viscosity can take on very large values without leading to numerical instabilities, the MRT collision operator has become popular for simulating non-Newtonian flows \cite{chen2014simulations,fallah2012multiple,tang2011bingham,vikhansky2008lattice,chai2011multiple}. %MG: is this necessary? wasn't this already covered
+The MRT collision operator is given by:
+
+\begin{equation} \label{eq:mrt-col-op}
+	\cop = - {\transM}^{-1} \relaxM \transM (\mathbf{f} - \mathbf{f}^{eq}),
+\end{equation}
+
+where $\transM$ is a transformation matrix that maps the particle distribution vector, $\mathbf{f}$, and equilibrium distribution vector, $\mathbf{f}^{eq}$, from the particle distribution space into moment space, they will be denoted by $\mathbf{m}$ and $\mathbf{m}^{eq}$, respectively.
+The relationships between $\mathbf{m}$, $\transM$ and $\mathbf{f}$ can be written as follows:
+
+\begin{equation}
+\mathbf{m} = \begin{bmatrix}
+\rho \\ e \\ \epsilon \\ j_x \\ q_x \\ j_y \\ q_y \\ p_{xx} \\ p_{xy}
+\end{bmatrix} = \begin{bmatrix}
+1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 \\
+1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 \\
+1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 \\
+1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 \\
+1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 \\
+1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 \\
+1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 \\
+1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 \\
+1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1
+\end{bmatrix}
+\end{equation}
 
 \subsubsection{Entropic Collisions and Entropy Balance}
 
