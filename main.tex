@@ -301,7 +301,7 @@ The MRT collision operator is given by:
 	\cop = - {\transM}^{-1} \relaxM \transM (\mathbf{f} - \mathbf{f}^{eq}),
 \end{equation}
 
-where $\transM$ is a transformation matrix that maps the particle distribution vector, $\mathbf{f}$, and equilibrium distribution vector, $\mathbf{f}^{eq}$, from the particle distribution space into moment space, they will be denoted by $\mathbf{m}$ and $\mathbf{m}^{eq}$, respectively.
+\noindent where $\transM$ is a transformation matrix that maps the particle distribution vector, $\mathbf{f}$, and equilibrium distribution vector, $\mathbf{f}^{eq}$, from the particle distribution space into moment space, they will be denoted by $\mathbf{m}$ and $\mathbf{m}^{eq}$, respectively.
 The relationships between $\mathbf{m}$, $\transM$ and $\mathbf{f}$ can be written as follows:
 
 \begin{equation}
@@ -309,14 +309,14 @@ The relationships between $\mathbf{m}$, $\transM$ and $\mathbf{f}$ can be writte
 \rho \\ e \\ \epsilon \\ j_x \\ q_x \\ j_y \\ q_y \\ p_{xx} \\ p_{xy}
 \end{bmatrix} = \begin{bmatrix}
 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 \\
-1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 \\
-1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 \\
-1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 \\
-1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 \\
-1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 \\
-1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 \\
-1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 \\
-1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1
+-4 & -1 & -1 & -1 & -1 & 2 & 2 & 2 & 2 \\
+4 & -2 & -2 & -2 & -2 & 1 & 1 & 1 & 1 \\
+0 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 \\
+0 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 \\
+0 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 \\
+0 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 \\
+0 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 \\
+0 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1
 \end{bmatrix}
 \end{equation}
 
