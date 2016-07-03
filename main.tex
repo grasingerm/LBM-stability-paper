@@ -1,3 +1,8 @@
+% MG: replace \ \cite with ~\cite to ensure citations stay on same line
+% MG: need an overall consistency in 'flucuation' vs. 'oscillation'; use same word if you mean same thing.
+% MG: same note as above for 'local equilibrium' vs. 'quasiequilibrium'
+% MG: consider using collision frequency, \omega, instead of relaxation time, \tau, so that the relaxation time is not confused with shear stress
+
 \documentclass{article}
 
 \usepackage[affil-it]{authblk}
@@ -13,16 +18,20 @@
 \usepackage{mathtools}
 \usepackage{mathabx}
 \usepackage{bm}
+\usepackage[plain]{fancyref}
 
 \newcommand{\pos}{\mathbf{x}}
 \newcommand{\pvel}{\boldsymbol{\xi}}
 \newcommand{\mvel}{\mathbf{u}}
-\newcommand{\cop}{\boldsymbol{\Omega}}
+\newcommand{\colop}{\boldsymbol{\Omega}}
 \newcommand{\grad}{\boldsymbol{\nabla}}
 \newcommand{\mmom}{\mathbf{j}}
 \newcommand{\transM}{\mathbf{M}}
+\newcommand{\relaxM}{\mathbf{S}}
 
-\title{Accuracy, Stability, and Efficiency of Lattice Boltzmann Models in Simulating Non-Newtonian Flow}
+\newcommand{\expnumber}[2]{{#1}\mathrm{e}{#2}}
+
+\title{Accuracy, Stability, and Efficiency of Lattice Boltzmann Models in Simulating Non-Newtonian Flows}
 %\title{A Comparison of Lattice Boltzmann Method Collision Operators for Accuracy, Stability and Efficiency in Simulating Non-Newtonian Flows}
 
 \author{{Matthew Grasinger}
@@ -43,8 +52,6 @@
 \tableofcontents
 \newpage
 \pagenumbering{arabic}
-
-\linenumbers
 
 Note: anything in {\color{red}red} is just random garbage notes.
 You can ignore it for the most part.
@@ -74,22 +81,24 @@ Of all of the different non-Newtonian behaviors that exist, there are two models
 	\item \emph{Yield stress fluids}. Yield stress fluids, also known as Bingham plastics, do not flow until a threshold value of stress, referred to as its yield stress, is exceeded.
 	Some examples of yield stress fluids are drilling muds, fresh cement slurries and concretes, and melted metal alloys \cite{ginzburg2002free}.
 	Understanding the flow of cement slurries and concretes is important because they are used in the cementing of oil and gas wellbores, and in construction.
-	If the cement job for an oil and gas wellbore is not completed successfully then gases and fluids can leak through the wellbore to contaminate ground water or the atmosphere.
+	If the cement job for an oil and gas wellbore is not completed successfully then gases and fluids can leak through the wellbore to contaminate ground water or the atmosphere~\cite{grasinger2015simulation}. %MG: is it tacky to cite myself here?
 	The goal of understanding cement slurry and concrete flows during construction is to understand how construction forms can be completely filled as voids can lead to structural deficiencies~\cite{definitely cite someone}.
 	Yield stress flow is relevant in many other disciplines and applications because of the many substances that exhibit yield stress behavior, e.g. pastes, paints, muds, molten plastics and metals, and blood \cite{wang2011lattice}. %MG: citation is for blood as non-Newtonian
 	As a consequence, simulating yield stress fluids can help engineers develop better pastes and paints, understand the flow and deformation of mud and clay in geotechnical engineering, understand blood circulation, and better manufacture metal and plastic parts.
 	
 	\item \emph{Power-law fluids}. Power-law behavior is more commonly known as \emph{shear-thinning}--when the apparent viscosity decreases with increasing strain-rate--or \emph{shear-thickening}--when the apparent viscosity increases with increasing strain-rate. Shear-thinning fluids are also known as \emph{pseudoplastics}, and some examples include polymer mixes and molten plastics.
 	Shear-thickening fluids are also known as \emph{dilatants}, and some examples include quicksand, a cornstarch and water mixture, and a silica and polyethylene glycol mixture.
-\end{enumerate} %MG: should HB, K-L, Casson, Carreau, and other models be mentioned?
+\end{enumerate}
 
 Developing numerical methods for approximating these non-Newtonian flows is important because of how difficult, and often impossible, it is to derive analytical, closed-form solutions.
 
-\subsection{Lattice Boltzmann Method for non-Newtonian Flow} %MG: should this be broken down into subsubsections? Maybe like 'Motivation', 'Stability', 'Recent Developments to Address Stability'
+\subsection{Lattice Boltzmann Method for non-Newtonian Flow} \label{sec:lbm-for-nnf} %MG: should this be broken down into subsubsections? Maybe like 'Motivation', 'Stability', 'Recent Developments to Address Stability'
 
-Analytical solutions rarely exists for even the simplest non-Newtonian flows because of the complexity that a non-linear constitutive relationship entails.
+Analytical solutions rarely exists for even the simplest non-Newtonian flows because of the complexity that a nonlinear constitutive relationship entails.
 It is generally more practical to approximate non-Newtonian flows using numerical methods.
-However, the non-linear constitutive equation--typically of the form $\tau = \mu_{app}(\dot{\gamma}) \dot{\gamma}$, where the apparent viscosity, $\mu_{app}$ is a function of the strain rate--results in certain challenges for numerical methods as well.
+However, the nonlinear constitutive equation--typically of the form \begin{equation} \label{eq:non-newtonian}
+\tau = \mu_{app}(\dot{\gamma}) \dot{\gamma},
+\end{equation}\noindent where the apparent viscosity, $\mu_{app}$ is a function of the strain rate--results in certain challenges for numerical methods as well.
 %Constitutive form for generalized Newtonian fluids, $\tau = \mu(\dot{\gamma}) \dot{\gamma}$, where the apparent viscosity, $\mu$ is a function of the strain rate
 Determining the apparent viscosity and shear rate of a flow will often require an iterative solution, a general Picard-type algorithm is:
 
@@ -117,10 +126,10 @@ LBM does however, have its drawbacks.
 LBM can be considered as a type of finite-difference scheme for the continuous Boltzmann equation, and as such, has numerical properties in common with finite-difference schemes. %MG: is this precise enough? accurate enough?
 One such consideration associated with this view, is the potential for numerical inaccuracies and instabilities ~\cite{sterling1993stability,sterling1996stability,bawazeer2013stability,lallemand2000theory}. %MG: are all relevant sources cited?
 %Much work has been done to investigate and develop ways to enhance the stability of lattice Boltzmann methods.
-Stability concerns are just as prevalent, if not more prevalent, in simulating non-Newtonian flows because the strong nonlinear relationship between shear stress and strain-rate can lead to high non-equilibrium fluctuations. %MG: be more precise than 'fluctuations'?
+Stability concerns are just as prevalent, if not more prevalent, in simulating non-Newtonian flows because the strong nonlinear relationship between shear stress and strain-rate can lead to high nonequilibrium fluctuations. %MG: be more precise than 'fluctuations'?
 Various schemes and strategies for incorporating the physics of non-Newtonian flows and yet maintaining a stable numerical method have been developed and studied.
 The simplest approach for simulating a shear-rate dependent viscosity, used in~\cite{boyd2006second,chen2014simulations,fallah2012multiple,tang2011bingham,svec2011flow,svec2012free}, is to make the relaxation time--which is proportional to apparent viscosity--variable and dependent on the local strain rate.
-A potential issue with the stability of the variable relaxation time approach is that as the relaxation time, $\tau$, approaches $1/2$ the viscosity approaches zero; and alternatively, if the relaxation time is much greater than one, the accuracy and stability of the method also degrades~\cite{latt2007hydrodynamic}.
+A potential issue with the stability of the variable relaxation time approach is that as the collision frequency, $\omega$, approaches $2$ the viscosity approaches zero; and alternatively, if the relaxation time is much greater than one, the accuracy and stability of the method also degrades~\cite{latt2007hydrodynamic}.
 In order to ensure that the variable relaxation times did not approach values leading to numerical instabilities,~\cite{svec2011flow,svec2012free,gabbanelli2005lattice} set upper and lower bounds on allowable relaxation times.
 Although bounding the relaxation time was shown to be effective in terms of stability, it is also nonphysical and can lead to approximations that are inaccurate, not because of round-off error or numerical instability, but because the relaxation time does not reflect the proper constitutive relationship of interest.
 Another scheme for incorporating non-Newtonian effects into LBM is to use a constant relaxation rate, typically unity, and to instead incorporate the local shear-rate effect into equilibrium distribution functions.
@@ -138,9 +147,9 @@ The spatial dependence of stability was analyzed by taking the Fourier transform
 \citeauthor{sterling1993stability} concluded that the linear stability of LBM models depends on the mass distribution parameters, the mean velocity, the relaxation time, and the wave number. %MG: this probably requires some clarification and a more concrete tieback to the highlevel goals of this paper
 %(Some misc notes from this study that probably don't fit here but are important to this work: ``... a Courant stability condition is superceded by a more stringent stability condition on the speeds. Another stability boundary common for finite-difference methods requires that the viscous diffusion speed be less than the lattice spacing divided by the time step. This boundary is not observed for LB methods because as the viscosity increases, errors of the scheme increase due to the presence of large nonequilibirum populations, but stability is still maintained''??).
 ~\citet{worthing1997stability} extended the stability analysis performed by \citeauthor{sterling1993stability}, and instead of linearizing the LBM equations by expanding about global equilibrium values, \citeauthor{worthing1997stability} \ul{does something else}.
-Their analysis discover both physical and nonphysical instabilities, and that setting the BGK relaxation time, $\tau = 1$ provides the optimal accuracy in time. %MG: is this actually relevant though?
+Their analysis discover both physical and nonphysical instabilities, and that setting the BGK collision frequency, $\omega = 1$ provides the optimal accuracy in time. %MG: is this actually relevant though?
 \ul{Expand a little more about what they did and its significance here.}
-%MG: all this stability talk is nice, but I need to figure out how to tie it back to non-Newtonian flows sooner rather than later. The problem is a lot of these studies focus on instability due to high Reynolds number flows, not really our problem. We're more concerned with instability due to higher relaxation rates and apparent viscosities. And how does MRT address this instability?
+%MG: all this stability talk is nice, but I need to figure out how to tie it back to non-Newtonian flows sooner rather than later. The problem is a lot of these studies focus on instability due to high Reynolds number flows, not really our problem. We're more concerned with instability due to lower relaxation rates and apparent viscosities. And how does MRT address this instability?
 
 Although much work has been done to characterize the stability of LBM models, these analyses have the following limitations to their applicability:
 \begin{itemize}
@@ -158,7 +167,7 @@ Although much work has been done to characterize the stability of LBM models, th
 To improve upon the stability of LBM models, \citet{d1994generalized} developed a multiple-relaxation-time (MRT) collision operator, that takes place in moment space and allows each moment to relax at a different rate.
 \citet{lallemand2000theory} used von Neumann stability analysis to investigate the dispersion, dissipation, isotropy, Galilean invariance, and stability of the newly constructed LBM-MRT model.
 They concluded LBM with the MRT collision operator was more stable, but with increased computational expense, than what is still often used, the BGK collision operator.
-Note that although this increased computational expense was decided to be not too significant for Newtonian flows ($\approx$ 10-20\% \cite{lallemand2000theory}), the issue may be magnified for non-Newtonian flows because an iterative solution for the constitutive equation can require that certain aspects of the collision operator be performed at each iteration (the strain rate tensor is determined from the non-equilibrium distribution function which must be mapped into momentum space when using the MRT collision operator).
+Note that although this increased computational expense was decided to be not too significant for Newtonian flows ($\approx$ 10-20\% \cite{lallemand2000theory}), the issue may be magnified for non-Newtonian flows because an iterative solution for the constitutive equation can require that certain aspects of the collision operator be performed at each iteration (the strain rate tensor is determined from the nonequilibrium distribution function which must be mapped into momentum space when using the MRT collision operator).
 Both the BGK~\cite{wang2011lattice,ashrafizaadeh2009comparison,wang2015localized,tang2011bingham} and MRT~\cite{chen2014simulations,fallah2012multiple,chai2011multiple} collision operators have been used successfully to simulate non-Newtonian flows.
 \citeauthor{chen2014simulations} concluded that the MRT collision operator was more stable for Bingham plastic flow and allowed the use of a more accurate approximation to the Bingham plastic constitutive relationship.
 
@@ -167,7 +176,7 @@ ELBM and entropic filtering stuff goes here.
 The price of entropic lattice Boltzmann models for fluid flow is living with a bounded transport coefficient.
 Entropically stabilized collision operators ensure that entropy always increases, i.e. that the second law of thermodynamics is never violated.
 For BGK, this means that the relaxation time is bounded from below in certain instances~\cite{boghosian2001entropic}.
-``it may be argued that we are relinquishing some control over the transport coefficients'' and ``of course, making $\tau$ a nontrivial function of the incoming state will impact the hydrodynamic equations derived from the model''~\cite{boghosian2001entropic}.
+``it may be argued that we are relinquishing some control over the transport coefficients'' and ``of course, making $\omega$ a nontrivial function of the incoming state will impact the hydrodynamic equations derived from the model''~\cite{boghosian2001entropic}.
 ``stability is guaranteed''?
 Define Lyapunov functional or Lyapunov stability condition.
 }
@@ -176,11 +185,9 @@ The goal of this paper is to numerically study the implications of accuracy, sta
 Advantages, such as LBM's potential to scale well in parallel, can be much less realized if the collision operator is too computationally expensive, or if numerical instabilities ensue.
 A numerical study can help to determine approximate numerical values, domains, and boundary conditions in which one LBM scheme may be more advantageous than another so that LBM may be used in a computationally efficient and stable manner.
 
-\section{Lattice Boltzmann Method}
+\section{Numerical Methods}
 
-\subsection{Overview}
-
-Some overview of Lattice Boltzmann Method stuff~\cite{grasinger2015simulation}.
+\subsection{Lattice Boltzmann Method: Overview}
 
 The Lattice Boltzmann method is a numerical approach that uses statistical mechanics to represent a variety of physical processes, such as fluid flow.
 More specifically, LBM can be thought of as a special finite difference discretization of the lattice Boltzmann equation~\cite{chen1998lattice}.
@@ -197,7 +204,7 @@ Solving for the fluid pressure in traditional method is more computationally exp
 
 \subsection{The Boltzmann Equation}
 The Boltzmann equation (BE) can be thought of as a conservation of particle distributions.
-The BE is given as $\frac{\partial f}{\partial t} + \pvel \cdot \grad f = \cop$, where $f = f(\pos, \pvel, t)$ is the particle velocity distribution function, $\pos$ is the spatial position vector, $\pvel$ is the particle velocity, $\mvel$ is the macroscopic velocity, and $\cop$ is the collision operator.
+The BE is given as $\frac{\partial f}{\partial t} + \pvel \cdot \grad f = \colop$, where $f = f(\pos, \pvel, t)$ is the particle velocity distribution function, $\pos$ is the spatial position vector, $\pvel$ is the particle velocity, $\mvel$ is the macroscopic velocity, and $\colop$ is the collision operator.
 The lattice part of LBM refers to the way in which the BE is discretized.
 The lattice discretizes the spatial domain with nodes that are connected to their neighbors through discrete lattice velocity vectors.
 The velocity vectors act as pathways for particle distributions to travel along.
@@ -212,7 +219,7 @@ Instead the collision operator is formulated in such a way that particle distrib
 What defines equilibrium depends on the mechanics of interest to be modeled.
 \end{itemize}
 
-The D2Q9 lattice was used in the current work (shown in Figure \ref{fig:d2q9}), which is commonly used for two-dimensional, incompressible flow simulations~\cite{Suc01}. % MG: do we even need this citation?
+The D2Q9 lattice was used in the current work (shown in \Fref{fig:d2q9}), which is commonly used for two-dimensional, incompressible flow simulations~\cite{Suc01}. % MG: do we even need this citation?
 The lattice is two-dimensional with nine discrete velocities at each node.
 There is a stationary particle, there are four discrete velocities of magnitude 1, $(\pm1,0)$, $(0,\pm1)$, and there are four discrete velocities of magnitude $\sqrt{2}$, $(\pm1, \pm1)$.
 
@@ -222,7 +229,7 @@ There is a stationary particle, there are four discrete velocities of magnitude 
   \label{fig:d2q9}
 \end{figure}
 
-The discretized version of the Boltzmann equation, or the lattice Boltzmann equation (LBE), is given as: $f_i(\pos + \pvel_i, t + \Delta t) = f_i(\pos, t) + \cop_i(f)$, where, for D2Q9, $i = 0, 1, ..., 8$.
+The discretized version of the Boltzmann equation, or the lattice Boltzmann equation (LBE), is given as: $f_i(\pos + \pvel_i, t + \Delta t) = f_i(\pos, t) + \colop_i(f)$, where, for D2Q9, $i = 0, 1, ..., 8$.
 
 The macroscopic variables of interest can be calculated from the particle distribution functions, $f(\pos, \pvel, t)$, by integrating moments of $f$ over velocity space.
 Due to the discrete nature of velocity in LBM, the integrals simply become summations.
@@ -246,7 +253,7 @@ The fluid pressure is related to macroscopic density through an equation of stat
 No slip, or zero velocity, which is commonly imposed at walls in a domain, is accomplished by simulating the particle distributions as "bouncing back" at the walls in the opposite direction from which they stream.
 For example, for a particle distribution streaming in the direction of a south wall, $f_2 = f_4$, $f_5 = f_7$, and $f_6 = f_8$.
 For velocity or pressure boundary conditions, the method proposed by \citet{zou1997pressure} can be used.
-The particle distributions that are missing after the streaming step are solved for by assuming a bounceback of the non-equilibrium distribution in the direction normal to the boundary; e.g., for a south inlet or outlet, $f_2 - f_2^{eq} = f_4 - f_4^{eq}$.
+The particle distributions that are missing after the streaming step are solved for by assuming a bounceback of the nonequilibrium distribution in the direction normal to the boundary; e.g., for a south inlet or outlet, $f_2 - f_2^{eq} = f_4 - f_4^{eq}$.
 
 \subsection{Applied Forces}
 
@@ -260,51 +267,91 @@ f_i(\pos + \pvel_i, t + \Delta t) = f_i(\pos, t) + \Omega_i(f) + \frac{w_i \Delt
 
 \noindent where $\mathbf{F}$ is the body force vector.
 
-\subsection{Collision Operator} %MG: if time allows, checkout differential lattice Bolzmann equation, the interpolation-supplemented lattice Boltzmann method, and the Taylor series expansion- and least square-based lattice Boltzmann method; Niu et. al. 2004
+\subsection{Collision Operator}
+
+\subsubsection{Bhatnagar-Gross-Krook (BGK)} \label{sec:bgk}
 
 The collision operator, in the case of the continuous BE, attempts to describe the change in particle momentums and trajectories due to pairwise particle collisions (based on their respective momentums and trajectories just prior to collision) \cite{Cer90}.
-In LBM, the collision operator causes particle distributions to relax toward a local equilibrium. This equilibrium is determined by the macroscopic physical behavior of interest.
-In the case of incompressible flow, the equilibrium particle distribution, $f_i^{eq}$, is given by:
+In LBM, the collision operator causes particle distributions to relax toward a quasiequilibrium. % MG: is this true of all collision operators? or just BGK?
+This equilibrium is determined by the macroscopic physical behavior of interest.
+In the case of incompressible flow, the quasiequilibrium particle distribution, $f_i^{eq}$, is often given by:
 
-\begin{equation}
-f_i^{eq} = w_i \rho \left[1 + \frac{\pvel_i \cdot \mvel}{c_s^2} + \frac{(\pvel_i \cdot \mvel)^2}{2c_s^2} - \frac{\mvel^2}{2c_s^2} \right]
+\begin{equation} \label{eq:feq}
+f_i^{eq} = w_i \rho \left[1 + \frac{\pvel_i \cdot \mvel}{c_s^2} + \frac{(\pvel_i \cdot \mvel)^2}{2c_s^2} - \frac{\mvel^2}{2c_s^2} \right],
 \end{equation}
 
-\noindent where $w_i$ is the weight in the $i^{th}$ direction.
+\noindent where $w_i$ is the weight in the $i^{th}$ direction, and %MG: maybe say something about where this comes from, e.g. feq is a Hermite polynomial expansion of the Maxwell-Boltzmann distribution
 
-\begin{equation*}
+\begin{equation} \label{eq:weights}
 w_i = \begin{cases}
     \frac{4}{9}, & i = 0 \\
     \frac{1}{9}, & i = 1, 2, 3, 4 \\
     \frac{1}{36}, & i = 5, 6, 7, 8
-\end{cases}
-\end{equation*}
+\end{cases}.
+\end{equation}
 
 Due to its simplicity and computational efficiency, the most common collision operator is the Bhatnagar--Gross--Krook (BGK) operator.
 BGK consists of a single relaxation time and is a linear relaxation of particle distributions toward equilibrium.
 The BGK is expressed as:
 
-\begin{equation}
-\Omega_i = -\frac{1}{\tau} (f_i(\pos, t) - f_i^{eq}),
+\begin{equation} \label{eq:bgk}
+\Omega_i = -\omega (f_i(\pos, t) - f_i^{eq}),
 \end{equation}
 
-\noindent where $\tau$ is the relaxation time \cite{Bha54}.
-The relaxation time can be related to macroscopic constitutive properties through Chapman-Enskog multiscale analysis.
-For incompressible Newtonian flow, the relaxation time is related to the kinematic viscosity by $\nu = c_s^2(\tau - \frac{1}{2})$.
+\noindent where $\omega$ is the collision frequency \cite{Bha54}.
+The collision frequency can be related to macroscopic constitutive properties through Chapman-Enskog multiscale analysis.
+For incompressible Newtonian flow, the relaxation time is related to the kinematic viscosity by $\nu = c_s^2(\frac{1}{\omega} - \frac{1}{2})$.
+
+Despite the utility of the BGK collision operator, it does have a few drawbacks.
+For example, in low viscosity flows the BGK operator results in an over relaxation of particle distributions toward quasiequilibrium.
+It is well known that when large nonequilibrium distributions exist in the LBM approximation that over relaxation can result in nonphysical oscillations that are slow to decay \cite{brownlee2007stability,dellar2003incompressible}.
+To illustrate this, consider the example shown in \Fref{fig:sharp-grad}.
+If $a >> 0$, then when $f_5(x,y)$ propagates to $f_5(x+1,y+1)$ during the streaming step (where $\pos = [x,y]$, $\pvel_5 = [1,1]$, and $\Delta t = 1$), $f_5(x+1,y+1)$ will be ``far'' from $f^{eq}_5(x+1,y+1)$ for the subsequent collision step.
+If $\nu \rightarrow 0$ then $\omega \rightarrow 2$ and \eqref{eq:bgk} results in $f_5(x+1,y+1)$ still being ``far'' from $f^{eq}_5(x+1,y+1)$ but on the ``other side''.
+If, as in \Fref{fig:sharp-grad}, the LBM macroscopic variables dictate that $f^{eq}_i$ remain mostly constant (or, at the very least, far from $f_i$) in the direction of propagation for $f_i$, then this leads to oscillations in the particle distribution, $f_i$.
+An example of the nonphysical oscillations that would occur for $f_5$ in \Fref{fig:sharp-grad} can be seen in \Fref{fig:overrelaxation}.
+Considering the effect oscillations of particle distributions will have on macroscopic variables and, consequently, local quasiequilibriums, positive feedback loops can occur causing the system to ``blow up'' or ``pollute'' the system enough to make the results highly nonphysical and altogether useless \cite{gorban2014enhancement}.
+
+\begin{figure}
+    \includegraphics[width=\linewidth]{figs/sharp_gradient}
+    \caption{Example of an LBM approximation with a sharp gradient in the macroscopic flow velocity}
+    \label{fig:sharp-grad}
+\end{figure}
+
+\begin{figure}
+    \includegraphics[width=\linewidth]{figs/overrelaxation_tau-0513}
+    \caption{Example of oscillations that can occur as a result of overrelaxation (this example is related to the example shown in \Fref{fig:sharp-grad}); the relaxation time, $\omega = 1.95$ and $\nu \approx 0.0043$}
+    \label{fig:overrelaxation}
+\end{figure}
+
+In contrast to low viscosity flows, the challenge associated with high viscosity flows (using the BGK collision operator) is that particular distributions may never relax as ``far'' toward quasiequilibrium as is physical because as $\nu \rightarrow \infty$, $\omega \rightarrow 0$, resulting in extreme underrelaxation to the point of being negligible. %MG: this needs cleaned up, I think
+
+Concerns with sharp gradients, overrelaxation, and underrelaxation are particularly relevant in non-Newtonian flows because of the nonlinear constitutive relationship between shear stress and strain-rate.
+The nonlinear constitutive relationship can lead to sharp gradients, and depending on the form of $\dot{\gamma} \mapsto \mu_{app}$, the apparent viscosity, $\mu(\dot{\gamma}(\pos))$, may result in overrelaxation in certain parts of the domain and extreme underrelaxation in others.
+
+\subsubsection{Multiple-relaxation Time (MRT)}
 
 An alternative to the BGK collision operator is the multiple-relaxation-time (MRT) collision operator.
-%In the BGK collision scheme, high values of viscosity--such as those found in some cement slurry mixes--can lead to numerical instabilities \cite{svec2011flow,lallemand2000theory}.
-Because the apparent viscosity can take on very large values without leading to numerical instabilities, the MRT collision operator has become popular for simulating non-Newtonian flows \cite{chen2014simulations,fallah2012multiple,tang2011bingham,vikhansky2008lattice,chai2011multiple}. %MG: is this necessary? wasn't this already covered
+In the LB-MRT scheme, one constructs a space based on the particle velocity, $\pvel$, moments of $\mathbf{f}$, herein referred to as the ``moment space''.
+The collision is then performed in the moment space.
+There a few reasons why it is advantageous to perform the collision in the moment space as opposed to the particle distribution space:
+\begin{enumerate}
+    \item Physical processes in fluids can be approximately described by coupling or interacting among modes; and hydrodynamic modes are directly related to, i.e. linear combinations of, mass and momentum moments \cite{lallemand2000theory}.
+    \item For the D2Q9 lattice, there are nine distribution functions, $f_0, f_1, ..., f_8$, but only six variables that affect the intended hydrodynamics on a macroscopic scale, namely: $\rho$, $\mathbf{u}$, and $\mathbf{\Pi}$, where $\mathbf{\Pi}$ is the momentum flux tensor \cite{dellar2003incompressible}.
+    Of the nine relaxation rates available, the three that correspond to the extra variables--often referred to as ``ghost variables'', and their associated modes as ``ghost modes''--can be tuned in order to dampen out their associated ghost modes, ensuring these modes do not dominate or cause numerical instabilities at the lattice scale.
+\end{enumerate}
+
 The MRT collision operator is given by:
 
-\begin{equation} \label{eq:mrt-col-op}
-	\cop = - {\transM}^{-1} \relaxM \transM (\mathbf{f} - \mathbf{f}^{eq}),
+\begin{equation} \label{eq:mrt-colop}
+	\colop = - {\transM}^{-1} \relaxM \transM (\mathbf{f} - \mathbf{f}^{eq}),
 \end{equation}
 
-\noindent where $\transM$ is a transformation matrix that maps the particle distribution vector, $\mathbf{f}$, and equilibrium distribution vector, $\mathbf{f}^{eq}$, from the particle distribution space into moment space, they will be denoted by $\mathbf{m}$ and $\mathbf{m}^{eq}$, respectively.
+\noindent where $\transM$ is a transformation matrix that maps the particle distribution vector, $\mathbf{f}$, and quasiequilibrium distribution vector, $\mathbf{f}^{eq}$, from the particle distribution space into moment space.
+The result of mapping the vectors $\mathbf{f}$ and $\mathbf{f}^{eq}$ into moment space will be denoted by $\mathbf{m}$ and $\mathbf{m}^{eq}$, respectively.
 The relationships between $\mathbf{m}$, $\transM$ and $\mathbf{f}$ can be written as follows:
 
-\begin{equation}
+\begin{equation} \label{eq:transformation-matrix}
 \mathbf{m} = \begin{bmatrix}
 \rho \\ e \\ \epsilon \\ j_x \\ q_x \\ j_y \\ q_y \\ p_{xx} \\ p_{xy}
 \end{bmatrix} = \begin{bmatrix}
@@ -327,14 +374,192 @@ f_5 \\
 f_6 \\
 f_7 \\
 f_8
-\end{bmatrix}
+\end{bmatrix} = \transM \mathbf{f}.
 \end{equation}
 
-\subsubsection{Entropic Collisions and Entropy Balance}
+\noindent where $\epsilon$ is related to the square of the energy $e$; $q_x$ and $q_y$ correspond to the energy fluxes in the x and y directions; and $p_{xx}$ and $p_{xy}$ correspond to the diagonal and off-diagonal component of the viscous stress tensor~\cite{lallemand2000theory}. % MG: verify this is correct
+The relaxation matrix, $\relaxM$, is a diagonal matrix where each of the elements on the diagonal, $s_i, i = 0, 1, ..., 8$, correspond to the relaxation rate of its associated hydrodynamic mode.
+In the case when $s_0 = s_1 = ... = s_8 = \omega$ ($\omega$ is the collision frequency in the BGK sense), the MRT collision operator is equivalent to the BGK collision operator.
+The relaxation parameters $s_0$, $s_3$, and $s_5$ are all set to zero as mass and momentum should be conserved.
+The relaxation parameters $s_1$ and $s_7 = s_8$ are related to the bulk and shear viscosities, respectively.
+The relationship for the shear viscosity is given by,
+\begin{equation} \label{eq:mrt-s7}
+\nu = c_s^2 \Delta t (\frac{1}{s_7} - \frac{1}{2}).
+\end{equation}
+The remaining relaxation parameters, $s_2$, $s_4$, and $s_6$, are tuned in order to dampen out and separate the ghost modes from the modes affecting hydrodynamic transport.
+It is common practice, and \citet{lallemand2000theory} recommends, that these three relaxation parameters be set to slightly larger than one.
+
+The MRT collision operator has a greater numerical stability than its BGK counterpart~\cite{lallemand2000theory,dellar2003incompressible,d2002multiple}, and because of the challenges associated with simulating non-Newtonian flow, the MRT collision operator has become popular for simulating non-Newtonian flows~\cite{chen2014simulations,fallah2012multiple,tang2011bingham,vikhansky2008lattice,chai2011multiple,grasinger2015simulation}.
+The main drawback of the MRT collision operator is its computational expense.
+Why MRT is more computationally expense is clear when one considers that \eqref{eq:mrt-colop} requires multiple matrix multiplications and \eqref{eq:bgk} requires none.
+It has been reported that MRT is approximately 15\% slower than BGK~\cite{d2002multiple}, but this was in the context of Newtonian flow.
+As will be shown later, for certain LBM implementations and non-Newtonian flows the increase in computational expense can be much greater.
+
+\subsection{Stability Enhancement through Artificial Dissipation}
+
+To reduce nonequilibrium fluctuations in LBM, one can introduce artificial dissipation.
+The idea of artificial dissipation is to increase numerical stability, while sacrificing some physical accuracy.
+A model that has more physical justification but produces unstable and nonsensical results is much less useful than a model with some minor artificial features yet produces more stable results.
+%Lyapanov stability is the idea that solutions at equilibrium stay there.
+A practical goal then would be to use only the necessary amount of artificial dissipation in order to ensure a stable solution.
+From this goal two questions naturally arise: ``under what criteria does one decide that artificial dissipation necessary?'' and ``how much artificial dissipation does one introduce when it is necessary?''.
+
+To answer the first question, consider the discussion in \Fref{sec:bgk} on problems with overrelaxation and nonphysical oscillations.
+Nonphysical oscillations due to overrelaxation would be damped out more quickly if particle distributions ``far'' from quasiequilibrium were brought closer to quasiequilibrium.
+A particle distribution vector, $\mathbf{f}$, ``far'' from equilibrium would therefor be a good candidate for artificial dissipation.
+There are many ways one can measure the distance between $\mathbf{f}$ and $\mathbf{f}^{eq}$; for example, a reasonable choice would be $||\mathbf{f} - \mathbf{f}^{eq}||_p$ for some $p$ norm.
+A metric that has been developed and used successfully for determining when artificial dissipation should be introduced at a lattice site is the so called relative nonequilibrium entropy~\cite{gorban2014enhancement,brownlee2006stabilization,brownlee2007stability,brownlee2008nonequilibrium,packwood2009entropy}.
+The relative nonequilibrium entropy, $\Delta S$, is given by:
+
+\begin{equation} \label{eq:rel-noneq-entropy}
+\Delta S = \sum_i f_i \ln(\frac{f_i}{f^{eq}_i}).
+\end{equation}
+
+\noindent A more computationally efficient approximation of $\Delta S$ can be achieved by instead using the second order Taylor expansion of \eqref{eq:rel-noneq-entropy},
+
+\begin{equation} \label{eq:quadratic-entropy}
+\Delta S \approx \sum_i \frac{(f_i - f^{eq}_i)^2}{2f^{eq}_i}.
+\end{equation}
+
+\noindent Note that limiting nonequilibrium entropy in LBM is analogous to what flux limiters do in finite difference, finite volume, and finite element methods~\cite{brownlee2008nonequilibrium}.
+
+An option for defining criteria for when to introduce artificial dissipation that has been used successfully is to define a threshold, $\theta$, such that dissipation is added when $\Delta S > \theta$~\cite{gorban2014enhancement,brownlee2006stabilization,brownlee2007stability,brownlee2008nonequilibrium}.
+A potential drawback of defining a threshold \textit{a priori} is that in order to ensure the model still retains some physical integrity, only a small number of sites can have artificial dissipation added.
+If the threshold is too low, too many sites may have dissipation added.
+If the threshold is too high, a stable solution may not be achieved.
+The threshold can be determined on a case-by-case basis through trial-and-error or by a preliminary analysis.
+In the current work, the criteria that is used for determining whether dissipation should be added is,
+
+\begin{equation} \label{eq:dissipation-criteria}
+    \Delta S > \overline{\Delta S} + n_\sigma \cdot \sigma_{\Delta S},
+\end{equation}
+
+\noindent where $\overline{\Delta S}$ and $\sigma_{\Delta S}$ are the mean and standard of $\Delta S$, respectively--both are calculated using values over the domain for the current timestep--and $n_\sigma$ is the number of standard deviations greater than $\overline{\Delta S}$ that $\Delta S$ must be before dissipation is added.
+The number of standard deviations, $n_\sigma$, is chosen \textit{a priori}.
+The criteria described in \ref{eq:dissipation-criteria} has the advantage that one does not need to determine \textit{a priori} what constitutes ``far'' from quasiequilibrium, but instead can think in terms of what would be the maximum percentage of sites one would want artificial dissipation to be added to.
+
+Just as there are many ways to measure a lattice site's distance from quasiequilibrium, or from that measure define criteria for artificial dissipation, there are also many different ways of deciding how much dissipation to add.
+One method of adding dissipation is the so-called Ehrenfests' regularization~\cite{brownlee2006stabilization}, and involves setting a lattice site that is chosen for artificial dissipation to its quasiequilibrium state.
+Although this achieves the desired result, namely damping out large nonequilibrium fluctuations, it does so in an intense manner.
+An alternative, the median filter, has been used successfully in conjunction with both the BGK and MRT collision schemes for simulating one-dimensional shock tubes and lid-driven cavity flows~\cite{brownlee2008nonequilibrium,gorban2014enhancement,packwood2009entropy}.
+Median filtering is an effective noise reduction technique, often used in image processing, for ``speckle noise'' or ``salt and pepper noise''~\cite{brownlee2008nonequilibrium}.
+In other words, median filters are good at reducing high frequency noise while having a minimal effect on lower frequency noise.
+In LBM this is a desirable way to introduce dissipation because it has the potential to reduce high frequency nonequilibrium fluctuations that might lead to numerical instability while retaining the lower frequency dynamics.
+To use the median filter one performs the collision step and then checks over the domain for lattice sites with $\Delta S$ that meet the criteria for artificial dissipation; sites that meet the criteria are updated as follows:
+\begin{equation} \label{eq:median-filter}
+\mathbf{f} = \mathbf{f}^{eq} + \delta (\mathbf{f} - \mathbf{f}^{eq}),
+\end{equation}
+\noindent where $\delta = \sqrt{\Delta S_{med} / \Delta S}$ is the scaling coefficient, and $\Delta S_{med}$ is the median value of $\Delta S$ for the nearest neighbors of the lattice site.
+
+\newcommand{\srtensor}{\mathbf{D}}
+
+\subsection{Strain-rate Tensor}
+
+In order to use the Picard-type algorithm outlined in \Fref{sec:lbm-for-nnf}, one must calculate the strain-rate, $\dot{\gamma}$.
+The strain-rate is given by the second invariant of the strain-rate tensor, $\srtensor$, i.e.
+\begin{equation} \label{eq:second-invariant}
+\dot{\gamma} = \sqrt{\srtensor : \srtensor}.
+\end{equation}
+
+\noindent When using the BGK collision scheme, the strain-rate tensor is determined by,
+\begin{equation} \label{eq:srtensor-bgk}
+D_{\alpha \beta} = -\frac{\omega}{2 \rho c_s^2} \sum_i \xi_{i \alpha} \xi_{i \beta} (f_i - f^{eq}_i),
+\end{equation} % MG: verify this
+
+\noindent and for the MRT collision scheme, the strain-rate tensor is determined by
+\begin{equation} \label{eq:srtensor-mrt}
+D_{\alpha \beta} = -\frac{1}{2 \rho c_s^2 \Delta t} \sum_i \xi_{i \alpha} \xi_{i \beta} \sum_j (\transM^{-1} \relaxM \transM)_{ij}(f_i - f^{eq}_i).
+\end{equation} % MG: verify this
+
+Upon comparison of \eqref{eq:srtensor-bgk} and \eqref{eq:srtensor-mrt}, it is clear that calculating the strain-rate tensor for the MRT collision operator is more computationally expensive than it is for the BGK collision operator.
+The increase in computational expense is exacerbated by the fact that approximating the apparent viscosity, $\mu_{app}$, by the algorithm outlined in \Fref{sec:lbm-for-nnf} requires iteration and therefor multiple calculations of the strain-rate tensor.
+
+\subsection{Non-Newtonian Constitutive Equations}
+
+\subsubsection{Bingham Plastic}
+
+The Bingham plastic constitutive model is popular for yield stress flows.
+A Bingham plastic does not flow, i.e. the strain-rate is zero, when the shear stress is below the yield stress, and behaves in an almost Newtonian manner when the shear stress is above the yield stress.
+The Bingham plastic relationship is described mathematically as:
+\begin{equation} \label{eq:bingham}
+\begin{cases}
+\tau = \tau_y + \mu_p \dot{\gamma}, & |\tau| \geq \tau_y \\
+\dot{\gamma} = 0, & |\tau| < \tau_y
+\end{cases}
+\end{equation}
+\noindent where $\tau$ is the shear stress, $\tau_y$ is the yield stress, and $\mu_p$ is the plastic viscosity~\cite{bingham1922fluidity}.
+
+Due to the discontinuous nature of \eqref{eq:bingham}, the Bingham plastic model is difficult to work with numerically.
+Thus, a smooth approximation to \eqref{eq:bingham} formulated by \citet{papanastasiou1987flows} is often used as:
+\begin{equation} \label{eq:papa}
+\tau = \tau_y (1 - e^{-m |\dot{\gamma}|}) + \mu_p \dot{\gamma},
+\end{equation}
+\noindent where $m$ is the stress growth exponent.
+The larger the value of $m$, the closer the approximation is to the Bingham plastic model.
+
+Alternatively, the constitutive relationship can be interpreted through the apparent viscosity.
+The apparent viscosity is the value of the viscosity assuming a Newtonian relationship between stress and strain rate, $\mu_{app} = \frac{\tau}{\dot{\gamma}}$, and is used to determine the collision frequency for the BGK collision operator or $s_7$ and $s_8$ of the relaxation matrix for the MRT collision operator.
+Rearranging \eqref{eq:papa} results in the following expression for the apparent viscosity:
+\begin{equation} \label{eq:bing-mu-app}
+\mu_{app} = \frac{\tau_y}{\dot{\gamma}} (1 - e^{-m |\dot{\gamma}|}) + \mu_p.
+\end{equation}
+
+\subsubsection{Power-law}
+
+The power-law constitutive relationship is useful for modeling fluids that experience shear-thinning or shear-thickening.
+The power-law relationship is given by,
+\begin{equation} \label{eq:pl}
+\tau = k \dot{\gamma}^n,
+\end{equation}
+\noindent where $k$ is the flow consistency index and $n$ is the flow behavior index.
+When $n = 1$, the \eqref{eq:pl} results in a Newtonian constitutive relationship with dynamic viscosity, $\mu = k$.
+A flow consistency index of $n < 1$ results in shear-thinning behavior, where as $n > 1$ results in shear-thickening.
+As with the Bingham plastic relationship, \eqref{eq:pl} can be modified to determine an apparent viscosity,
+\begin{equation} \label{eq:pl-mu-app}
+\mu_{app} = k \dot{\gamma}^{n-1}.
+\end{equation}
 
 \section{Numerical Study}
 
-\subsection{Poiseuille Flow} 
+Some introduction to the numerical study.
+It has a purpose.
+Its purpose is to try to assess the accuracy, stability, and efficiency of the LBM models as applied to non-Newtonian flows.
+For all simulations presented in this section, the apparent viscosity is approximated using its corresponding constitutive relationship and the Picard-type algorithm outlined in \Fref{sec:lbm-for-nnf} with the maximum number of iterations set at 15 and the convergence criteria,
+\begin{equation} \label{eq:mu-app-conv}
+\frac{\left|\mu_{app}^{k+1} - \mu_{app}^{k}\right|}{\mu_{app}^{k}} < 1.0 \times 10^{-6}.
+\end{equation}
+All simulations with artificial dissipation use the median filter with $n_s = 2.7$.
+All numerical values given in this section are in lattice units unless otherwise stated.
+
+\newcommand{\pgrad}{\frac{\partial p}{\partial x}}
+
+\subsection{Poiseuille Flow}
+
+Poiseuille flow is a useful benchmark because analytical solutions exist for both Bingham plastic and power-law fluids.
+Poiseuille flow is driven by a constant pressure gradient, $\pgrad$, through a two-dimensional channel.
+A schematic is shown in \Fref{fig:poise-schematic}.
+
+\begin{figure}
+    \includegraphics[width=\linewidth]{figs/poise-schematic}
+    \caption{Schematic of Poiseuille flow; no-slip boundary conditions are enforced at the top and bottom boundaries, and periodic boundary conditions are enforced at the left and right boundaries.}
+    \label{fig:poise-schematic}
+\end{figure}
+
+Unless otherwise stated, all of the Poiseuille flow simulations were computed on a $32 \times 64$ lattice.
+
+\subsubsection{Bingham Plastic}
+
+The Bingham plastic simulations were carried out with a pressure gradient of $\pgrad = 1.0 \times 10^{-5}$, and a plastic viscosity of $\mu_p = 0.2$.
+The yield stress was varied between the four different values $\tau_y = [4.0, 8.0, 12.0, 16.0] \times 10^{-5}$, and four different LBM schemes were used: (1) BGK with $m = 10^5$, (2) BGK with $m = 10^8$, (3) BGK with $m = 10^8$ and the median filter, and (4) MRT with $m = 10^8$.
+The relative $L_2$ and relative $L_{\infty}$ errors with respect to the analytical solution were computed for each simulation.
+The analytical solution for Bingham plastic flow is given by:
+\begin{equation} \label{eq:analytical-bingham}
+u_x(y) = \begin{cases}
+\frac{1}{2 \mu_p} \left(-\pgrad\right) \left[h^2 - y_{\tau}^2 \right] - \frac{\tau_y}{\mu_p} \left(h - y_{\tau}\right), & 0 \leq |y| \leq y_{\tau}, \\
+\frac{1}{2 \mu_p} \left(-\pgrad\right) \left[h^2 - y^2 \right] - \frac{\tau_y}{\mu_p} \left(h - |y|\right), & y_{\tau} < |y| \leq h,
+\end{cases}
+\end{equation}
+\noindent where $y_{\tau}$ is the point at which the fluid yields and $h$ is half of the total height of the channel.
 
 \subsection{Lid-driven Flow}
 
