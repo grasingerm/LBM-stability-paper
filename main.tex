@@ -19,6 +19,8 @@
 \usepackage{mathabx}
 \usepackage{bm}
 \usepackage[plain]{fancyref}
+\usepackage{tabulary}
+\usepackage{pbox}
 
 \newcommand{\pos}{\mathbf{x}}
 \newcommand{\pvel}{\boldsymbol{\xi}}
@@ -301,6 +303,7 @@ The BGK is expressed as:
 \noindent where $\omega$ is the collision frequency \cite{Bha54}.
 The collision frequency can be related to macroscopic constitutive properties through Chapman-Enskog multiscale analysis.
 For incompressible Newtonian flow, the relaxation time is related to the kinematic viscosity by $\nu = c_s^2(\frac{1}{\omega} - \frac{1}{2})$.
+From this relationship it is clear that $\omega \in [0.0, 2.0]$, otherwise the viscosity would be negative.
 
 Despite the utility of the BGK collision operator, it does have a few drawbacks.
 For example, in low viscosity flows the BGK operator results in an over relaxation of particle distributions toward quasiequilibrium.
@@ -328,6 +331,9 @@ In contrast to low viscosity flows, the challenge associated with high viscosity
 
 Concerns with sharp gradients, overrelaxation, and underrelaxation are particularly relevant in non-Newtonian flows because of the nonlinear constitutive relationship between shear stress and strain-rate.
 The nonlinear constitutive relationship can lead to sharp gradients, and depending on the form of $\dot{\gamma} \mapsto \mu_{app}$, the apparent viscosity, $\mu(\dot{\gamma}(\pos))$, may result in overrelaxation in certain parts of the domain and extreme underrelaxation in others.
+
+Due to the instabilities associated with the collision frequency being too high, e.g. approaching 2, or too low, e.g. approaching 0, a natural, albiet nonphysical, approach to using the BGK collision operator for non-Newtonian flows is to simply put bounds on the values in which the collision frequency may attain.
+This simple methodology for increasing stability will henceforth be referred to bounded-relaxation time BGK, or BGK-BRT.
 
 \subsubsection{Multiple-relaxation Time (MRT)}
 
@@ -384,8 +390,9 @@ The relaxation parameters $s_0$, $s_3$, and $s_5$ are all set to zero as mass an
 The relaxation parameters $s_1$ and $s_7 = s_8$ are related to the bulk and shear viscosities, respectively.
 The relationship for the shear viscosity is given by,
 \begin{equation} \label{eq:mrt-s7}
-\nu = c_s^2 \Delta t (\frac{1}{s_7} - \frac{1}{2}).
+\nu = c_s^2 \Delta t (\frac{1}{s_7} - \frac{1}{2}),
 \end{equation}
+\noindent which is equivalent with the relationship to the collision frequency, $\omega$, in the BGK sense.
 The remaining relaxation parameters, $s_2$, $s_4$, and $s_6$, are tuned in order to dampen out and separate the ghost modes from the modes affecting hydrodynamic transport.
 It is common practice, and \citet{lallemand2000theory} recommends, that these three relaxation parameters be set to slightly larger than one.
 
@@ -395,7 +402,7 @@ Why MRT is more computationally expense is clear when one considers that \eqref{
 It has been reported that MRT is approximately 15\% slower than BGK~\cite{d2002multiple}, but this was in the context of Newtonian flow.
 As will be shown later, for certain LBM implementations and non-Newtonian flows the increase in computational expense can be much greater.
 
-\subsection{Stability Enhancement through Artificial Dissipation}
+\subsection{Stability Enhancement through Artificial Dissipation: Entropic Filtering}
 
 To reduce nonequilibrium fluctuations in LBM, one can introduce artificial dissipation.
 The idea of artificial dissipation is to increase numerical stability, while sacrificing some physical accuracy.
@@ -538,6 +545,9 @@ All numerical values given in this section are in lattice units unless otherwise
 Poiseuille flow is a useful benchmark because analytical solutions exist for both Bingham plastic and power-law fluids.
 Poiseuille flow is driven by a constant pressure gradient, $\pgrad$, through a two-dimensional channel.
 A schematic is shown in \Fref{fig:poise-schematic}.
+No-slip boundary conditions are enforced at the top and bottom boundaries and periodic boundary conditions are enforced at the left and right boundaries.
+The total height of the channel will be denoted by $H$.
+The center of the channel is $y = 0$ and $y \in [-h, h]$ where $h = \frac{H}{2}$.
 
 \begin{figure}
     \includegraphics[width=\linewidth]{figs/poise-schematic}
@@ -545,12 +555,14 @@ A schematic is shown in \Fref{fig:poise-schematic}.
     \label{fig:poise-schematic}
 \end{figure}
 
-Unless otherwise stated, all of the Poiseuille flow simulations were computed on a $32 \times 64$ lattice.
+Unless otherwise stated, all of the Poiseuille flow simulations were computed on a $32 \times 64$ lattice for 25000 timesteps.
+For the MRT relaxation matrix the free parameters were set to $s_1 = s_2 = s_4 = s_6 = 1.1$.
 
-\subsubsection{Bingham Plastic}
+\subsubsection{Bingham Plastic Fluids}
 
 The Bingham plastic simulations were carried out with a pressure gradient of $\pgrad = 1.0 \times 10^{-5}$, and a plastic viscosity of $\mu_p = 0.2$.
-The yield stress was varied between the four different values $\tau_y = [4.0, 8.0, 12.0, 16.0] \times 10^{-5}$, and four different LBM schemes were used: (1) BGK with $m = 10^5$, (2) BGK with $m = 10^8$, (3) BGK with $m = 10^8$ and the median filter, and (4) MRT with $m = 10^8$.
+The yield stress was varied between the four different values $\tau_y = [4.0, 8.0, 12.0, 16.0] \times 10^{-5}$, and four different LBM schemes were used: (1) BGK with $m = 10^5$, (2) BGK with $m = 10^8$, (3) BGK with $m = 10^8$ and the median filter, and (4) MRT with $m = 10^8$. 
+(Recall $m$ is the stress growth exponent for the Papanastasiou approximation.)
 The relative $L_2$ and relative $L_{\infty}$ errors with respect to the analytical solution were computed for each simulation.
 The analytical solution for Bingham plastic flow is given by:
 \begin{equation} \label{eq:analytical-bingham}
@@ -559,7 +571,104 @@ u_x(y) = \begin{cases}
 \frac{1}{2 \mu_p} \left(-\pgrad\right) \left[h^2 - y^2 \right] - \frac{\tau_y}{\mu_p} \left(h - |y|\right), & y_{\tau} < |y| \leq h,
 \end{cases}
 \end{equation}
-\noindent where $y_{\tau}$ is the point at which the fluid yields and $h$ is half of the total height of the channel.
+\noindent where $y_{\tau} = -\tau_y / \pgrad$ is the point at which the fluid yields.
+
+The results are presented in \Fref{tab:poise-bing}.
+In reference to computational time, each of the simulations in this section were run on a single core of an Intel I7-860 Quad-Core 2.80GHz processor.
+The Reynold's number was computed by $Re = \frac{\rho U H}{\mu_p}$, where $U$ is the maximum velocity given by the analytical solution and $H = 2h$ is the total height of the channel.
+The Bingham number was computed by $Bn = \frac{\tau_y H}{\mu_p U}$.
+
+% MG: it might be better to normalize the time with respect to the fastest, BGK with no filtering
+\vspace{20cm}
+\begin{tabulary}{\linewidth}{l l r r r r r r r r} \label{tab:poise-bing}
+\pbox{20cm}{Collision \\ Operator} & \pbox{20cm}{Median \\ Filter} & $m$ & \pbox{20cm}{$\tau_y$ \\ $(\times 10^{-5})$} & $Re$ & $Bn$ & $L_2$ & $L_\infty$ & \pbox{20cm}{Time \\ (sec)} \\
+\hline \\
+BGK & No & $10^5$ & 4.0 & 6.05 & 0.68 & 0.0062 & 0.0153 & 1857 \\
+& & & 8.0 & 4.42 & 1.85 & 0.0204 & 0.0411 & 2329 \\
+& & & 12.0 & 3.04 & 4.04 & 0.0503 & 0.0891 & 3345 \\
+& & & 16.0 & 1.92 & 8.52 & 0.1161 & 0.1879 & 2029 \\
+\\
+BGK & No & $10^8$ & 4.0 & 6.05 & 0.68 & 0.0109 & 0.0282 & 2831 \\
+& & & 8.0 & 4.42 & 1.85 & 0.0330 & 0.0670 & 3509 \\
+& & & 12.0 & 3.04 & 4.04 & 0.0788 & 0.1570 & 4838 \\
+& & & 16.0 & 1.92 & 8.52 & 0.1991 & 0.3539 & 3790 \\
+\\
+BGK & Yes & $10^8$ & 4.0 & 6.05 & 0.68 & 0.0100 & 0.0273 & 2903 \\
+& & & 8.0 & 4.42 & 1.85 & 0.0361 & 0.0823 & 3567 \\
+& & & 12.0 & 3.04 & 4.04 & 0.2439 & 0.3832 & 4800 \\
+& & & 16.0 & 1.92 & 8.52 & 0.7533 & 1.0718 & 3507 \\
+\\
+MRT & No & $10^8$ & 4.0 & 6.05 & 0.68 & 0.0013 & 0.0013 & 5914 \\
+& & & 8.0 & 4.42 & 1.85 & 0.0018 & 0.0018 & 7908 \\
+& & & 12.0 & 3.04 & 4.04 & 0.0026 & 0.0026 & 7160 \\
+& & & 16.0 & 1.92 & 8.52 & 0.0041 & 0.0041 & 5559 \\
+\\
+\end{tabulary}
+
+As has been reported previously, for the BGK collision operator--regardless of whether or not median entropic filtering is used--using a stress growth exponent of $m = 10^5$ is more accurate with respect to the analytical solution than using a stress growth exponent of $m = 10^8$~\cite{chen2014simulations}.
+A larger stress growth exponent results in a more accurate Papastasiou approximation of the true Bingham plastic constitutive model, however, it leads to more noise that degrades the numerical solution for the BGK collision operator.
+Upon inspection of \Fref{tab:poise-bing}, it does not appear that entropic median filtering helps dissipate the noise that occurs as a result of using $m = 10^8$ for Bingham plastic Poiseuille flow.
+In fact, the median filter resulted in a less accurate solution in nearly all cases and rendered the solution altogether useless for the higher yield stress flows (relative errors of 25-75\%).
+
+The BGK collision operator using a stress growth exponent of $m = 10^5$ was in general the fastest.
+This can be attributed to the fact that a smoother approximation of the Bingham plastic constitutive model would lead to a solution for $\mu_{app}$ converging with less iterations.
+The BGK collision operator using a stress growth exponent of $m = 10^5$ also performed acceptably in terms of accuracy for lower yield stress flows, however, for $\tau_y = 12 \times 10^{-5}$ and $16 \times 10^{-5}$ the relative $L_\infty$ errors were 8.9\% and 19\%, respectively--larger than what would be considered acceptable for most engineering applications.
+
+The LBM approximations are plotted with the analytical solution for the BGK collision operator using $m = 10^5$ and $m = 10^8$ in \Fref{fig:bing-analyt-bgk-5} and \Fref{fig:bing-analyt-bgk-8}, respectively.
+\Fref{fig:bing-analyt-bgk-5} shows that the error for the BGK model with $m = 10^5$ is not due to noise, but instead the inaccuracy of the Papastasiou approximation with a lower stress growth exponent.
+\Fref{fig:bing-analyt-bgk-8} shows that the error for the BGK model with $m = 10^8$ is due to numerical noise.
+In order to better understand why median filtering did not eliminate the noise in high yield stress flows, but instead exacerbate the problem, it is necessary to investigate what is happening at the particle distribution scale.
+
+\begin{figure}
+\includegraphics[width=\textwidth]{figs/poise-bingham/bgk-5/analytical-vs-approx.png}
+\caption{LBM approximation using BGK and $m = 10^5$ compared to the analytical solution for $\tau_y = 16 \times 10^{-5}$.}
+\label{fig:bing-analyt-bgk-5}
+\end{figure}
+
+\begin{figure}
+    \includegraphics[width=\textwidth]{figs/poise-bingham/bgk-8/analytical-vs-approx.png}
+    \caption{LBM approximation using BGK and $m = 10^8$ compared to the analytical solution for $\tau_y = 16 \times 10^{-5}$.}
+\label{fig:bing-analyt-bgk-8}
+\end{figure}
+
+\Fref{fig:feq-vs-f_bgk} compares particle distributions to their respective quasiequilbiriums.
+It can be seen that in the BGK, $m = 10^8$ solution, the noise due to nonlinear constitutive relation pollutes the quasiequilibrium values.
+Because the noise makes its way into the quasiequilibrium values, entropic median filtering does not help dampen the noise but instead contracts the particle distributions closer to the quasiequilibrium noise--explaining why the median filtered results were less accurate for Bingham plastic Poiseuille flow.
+
+%MG: reformat these images so that text is more readable
+\begin{figure}
+\begin{tabulary}{\linewidth}{c c}
+\includegraphics[width=2.1in]{figs/poise-bingham/bgk-5/feq-vs-f_5.png}
+&
+\includegraphics[width=2.1in]{figs/poise-bingham/bgk-5/feq-vs-f_8.png}
+\\
+\includegraphics[width=2.1in]{figs/poise-bingham/bgk-8/feq-vs-f_5.png}
+&
+\includegraphics[width=2.1in]{figs/poise-bingham/bgk-8/feq-vs-f_8.png}
+\end{tabulary}
+\caption{Particle distributions in the 5 direction (left) and 8 direction (right) compared to their respective quasiequilibriums. The top two plots are for the BGK with $m = 10^5$, the bottom two are for the BGK with $m = 10^8$.}
+\label{fig:feq-vs-f_bgk}
+\end{figure}
+
+On average, the LBM model using the MRT collision operator was 2.9 times slower than the fastest model for the given material parameters.
+However, the increased computational time can be justified for the MRT collision operator because it did not suffer from the same level of noise as the BGK collision operator when using the more accurate approximation of the Bingham plastic model, i.e. when $m = 10^8$. 
+The MRT collision operator was therefor the most accurate solution for all cases.
+\Fref{fig:feq-vs-f_mrt} compares particle distributions to quasiequilibrium for the MRT model; in contrast to the BGK with $m = 10^8$, there is no noise in the quasiequilibrium distributions.
+
+% A natural question may be to ask ``if the strength of the MRT collision operator is damping out the ghost modes, then is the noise for the BGK with $m = 10^8$ due to the ghost modes?''.
+% MG: maybe plot ghost modes for BGK and MRT
+
+\begin{figure}
+    \begin{tabulary}{\linewidth}{c c}
+        \includegraphics[width=2.1in]{figs/poise-bingham/mrt/feq-vs-f_5.png}
+        &
+        \includegraphics[width=2.1in]{figs/poise-bingham/mrt/feq-vs-f_8.png}
+    \end{tabulary}
+    \caption{Particle distributions in the 5 direction (left) and 8 direction (right) compared to their respective quasiequilibriums for the MRT with $m = 10^8$.}
+    \label{fig:feq-vs-f_mrt}
+\end{figure}
+
+\subsubsection{Power-law Fluids}
 
 \subsection{Lid-driven Flow}
 
