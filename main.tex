@@ -638,7 +638,7 @@ In order to better understand why median filtering did not eliminate the noise i
 It can be seen that in the BGK, $m = 10^8$ solution, the noise due to nonlinear constitutive relation pollutes the quasiequilibrium values.
 Because the noise makes its way into the quasiequilibrium values, entropic median filtering does not help dampen the noise but instead contracts the particle distributions closer to the quasiequilibrium noise--explaining why the median filtered results were less accurate for Bingham plastic Poiseuille flow.
 In order to ensure that this phenomena was a side effect of all entropic filtering and not just entropic median filtering with $n_s = 2.7$, entropic filtering was tested with median filtering and Ehrenfests' regularization for $n_s = 2.7$ and for $\Delta S$ thresholds of $\delta = 10^{-4}$ and $\delta = 10^{-5}$.
-All filtering schemes suffered from the approximately the same level of noise.
+All filtering schemes suffered from approximately the same level of noise.
 
 %MG: reformat these images so that text is more readable
 \begin{figure}
@@ -660,9 +660,6 @@ However, the increased computational time can be justified for the MRT collision
 The MRT collision operator was therefor the most accurate solution for all cases.
 \Fref{fig:feq-vs-f_mrt} compares particle distributions to quasiequilibrium for the MRT model; in contrast to the BGK with $m = 10^8$, there is no noise in the quasiequilibrium distributions.
 
-% A natural question may be to ask ``if the strength of the MRT collision operator is damping out the ghost modes, then is the noise for the BGK with $m = 10^8$ due to the ghost modes?''.
-% MG: maybe plot ghost modes for BGK and MRT
-
 \begin{figure}
     \begin{tabulary}{\linewidth}{c c}
         \includegraphics[width=2.1in]{figs/poise-bingham/mrt/feq-vs-f_5.png}
@@ -671,6 +668,53 @@ The MRT collision operator was therefor the most accurate solution for all cases
     \end{tabulary}
     \caption{Particle distributions in the 5 direction (left) and 8 direction (right) compared to their respective quasiequilibriums for the MRT with $m = 10^8$.}
     \label{fig:feq-vs-f_mrt}
+\end{figure}
+
+A natural question would be to ask ``if the strength of the MRT collision operator is damping out the ghost modes, then is the noise for the BGK with $m = 10^8$ (with and without median filtering) indeed due to the ghost modes?''.
+\Fref{fig:epsilon} shows a measure of the nonequilibrium $\epsilon$ moment with respect to time for each of the collision schemes and was calculated using:
+\begin{equation}
+\frac{||\boldsymbol{\epsilon} - \boldsymbol{\epsilon}^{eq}||_2}{||\boldsymbol{\epsilon}^{eq}||_2}
+\end{equation}
+\noindent where $\epsilon_j = 4f_0(\pos_j) - 2f_1(\pos_j) - 2f_2(\pos_j) - 2f_3(\pos_j) - 2f_4(\pos_j) + f_5(\pos_j) + f_6(\pos_j) + f_7(\pos_j) + f_8(\pos_j)$ is related to the square of the energy, and $\pos_j = (16, j)$ for $j = 1, 2, ..., 64$, i.e. $\pos_j$ is taken at 16 nodes in from the left in the x-direction and for the full height of the channel in the y-direction.
+The values measured for the BGK with $m = 10^8$, with and without median filtering, were significantly higher than for either the MRT or BGK with $m = 10^5$ collision schemes--which suggests that the numerical noise the BGK with $m = 10^8$ suffered from was in part due to the $\epsilon$ moment.
+
+\begin{figure}
+    \includegraphics[width=\linewidth]{figs/poise-bingham/epsilon}
+    \caption{Particle distributions in the 5 direction (left) and 8 direction (right) compared to their respective quasiequilibriums for the MRT with $m = 10^8$.}
+    \label{fig:epsilon}
+\end{figure}
+
+\Fref{fig:qx} shows a measure of the nonequilibrium $q_x$ moment, or energy flux in the x-direction, with respect to time for each of the collision schemes and was calculated using:
+\begin{equation}
+    \frac{||\mathbf{q_y} - \mathbf{q_y}^{eq}||_2}{||\mathbf{q_y}^{eq}||_2}
+\end{equation}
+\noindent where $q_{y_j} = - 2f_2(\pos_j) + 2f_4(\pos_j) + f_5(\pos_j) + f_6(\pos_j) - f_7(\pos_j) - f_8(\pos_j)$ and $\pos_j$ were taken across the height of the channel in the same manner as with the $\epsilon$ moment.
+The values measured for the BGK with $m = 10^8$ and median filtered were consistently greater than any other collision scheme.
+The $q_x$ moment was likely the cause of the significant error and noise in the BGK with $m = 10^8$ and median filtering solution.
+As expected, the $q_x^{neq}$ relative $L_2$ for the BGK with $m = 10^8$ was slightly greater than the BGK with $m = 10^5$, and the $q_x^{neq}$ relative $L_2$ was negligible for the MRT collision scheme.
+These results are consistent with the solution noise and error.
+
+\begin{figure}
+    \includegraphics[width=\linewidth]{figs/poise-bingham/qx}
+    \caption{Particle distributions in the 5 direction (left) and 8 direction (right) compared to their respective quasiequilibriums for the MRT with $m = 10^8$.}
+    \label{fig:qx}
+\end{figure}
+
+It is likely that the nonequilibrium $\epsilon$ and $q_x$ moment cause oscillations at the lattice level that have a cumulative effect in time.
+\Fref{fig:epsilon-cumulative} and \Fref{fig:qx-cumulative} show the cumulative measures of the nonequilibrium moments in time.
+\Fref{fig:qx-cumulative} suggests that the $q_x^{neq}$ dominates and is the primary source of oscillations.
+If an LBM collision scheme is to be developed for simulating high yield stress flows that is more accurate than the BGK with $m = 10^5$ and more computationally efficient than the MRT, it should focus on a means of dampening the nonequilibrium energy flux moments, namely $q_x$ and $q_y$.
+
+\begin{figure}
+    \includegraphics[width=\linewidth]{figs/poise-bingham/epsilon_cumulative}
+    \caption{Particle distributions in the 5 direction (left) and 8 direction (right) compared to their respective quasiequilibriums for the MRT with $m = 10^8$.}
+    \label{fig:epsilon-cumulative}
+\end{figure}
+
+\begin{figure}
+    \includegraphics[width=\linewidth]{figs/poise-bingham/qx_cumulative}
+    \caption{Particle distributions in the 5 direction (left) and 8 direction (right) compared to their respective quasiequilibriums for the MRT with $m = 10^8$.}
+    \label{fig:qx-cumulative}
 \end{figure}
 
 \subsubsection{Power-law Fluids} \label{sec:poise-powerlaw}
@@ -987,6 +1031,10 @@ Two different benchmark problems were chosen for the flows: Poiseuille flow, and
 The results showed that:
 \begin{itemize}
   \item For high yield stress fluid, Poiseuille flows only the MRT collision operator did not suffer from numerical noise.
+  \begin{itemize}
+      \item The noise appeared to be due to oscillations arising from high nonequilibrium values for the moment related to the square of the energy, $\epsilon$, and the energy flux moment in the direction of flow, $q_x$.
+      \item If a collision scheme is to be developed for high yield stress, Poiseuille-type flows that is more accurate than the BGK with $m = 10^5$ and more computationally efficient than the MRT, then it should focus on dampening the nonequilibrium energy flux moment.
+    \end{itemize}
   \item Median filtering can be an effective technique for enhancing stability, especially for high Reynold's number flows; however, if the filter is not carefully tuned by properly adjusted the threshold, $\delta$, or number of standard deviations, $n_s$, then the physical intregrity, and consquently accuracy, of the model can be adversely impacted.
   \item In general, the MRT collision operator is much more computationally expensive than its BGK counterpart and is some times even orders of magnitude slower.
   \item To summarize plastic, lid-driven cavity flows,
