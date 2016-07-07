@@ -113,7 +113,7 @@ Determining the apparent viscosity and shear rate of a flow will often require a
 Numerical solutions work by discretizing the equations that govern the physics of interest.
 When the solution for fluid flow problems vary in space and time, a numerical approximation requires breaking the problem up into discrete locations and discrete time steps.
 The significance of approximating a solution by discretizing the governing equations is that the iterative solution for the constitutive equation must be solved at each discrete location for each discrete time step, which can become computationally expensive.
-The lattice Boltzmann method (LBM) is a numerical method for fluid flow that has the advantage that computing the strain rate is second-order accurate and local to each node~\cite{kruger2010second}.
+The lattice Boltzmann method (LBM) is a numerical method for fluid flow that has the advantage that computing the strain rate is second-order accurate in space and local to each node~\cite{kruger2010second}.
 This means that although an iterative solution is still required to determine the local strain rate and apparent viscosity, each iterative solution can be done in parallel, by a separate process, as they are independent of each other.
 Because hardware architectures have shifted from single, sequential processing systems to parallel processing systems, the local nature of the stress--strain-rate relationship in LBM gives it a distinct advantage for simulating non-Newtonian flows over some other numerical methods.
 
@@ -379,7 +379,7 @@ f_8
 \end{equation}
 
 \noindent where $\epsilon$ is related to the square of the energy $e$; $q_x$ and $q_y$ correspond to the energy fluxes in the x and y directions; and $p_{xx}$ and $p_{xy}$ correspond to the diagonal and off-diagonal component of the viscous stress tensor~\cite{lallemand2000theory}. % MG: verify this is correct
-The relaxation matrix, $\relaxM$, is a diagonal matrix where each of the elements on the diagonal, $s_i, i = 0, 1, ..., 8$, correspond to the relaxation rate of its associated hydrodynamic mode.
+The relaxation matrix, $\relaxM$, is a diagonal matrix where each of the elements on the diagonal, $s_i \in [0, 2], i = 0, 1, ..., 8$, correspond to the relaxation rate of its associated hydrodynamic mode.
 In the case when $s_0 = s_1 = ... = s_8 = \omega$ ($\omega$ is the collision frequency in the BGK sense), the MRT collision operator is equivalent to the BGK collision operator.
 The relaxation parameters $s_0$, $s_3$, and $s_5$ are all set to zero as mass and momentum should be conserved.
 The relaxation parameters $s_1$ and $s_7 = s_8$ are related to the bulk and shear viscosities, respectively.
@@ -474,6 +474,8 @@ D_{\alpha \beta} = -\frac{\omega}{2 \rho c_s^2} \sum_i \xi_{i \alpha} \xi_{i \be
 \begin{equation} \label{eq:srtensor-mrt}
 D_{\alpha \beta} = -\frac{1}{2 \rho c_s^2 \Delta t} \sum_i \xi_{i \alpha} \xi_{i \beta} \sum_j (\transM^{-1} \relaxM \transM)_{ij}(f_i - f^{eq}_i).
 \end{equation} % MG: verify this
+
+\noindent Computing the strain-rate tensor by either \eqref{eq:srtensor-bgk} or \eqref{eq:srtensor-mrt} is second order accurate in space~\cite{kruger2009shear,kruger2010second}.
 
 Upon comparison of \eqref{eq:srtensor-bgk} and \eqref{eq:srtensor-mrt}, it is clear that calculating the strain-rate tensor for the MRT collision operator is more computationally expensive than it is for the BGK collision operator.
 The increase in computational expense is exacerbated by the fact that approximating the apparent viscosity, $\mu_{app}$, by the algorithm outlined in \Fref{sec:lbm-for-nnf} requires iteration and therefor multiple calculations of the strain-rate tensor.
