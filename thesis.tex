@@ -3,7 +3,9 @@
 % MG: same note as above for 'local equilibrium' vs. 'quasiequilibrium'
 % MG: consider using collision frequency, \omega, instead of relaxation time, \tau, so that the relaxation time is not confused with shear stress
 
-\documentclass{article}
+\documentclass[pdftex,ms]{pittetd}
+
+\usepackage[pdftex]{graphicx}
 
 \usepackage[affil-it]{authblk}
 \usepackage{lineno}
@@ -16,11 +18,13 @@
 %\usepackage{amsthm}
 \usepackage{amssymb}
 \usepackage{mathtools}
-\usepackage{mathabx}
 \usepackage{bm}
 \usepackage[plain]{fancyref}
 \usepackage{tabulary}
 \usepackage{pbox}
+
+\patch{amsmatch}
+\patch{amsthm}
 
 \newcommand{\pos}{\mathbf{x}}
 \newcommand{\pvel}{\boldsymbol{\xi}}
@@ -33,27 +37,42 @@
 
 \newcommand{\expnumber}[2]{{#1}\mathrm{e}{#2}}
 
-\title{Numerical Investigation of the Accuracy, Stability, and Efficiency of Lattice Boltzmann Models in Simulating Non-Newtonian Flows}
-%\title{A Comparison of Lattice Boltzmann Method Collision Operators for Accuracy, Stability and Efficiency in Simulating Non-Newtonian Flows}
+\title{How the Lattice Boltzmann Method changed my life forever!}
+% The optional argument is the version of the title that will appear in Acrobat Reader's Document Info dialog box.
+\author{Matthew Grasinger}
+\degree{BS in Civil and Environmental Engineering, University of Pittsburgh, Pittsburgh, PA 2013}
+\date{July 20, 2016}
+\keywords{lattice Boltzmann method, non-Newtonian flow, free surface flow, wellbore cementing}
+\subject{Draft}
+\school{Swanson School of Engineering}
+\degreesought{Master of Science}
 
-\author{{Matthew Grasinger}
-\thanks{Email: \textit{grasingerm@pitt.edu}}}
-
-\author{{Scott Overacker}
-\thanks{Email: \textit{sdo10@pitt.edu}}}
-
-\author{John Brigham
-\thanks{Email: \textit{brigham@pitt.edu}}}
-\affil{Civil and Environmental Engineering Department, University of Pittsburgh}
+\chapterfloats
 
 \begin{document}
-
-\pagenumbering{gobble}
 \maketitle
-\newpage
+
+% For the committee membership page, you have to provide the names and affiliations of the members. The first one will
+% be treated by pittetd as the committee chair (thesis/dissertation advisor).
+\committeemember{John C. Brigham, PhD, Senior Lecturer, School of Engineering and Computing Sciences at Durham University}
+\committeemember{Julie M. Vandenbossche, PhD, Associate Professor, Department of Civil and Environmental Engineering}
+\committeemember{Anthony T. Iannacchione, PhD, Associate Professor, Department of Civil and Environmental Engineering}
+
+\school{Swanson School of Engineering}
+\makecommittee
+\copyrightpage
+
+\begin{abstract}
+\end{abstract}
+
 \tableofcontents
-\newpage
-\pagenumbering{arabic}
+\listoftables
+\listoffigures
+
+%\preface
+% acknowledgements and such
+
+\chapter{Numerical Investigation of the Accuracy, Stability, and Efficiency of Lattice Boltzmann Models in Simulating Non-Newtonian Flows}
 
 \section*{Abstract}
 
@@ -129,7 +148,7 @@ One such consideration associated with this view, is the potential for numerical
 %Much work has been done to investigate and develop ways to enhance the stability of lattice Boltzmann methods.
 Stability concerns are just as prevalent, if not more prevalent, in simulating non-Newtonian flows because the nonlinear relationship between shear stress and strain-rate can lead to high nonequilibrium fluctuations. %MG: be more precise than 'fluctuations'?
 Various schemes and strategies for incorporating the physics of non-Newtonian flows and yet maintaining a stable numerical method have been developed and studied.
-The simplest approach for simulating a shear-rate dependent viscosity, used in~\cite{boyd2006second,chen2014simulations,fallah2012multiple,tang2011bingham,svec2011flow,svec2012free}, is to make the collision frequency--which is proportional to apparent viscosity--variable and dependent on the local strain rate.
+The simplest approach for simulating a shear-rate dependent viscosity, used in~\cite{boyd2006second,chen2014simulations,fallah2012multiple,tang2011bingham,svec2011flow,svec2012free,zhao2016lattice}, is to make the collision frequency--which is proportional to apparent viscosity--variable and dependent on the local strain rate.
 A potential issue with the stability of the variable relaxation time approach is that as the collision frequency, $\omega$, approaches $2$ the viscosity approaches zero and overrelaxation occurs; and alternatively, if the relaxation time is much greater than one, the accuracy and stability of the method also degrades~\cite{latt2007hydrodynamic}. %MG: verify this statement
 In order to ensure that the variable collision frequencies did not approach values leading to numerical instabilities,~\cite{svec2011flow,svec2012free,gabbanelli2005lattice} set upper and lower bounds on allowable collision frequencies.
 Although bounding the collision frequency was shown to be effective in terms of stability, it is also nonphysical and can lead to approximations that are inaccurate, not because of round-off error or numerical instability, but because the collision does not reflect the proper constitutive relationship of interest.
@@ -688,9 +707,9 @@ The values measured for the BGK with $m = 10^8$, with and without median filteri
 
 \Fref{fig:qx} shows a measure of the nonequilibrium $q_x$ moment, or energy flux in the x-direction, with respect to time for each of the collision schemes and was calculated using:
 \begin{equation}
-    \frac{||\mathbf{q_y} - \mathbf{q_y}^{eq}||_2}{||\mathbf{q_y}^{eq}||_2}
+    \frac{||\mathbf{q_x} - \mathbf{q_x}^{eq}||_2}{||\mathbf{q_x}^{eq}||_2}
 \end{equation}
-\noindent where $q_{y_j} = - 2f_2(\pos_j) + 2f_4(\pos_j) + f_5(\pos_j) + f_6(\pos_j) - f_7(\pos_j) - f_8(\pos_j)$ and $\pos_j$ were taken across the height of the channel in the same manner as with the $\epsilon$ moment.
+\noindent where $q_{x_j} = - 2f_1(\pos_j) + 2f_3(\pos_j) + f_5(\pos_j) - f_6(\pos_j) - f_7(\pos_j) + f_8(\pos_j)$ and $\pos_j$ were taken across the height of the channel in the same manner as with the $\epsilon$ moment.
 The values measured for the BGK with $m = 10^8$ and median filtered were consistently greater than any other collision scheme.
 The $q_x$ moment was likely the cause of the significant error and noise in the BGK with $m = 10^8$ and median filtering solution.
 As expected, the $q_x^{neq}$ relative $L_2$ for the BGK with $m = 10^8$ was slightly greater than the BGK with $m = 10^5$, and the $q_x^{neq}$ relative $L_2$ was negligible for the MRT collision scheme.
@@ -769,7 +788,7 @@ There are some interesting things to note from the power-law Poiseuille flow res
 Although for $n = 0.5, 0.75, 1.25$ there is still the same efficiency for accuracy trade off when it comes to deciding between the BGK and MRT collision operators, for $n = 1.5$ the BGK operator with median filtering was the fastest, most accurate, and only solution that remained stable.
 In fact, besides for the case of $n = 0.5$, i.e. rather extreme shear-thinning, the BGK with median filtering was both fast and accurate.
 The BGK-BRT had a moderate improvement of accuracy and efficiency--with respect to the regular BGK collision scheme--for flows where the constitutive relationship was only somewhat nonlinear, i.e. for $n = 0.75, 1.25$.
-Note that none of the collision schemes were sufficiently accurate for the case of $n = 0.5$, and to improve this accuracy it would be necessary for a modeler to use a finer grid, and/or a smaller pressure gradient.
+Note that none of the collision schemes were sufficiently accurate for the case of $n = 0.5$, and to improve this accuracy it would be necessary for a modeler to use a different simulation Mach number, a finer grid, and/or a smaller pressure gradient.
 
 \subsection{Lid-driven Cavity Flow} % MG: would it be of any use to show streamline plots from some of these flows?
 
@@ -788,7 +807,7 @@ The lid-driven cavity simulations presented in the section were all simulated on
 The simulations were run for either 50000 timesteps, or until convergence was met.
 Convergence was defined by,
 \begin{equation} \label{eq:convergence}
-\sum_{m=1}^{100} \sum_{i, j} \frac{|u_{i, j}^k - u_{i, j}^{k-m}|}{|u_{i, j}^{k-m}|},
+\sum_{m=1}^{100} \sum_{i, j} \frac{|u_{i, j}^k - u_{i, j}^{k-m}|}{|u_{i, j}^{k-m}|} < 1.0 \times 10^{-7},
 \end{equation}
 \noindent where $i$ is the node index in the x-direction, $j$ is the node index in the y-direction, and $k$ is the current timestep.
 In reference to computational time, each of the simulations in this section were run on a single core of either an Intel I7-860 Quad-Core 2.80GHz processor, or a SOME OTHER PROCESSOR I NEED TO LOOK UP.
@@ -1052,9 +1071,96 @@ The results showed that:
     \end{itemize}
 \end{itemize}
 
+% MG: should we mention: code is open source? input files used in this study are also freely available?
+
 \section*{Acknowledgements}
 
-% MG: should we mention: code is open source? input files used in this study are also freely available?
+\chapter{Free Surface and non-Newtonian Simulation of Wellbore Cementing using the Lattice Boltzmann Method}
+
+\section*{Abstract}
+
+Wellbore cementing is 
+
+\section{Introduction}
+
+% what is wellbore cementing?
+
+Cementing of oil and gas wellbores is important because if cement does not completely fill the annulus then pathways can form for fluids and gasses to flow through.
+The pathways need not be large--a pathway of SOMETHING is sufficient for enough loss of pressure at the wellhead for the well to lose SOME percent production.
+There are also environmental concerns as oils and gasses can migrate into ground water or the atmosphere causing environmental damage.
+
+Of critical importance to drilling operations of all kinds is that barriers are placed to prevent gasses and fluids from migrating from one geological zone to another (i.e., zonal isolation is achieved).
+If zonal isolation is not achieved, gasses and fluids may migrate through the well to the surface and up into the atmosphere--potentially causing pollution, or at the very least, contributing to an increase in greenhouse gasses--or, worse yet, formation gasses and fluids can migrate into aquifers, potentially harming wild life and people.
+Furthermore, it can be argued that the most important, yet vulnerable, barrier in terms of achieving zonal isolation of a wellbore is the cement annulus that is created between the casing and the formation.
+There are various mechanisms by which this cement annulus can fail.
+According to previous studies~\cite{Bit02,Che85,Lev79,Ste88,Tal93,Zul12}, the most prevalent failure mechanisms of the cement annulus are:
+\begin{itemize}
+\item Stresses developing in the cement annulus as a result of temperature gradients, moisture gradients, overburden pressure, and chemical shrinkage of the cement matrix.
+These stresses can cause cracking in the cement, or debonding at either the casing--cement or cement--formation interfaces.
+\item Poor fill of the annulus. If cement slurry does not fill the annulus then if drilling mud is left behind it can dry, crack, and provide a weak path for fluids and gasses under pressure to push through, or if a dry hole is is cemented and not filled properly, fluids and gasses can travel through channels and voids left in the annular space.
+\item Gas channeling through the annulus during cement curing.
+Initially, after the annulus is poured, the cement column transmits its full hydrostatic pressure against the rock formation.
+As the cement annulus hydrates, it solidifies, becoming stiffer and more self-supporting.
+When the column begins to support itself, the hydrostatic pressure of the cement column--against the rock formation--begins to drop.
+If the hydrostatic pressure of the cement column drops below the pressure of a formation gas before the cement annulus has developed adequate strength to resist it, the formation gas can penetrate int the cement annulus and form channels, or degrade the cement annulus in other ways.
+\end{itemize}
+% what research has been done that is considered classical?
+
+% why do we need modelling?
+% Before the end of this paragraph--modeling is important because...
+
+In order to better understand, and thus improve wellbore cementing for zonal isolation, several works have attempted to model certain aspects of the multiphase and multiphysics processes of wellbore cement placement.
+For example, \citet{Bei77} developed a mathematical model to ``describe the miscible displacement of drilling muds by cement slurries under laminar flow conditions''.
+Among their assumptions were that the process could be modeled in a quasi-steady manner, the volumetric flow rate was constant at each cross section of the flow, and the pressure fields were only dependent on the y-coordinate.
+The model was then used to explore the effect of various parameters on the displacement efficiency of the spacer, such as the density ratio between the mud and the spacer, the viscosity ratio between the mud and the spacer, the displacement rate, the displaced phase yield stress, and the displacing phase yield stress.
+It was concluded that displacement efficiency could be improved by increasing the density of the displacing phase, increasing the viscosity of the displacing phase, (in general) decreasing the displacement rate, decreasing the yield stress of the displaced phase, and increasing the yield stress of the displacing phase.
+\citet{Bit02} developed a mathematical model for primary cementing of an oil well using a Hele-Shaw displacement model.
+The model was more general than the model developed by \citeauthor{Bei77} as it used less restrictive assumptions and was able to consider an eccentric annulus.
+Annulus eccentricity occurs often in wellbores and can sometimes be extreme as it is difficult to keep long strings of casing centered in an imperfectly drilled hole.
+The bulk fluid motion of the spacer and drilling mud during primary cementing were investigated.
+The intended use of the model was not to make general statements about what properties of the spacer and drilling mud were desirable, but to instead be used iteratively during the design process for the cement job.
+Results showed that the model met its intended purpose, and in particular, was able to simulate an unyielded channel of mud left on the narrow side of the annulus.
+\citet{Zul12} used a computational fluids dynamics (CFD) solver with volume of fluid (VOF) method to simulate the cementing process of a 50 ft. section of wellbore.
+The model included the interfacial dynamics of, not just the spacer and drilling mud, but also the cement slurry--which was not considered in either \citeauthor{Bei77} or \citeauthor{Bit02}.
+The drilling mud and cement slurry properties were kept constant, while the spacer density, viscosity, and displacement rates were varied.
+\citeauthor{Zul12} concluded that the high displacement efficiency occurred when the spacer was the same density as the drilling mud and had a smaller viscosity, similar to that of water.
+The displacement efficiency was poor for all scenarios in which the spacer and cement slurry densities were equal.
+% talk about new LBM study
+
+Overall, past studies have tended to idealize the rock formation as a straight wall.
+Although this is a desirable simplification to make for capturing bulk fluid penomean, it does not accurately describe what is happening locally at the surface of the rock formation.
+Flow near the surface of the formation, and in and around the imperfections of the formation geometry, could influence the bond of the cement annulus to the rock formation, and the fill of the cement slurry very near to the rock formation.
+If an adequate bond does not develop, debonding can occur as a result of thermal and mechanical stresses.
+Even if most of the annulus is filled by the cement slurry, a small gap at the cement--formation interface that stretches for a long enough span of the wellbore would still be susceptible to fluid and gas migration, i.e. loss of zonal isolation.
+One could even argue that the characteristic of the cement slurry flow is most important local to the cement--formation interface, and that considering imperfections in the rock formation is imperative to determing whether zonal isolation has been achieved.
+
+The purpose of the current work is to develop a computational approach to investigate the flow of cement slurry in and around the--possibly--imperfect features of a rock formation, with the hope of better understanding what parameters of the primary cement job will lead to a good fill of the cement annulus and high bond strength at imperfect rock formation features.
+The Lattice Boltzmann Method (LBM) was chosen as the most suitable modeling technique for the desired purpose because of its ability to model flow through and around complex geometries~\cite{thorne2006lattice}, such as those found at the surface of the rock formation, among other benefits.
+LBM also has other advantages as an approach for simulating wellbore cementing:
+\begin{itemize}
+\item LBM is well-suited for simulating non-Newtonian fluids because the strain-rate tensor is computed local to each node and is second-order accurate~\cite{kruger2009shear,kruger2010second}.
+Many fluids present in wellbore cementing such as the spacer, drilling mud, and most importantly, the cement slurry, are best modeled as non-Newtonian fluids.
+\item LBM is well-suited for simulating multiphase multicomponent flows and free-surface flows because it results in interface capturing instead of interface tracking, i.e. BLAH BLAH BLAH and cite something.
+\item LBM is easily written in parallel.
+As hardware architectures shifts from one or a few cores to, especially in the case of scientific computing, several CPUs, it becomes increasingly important that code for simulating complex and computationally expense phenomena be written in parallel.
+\end{itemize}
+What follows is blahdy blah blah an LBM model foook.
+
+The goal of this paper is to apply an LBM algorithm for free surface flow to the problem of wellbore cementing, and in doing so, 
+
+\section{Numerical Methods}
+
+\subsection{Lattice Boltzmann Method}
+
+\subsection{Yield Stress Flow}
+
+\subsection{Free Surface Flow}
+
+\subsection{Inlet and Outlet Boundary Conditions}
+
+\section{Wellbore Cementing}
+
+\
 
 \bibliographystyle{abbrvnat}
 \bibliography{master}
