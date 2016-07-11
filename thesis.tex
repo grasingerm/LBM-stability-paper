@@ -14,6 +14,19 @@
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage[square,numbers,sort&compress]{natbib}
+\usepackage{enumitem}
+\setlistdepth{9}
+
+\newlist{myEnumerate}{enumerate}{9}
+\setlist[myEnumerate,1]{label=(\arabic*)}
+\setlist[myEnumerate,2]{label=(\Roman*)}
+\setlist[myEnumerate,3]{label=(\Alph*)}
+\setlist[myEnumerate,4]{label=(\roman*)}
+\setlist[myEnumerate,5]{label=(\alph*)}
+\setlist[myEnumerate,6]{label=(\arabic*)}
+\setlist[myEnumerate,7]{label=(\Roman*)}
+\setlist[myEnumerate,8]{label=(\Alph*)}
+\setlist[myEnumerate,9]{label=(\roman*)}
 
 %\usepackage{amsthm}
 \usepackage{amssymb}
@@ -1125,42 +1138,281 @@ The model included the interfacial dynamics of, not just the spacer and drilling
 The drilling mud and cement slurry properties were kept constant, while the spacer density, viscosity, and displacement rates were varied.
 \citeauthor{Zul12} concluded that the high displacement efficiency occurred when the spacer was the same density as the drilling mud and had a smaller viscosity, similar to that of water.
 The displacement efficiency was poor for all scenarios in which the spacer and cement slurry densities were equal.
+\citet{zhao2016lattice} developed a model simulating wellbore cementing using the Lattice Boltzmann Method.
+\citeauthor{zhao2016lattice} used the model to investigate the displacement interface shape in a horizontal, eccentric annulus; and in order to simplify the model from a 3D to 2D flow, used the classical Hele-Shaw approach.
+It was found, in general, that a greater density ratio between the displacing phase, i.e. cement slurry, and displaced phase, i.e. drilling mud, and lower eccentricity, results in better displacement in a horizontal, eccentric annulus.
+
 % talk about new LBM study
 
 Overall, past studies have tended to idealize the rock formation as a straight wall.
-Although this is a desirable simplification to make for capturing bulk fluid penomean, it does not accurately describe what is happening locally at the surface of the rock formation.
+Although this is a desirable simplification to make for capturing bulk fluid phenomena, it does not accurately describe what is happening locally at the surface of the rock formation.
 Flow near the surface of the formation, and in and around the imperfections of the formation geometry, could influence the bond of the cement annulus to the rock formation, and the fill of the cement slurry very near to the rock formation.
 If an adequate bond does not develop, debonding can occur as a result of thermal and mechanical stresses.
 Even if most of the annulus is filled by the cement slurry, a small gap at the cement--formation interface that stretches for a long enough span of the wellbore would still be susceptible to fluid and gas migration, i.e. loss of zonal isolation.
-One could even argue that the characteristic of the cement slurry flow is most important local to the cement--formation interface, and that considering imperfections in the rock formation is imperative to determing whether zonal isolation has been achieved.
+One could even argue that the characteristic of the cement slurry flow is most important local to the cement--formation interface, and that considering imperfections in the rock formation is imperative to determining whether zonal isolation has been achieved.
 
-The purpose of the current work is to develop a computational approach to investigate the flow of cement slurry in and around the--possibly--imperfect features of a rock formation, with the hope of better understanding what parameters of the primary cement job will lead to a good fill of the cement annulus and high bond strength at imperfect rock formation features.
+The purpose of the current work is to develop a computational approach to investigate the flow of cement slurry in and around the--possibly--imperfect features of a rock formation in a vertical section of a wellbore, with the hope of better understanding what parameters of the primary cement job will lead to a good fill of the cement annulus and high bond strength at imperfect rock formation features (i.e., the purpose is an extension to the work present in~\citet{grasinger2015simulation}).
 The Lattice Boltzmann Method (LBM) was chosen as the most suitable modeling technique for the desired purpose because of its ability to model flow through and around complex geometries~\cite{thorne2006lattice}, such as those found at the surface of the rock formation, among other benefits.
 LBM also has other advantages as an approach for simulating wellbore cementing:
 \begin{itemize}
 \item LBM is well-suited for simulating non-Newtonian fluids because the strain-rate tensor is computed local to each node and is second-order accurate~\cite{kruger2009shear,kruger2010second}.
 Many fluids present in wellbore cementing such as the spacer, drilling mud, and most importantly, the cement slurry, are best modeled as non-Newtonian fluids.
-\item LBM is well-suited for simulating multiphase multicomponent flows and free-surface flows because it results in interface capturing instead of interface tracking, i.e. BLAH BLAH BLAH and cite something.
+\item LBM is well-suited for simulating multiphase multicomponent flows and free-surface flows because it can handle complicated interface shapes between fluid phases and components for reasons similar to why the no-slip boundary condition works well with complex geometries.
 \item LBM is easily written in parallel.
 As hardware architectures shifts from one or a few cores to, especially in the case of scientific computing, several CPUs, it becomes increasingly important that code for simulating complex and computationally expense phenomena be written in parallel.
 \end{itemize}
-What follows is blahdy blah blah an LBM model foook.
+The current work focuses on the problem of cementing a dry hole, i.e. an annulus that is not filled with drilling mud prior to cementing.
+In order to numerically investigate this problem, an LBM model for non-Newtonian and free-surface flow is developed.
+The details of the LBM model are outlined in \Fref{sec:numerical-methods}.
+What follows in \Fref{sec:results} is a preliminary study on how different characteristics of flow, e.g. cement slurry yield stress, cement slurry inlet velocity, etc., perform in regards to fill of the annulus for different wellbores with imperfect rock formation geometries.
+\Fref{sec:conclusion} are conclusions resulting from the numerical study and a discussion of future work.
 
-The goal of this paper is to apply an LBM algorithm for free surface flow to the problem of wellbore cementing, and in doing so, 
-
-\section{Numerical Methods}
+\section{Numerical Methods} \label{sec:numerical-methods}
 
 \subsection{Lattice Boltzmann Method}
+
+% We need to explain/justify why 2D vs. 3D
 
 \subsection{Yield Stress Flow}
 
 \subsection{Free Surface Flow}
 
-\subsection{Inlet and Outlet Boundary Conditions}
+A free-surface flow is a flow in which two-fluids exist but the dynamics of one fluid does not need to be explicitly modeled.
+Typically, the phase of the primary fluid, or the fluid of interest, is a liquid; and the secondary phase that does not need to be explicitly modeled is a gas, often times air at atmospheric pressure.
+The primary fluid is modeled using a standard CFD method, such as LBM, and the interaction of the secondary fluid on the primary fluid is modeled as a boundary condition at the interface between the two fluids.
+The interface is what is referred to as the free-surface.
+The advantage of modeling a multiphase multicomponent flow as a free-surface is that because the dynamics of the secondary fluid are not explicitly tracked and simulated the resulting algorithm is more computationally efficient in terms of both memory and CPU overhead.
+The algorithm for extending the Lattice Boltzmann Method for free-surface flow used in this work follows the algorithm developed and presented in \citet{korner2005lattice,thurey2005interactive}.
 
-\section{Wellbore Cementing}
+\subsection{Capturing the Free-Surface}
 
-\
+Consider at each node a cell of size $\text{d}x \times \text{d}x$ where $\text{d}x$ is the distance between nodes and the cell is centered at the node.
+In order to track where the primary fluid is and where it is not, i.e. which cells contain the primary fluid, a variable is introduced, $\epsilon$, which describes what fraction of the cell is covered by the primary fluid.
+Cells that have a fluid fraction of $\epsilon = 0$ contain no primary fluid, i.e. are empty; cells that have a fluid fraction of $\epsilon = 1$ are filled; and cells that have a fluid fraction $0 < \epsilon < 1$ are neither completely filled nor are they completely empty.
+The fluid fraction concept is similar to how fluids are tracked in Volume of Fluid (VOF) methods.
+
+\subsubsection{Mass Transfer}
+
+It is important to note that the particle distributions, $f_0, f_1, ..., f_8$, cannot be used to directly determine the fluid fraction of a cell.
+Neither can the zeroth velocity moment of the particle distributions, $\rho = \sum_i f_i$.
+For the algorithm used in this work, neither can be considered a measure of the amount of primary fluid in a cell, i.e. $\epsilon(\pos, t) \neq \epsilon(\mathbf{f(\pos, t)}, \rho(\pos, t))$.
+Instead, each $f_i$ is related to the amount of primary fluid advection in each of the $\pvel_i$ discrete velocity directions.
+To track the fluid fraction and how it changes, another variable is introduced, $M(\pos, t)$, which denotes the fluid mass in each cell.
+The fluid mass is related to the fluid fraction by $\epsilon = M / \rho$.
+The change in mass, $\Delta M(\pos, t)$ is related to $\mathbf{f}(\pos, t)$ and particle distribution functions in the neighborhood of $\pos$.
+Given initial conditions on $M(\pos, 0)$ and a fixed time step size $\Delta t $, the fluid mass is determined by $M(\pos, t_n) = M(\pos, 0) + \Delta t \sum_{k=1}^n \Delta M(\pos, t_k)$.
+
+\newcommand{\opidx}{{\bar{i}}}
+\newcommand{\fset}{\mathcal{F}}
+\newcommand{\iset}{\mathcal{I}}
+\newcommand{\gset}{\mathcal{G}}
+\newcommand{\domain}{\mathcal{X}}
+
+\subsubsection{Cell States} \label{sec:mass-transfer}
+
+Each of the cells in the domain are assigned one of three states: fluid, interface, or gas.
+The set of fluid, interface, and gas cells are denoted by $\fset$, $\iset$, and $\gset$, respectively.
+A fluid cell is a cell that is entirely covered by the primary fluid and a gas cell is a cell that is completely empty, or does not contain any primary fluid.
+An interface is partially covered, and there is always a layer of interface cells between fluid and gas cells so that a fluid cell and a gas cell are never neighbors.
+The change in mass is calculated across fluid and interface cells for each discrete velocity direction as follows:
+\begin{equation} \label{eq:dM}
+\Delta M_i(\pos, t) = \begin{cases}
+f_\opidx(\pos + \pvel_i \Delta t, t) - f_i(\pos, t), & \pos \in \fset \text{ or } \pos + \pvel_i \in \fset \\
+\left[(\epsilon(\pos, t) + \epsilon(\pos + \pvel_i \Delta t, t)) / 2\right]\left(f_\opidx(\pos + \pvel_i, t) - f_i(\pos, t)\right), & \pos \in \iset \text{ and } \pos + \pvel_i \in \iset \\
+0, & \pos + \pvel_i \in \gset
+\end{cases}
+\end{equation}
+\noindent where $\pvel_\opidx$ represents the discrete velocity vector that is opposite in direction to $\pvel_i$, i.e. $\pvel_\opidx = - \pvel_i$.
+\eqref{eq:dM} states that when the border of the two cells is covered with fluid, the change in mass for a discrete velocity direction is equal to the difference of the particle distribution entering the cell from the opposite direction and particle distribution leaving the cell in that direction.
+When the border of the two cells are not covered with fluid, i.e. when both cells are interface cells, the difference is weighted by the average fluid fraction of the two cells because mass is only able to transfer across the fraction of the border that is covered in fluid.
+The total change in mass for a cell is simply $\Delta M(\pos, t) = \sum_i \Delta M(\pos, t)$.
+Finally, note that $\Delta M_i(\pos, t) = -\Delta M_\opidx(\pos + \pvel_i \Delta t, t)$ for all $\pos \in \domain$ where $\domain$ is the domain.
+As a consequence, it is clear that $\sum_{\pos \in \domain}\Delta M(\pos, t) = 0$, i.e. that mass is conserved for the mass transfer step.
+
+\newcommand{\tconst}{\delta_{trans}}
+
+Tracking the transport of mass throughout the domain is an important step in determining what parts of the domain are covered in the primary fluid and what are not.
+However, for the free-surface, i.e. layer of interface cells between the fluid cells and gas cells, to change shape and propagate, cells need to be able to transition state.
+Cell states change based on the rule set presented in \Fref{tab:cell-transition-rules} where $\tconst$ is a small, computational constant that keeps cells from transitioning back and forth between fluid and interface or interface and gas states in subsequent time steps.
+To summarize \Fref{tab:cell-transition-rules}, gas cells cannot transition to fluid cells and vice versa, interface cells transition to fluid cells when their mass has exceeded $\rho$ by a computational constant, and gas cells when their mass is less than zero minus a computational constant.
+In addition, fluid cells and gas cells transition to the interface state in order to maintain continuity of the interface, i.e. to ensure there is always a layer of interface cells in between fluid cells and gas cells.
+An example of a cell transitioning state is depicted in \Fref{fig:cell-transition}.
+
+\begin{table}
+\caption{Cell state transition rules.}
+\begin{tabulary}{\linewidth}{l|L|L}
+\textbf{Current State} & \textbf{Condition} & \textbf{Transition} \\
+\hline &  & \\
+$(\pos, t) \in \iset$ & $M(\pos, t) < -\tconst$ & $(\pos, t + \Delta t) \rightarrow \gset$, $M(\pos, t + \Delta t) = 0$ \\
+                      & $M(\pos, t) > \tconst + \rho(\pos, t)$ & $(\pos, t + \Delta t) \rightarrow \fset$, $M(\pos, t + \Delta t) = \rho(\pos, t + \Delta t)$ \\
+                      &\\
+$(\pos, t) \in \fset$ & $(\pos + \pvel_i \Delta t, t + \Delta t) \in \gset$ for any $i = 1, 2, ..., 8$ & $(\pos, t + \Delta t) \rightarrow \iset$ \\
+&\\
+$(\pos, t) \in \gset$ & $(\pos + \pvel_i \Delta t, t + \Delta t) \in \fset$ for any $i = 1, 2, ..., 8$ & $(\pos, t + \Delta t) \rightarrow \iset$ \\
+\end{tabulary}
+\label{tab:cell-transition-rules}
+\end{table}
+
+\begin{figure}
+\centering
+\includegraphics{figs/cell-transition}
+\caption{Example of cell state transitions.
+The interface cell highlighted in red on the left is transitioned to a gas cell as it has emptied.
+On the right, the three cells highlighted in red were transitioned from fluid to interface cells in order to keep the interface continuous.}
+\label{fig:cell-transition}
+\end{figure}
+
+\subsubsection{Updating Cell States and Mass Redistribution} \label{sec:cell-updates}
+
+The rules for updating cell states in \Fref{tab:cell-transition-rules} are fairly intuitive, however, there are some bookkeeping nuances that must be considered in order to ensure mass is properly conserved and interface continuity is achieved; e.g. note that if the rules outlined in \Fref{tab:cell-transition-rules} are followed naively that mass is not conserved when interface cells transition to fluid cells or gas cells.
+The algorithm for updating cell states follows that which was presented in~\citet{thurey2005interactive}.
+It is presented here for the sake of completeness and for outlining minor modifications.
+\begin{enumerate}
+\item Initialize a variable that represents the global excess mass, e.g. $M_{gex} = 0$.
+\item For all cells $\pos \in \iset$, store cells that should be transitioned to $\fset$ in one data structure, $\iset_f$, and store cells that should be transitioned to $\gset$ in another, $\iset_g$.
+\item \label{enum:prep-fnbrs} Loop over cells that will be transitioned from interface to fluid cells, i.e. loop over $\iset_f$, and prepare their neighborhoods for transition:
+	\begin{enumerate}
+	\item Calculate the average density, $\rho_{avg}$, and velocity, $\mathbf{u}_{avg}$, of each neighborhood.
+	\item For all cells in the neighborhood of the new fluid cell:
+		\begin{enumerate}
+			\item If the cell is a gas cell, transition to interface state and set $f_i = f_i^{eq}(\rho_{avg}, \mathbf{u}_{avg})$, $\rho = \rho_{avg}$, and $\mathbf{u} = \mathbf{u}_{avg}$.
+			\item If the cell is an interface cell in $\iset_g$, remove it from $\iset_g$.
+		\end{enumerate}
+	\end{enumerate}
+\item \label{enum:prep-gnbrs} Loop over cells that will be transitioned from interface to gas cells, i.e. loop over $\iset_g$, and prepare their neighborhoods for transition:
+	\begin{enumerate}
+	\item For all cells in the neighborhood of the new gas cell:
+		\begin{enumerate}
+			\item If the cell is a fluid cell, transition to interface state.
+		\end{enumerate}
+	\end{enumerate}
+\item \label{enum:rloop-fluid} Loop over cells that will be transitioned from interface to fluid cells, i.e. loop over $\pos \in \iset_f$, and:
+\begin{enumerate}
+	\item Let $M_{ex} = M - \rho$.
+	\item Calculate the unit norm outward from the interface, i.e. toward empty space, $\mathbf{n}$.
+	Initialize $v_{sum} = 0$.
+	\item For all cells in the neighborhood,
+	\begin{enumerate}
+		\item if an interface cell, store in a data structure, $\iset_{r}$, and for the discrete velocity vector direction, $\pvel_i$, of the respective neighbor, let $v_i = \begin{cases}
+					\mathbf{n} \cdot \pvel_i, & \mathbf{n} \cdot \pvel_i > 0 \\
+					0, & \text{otherwise}
+				\end{cases}$.
+		\item $v_{sum} = v_{sum} + v_i$.
+	\end{enumerate}
+	\item If $v_{sum} \ge 0$, then for each cell, $\pos_j \in \iset_r$, redistribute the excess mass according to $M(\pos_j) = M(\pos_j) + M_{ex} \frac{v_i}{v_{sum}}$. \label{enum:redist-dop-f}
+	\item \label{enum:redist-neighbors-f} If $v_{sum} = 0$ and $\iset_r \neq \emptyset$, then for each cell, $\pos_j \in \iset_r$, redistributed the excess mass according to $M(\pos_j) = M(\pos_j) +  M_{ex} / n_r$ where $n_r$ is the number of cells in $\iset_r$.
+	\item Otherwise, increment the global excess mass, $M_{gex} = M_{gex} + M_{ex}$.
+	\item Lastly, transition $\pos$ from $\iset$ to $\fset$ and $M(\pos) = \rho(\pos)$.
+\end{enumerate}
+\item \label{enum:rloop-gas} Loop over cells that will be transitioned from interface to gas cells, i.e. loop over $\pos \in \iset_g$, and:
+\begin{enumerate}
+	\item Let $M_{ex} = M$.
+	\item Calculate the unit norm outward from the interface, i.e. toward empty space, $\mathbf{n}$.
+	Initialize $v_{sum} = 0$.
+	\item For all cells in the neighborhood,
+	\begin{enumerate}
+		\item if an interface cell, store in a data structure, $\iset_{r}$, and for the discrete velocity vector direction, $\pvel_i$, of the respective neighbor, let $v_i = \begin{cases}
+					-\mathbf{n} \cdot \pvel_i, & \mathbf{n} \cdot \pvel_i < 0 \\
+					0, & \text{otherwise}
+				\end{cases}$.
+		\item $v_{sum} = v_{sum} + v_i$.
+	\end{enumerate}
+	\item \label{enum:redist-dop-g} If $v_{sum} \ge 0$ and $\iset_r \neq \emptyset$, then for each cell, $\pos_j \in \iset_r$, redistribute the excess mass according to $M(\pos_j) = M(\pos_j) +  M_{ex} \frac{v_i}{v_{sum}}$.
+	\item \label{enum:redist-neighbors-g} If $v_{sum} = 0$ and $\iset \neq \emptyset$, then for each cell, $\pos_j \in \iset_r$, redistributed the excess mass according to $M(\pos_j) = M(\pos_j) + M_{ex} / n_r$ where $n_r$ is the number of cells in $\iset_r$.
+	\item Otherwise, increment the global excess mass, $M_{gex} = M_{gex} + M_{ex}$.
+	\item Lastly, transition $\pos$ from $\iset$ to $\gset$ and $M(\pos) = 0$.
+\end{enumerate}
+\item \label{enum:final-redist} The global excess mass, i.e. the mass that could not be redistributed by other means, is redistributed according to:
+\begin{enumerate}
+	\item \label{enum:final-rloop} for all $\pos \in \iset$, $M(\pos) = M(\pos) + M_{gex} / n_i$ where $n_i$ is equal to the number of cells in the interface set, $\iset$.
+\end{enumerate}
+\end{enumerate}
+The algorithm, as presented, ensures both mass conservation and continuity of the free-surface.
+Moreover, when mass redistribution inevitably occurs, it is first attempted to be redistributed and weighted in the direction in which the interface is propagating, e.g. as in Step \ref{enum:rloop-fluid}.\ref{enum:redist-dop-f} or \ref{enum:rloop-gas}.\ref{enum:redist-dop-g}.
+If there are no interface cells in the direction of interface propagation, it is instead redistributed to neighboring interface cells, e.g. Step \ref{enum:rloop-fluid}.\ref{enum:redist-neighbors-f} or \ref{enum:rloop-gas}.\ref{enum:redist-neighbors-g}.
+On the off-chance that there are no neighboring cells which are interface cells, the excess mass is added onto the global excess mass, $M_{gex}$, which is eventually redistributed among all of the interface cells, e.g. Step \ref{enum:final-redist}.
+The hierarchy of possible redistribution steps, though seemingly complex, ensures that mass redistribution is done in the most physically meaningful way as is possible. % We may need to hard code references to steps in here...
+Lastly, note that the interface normal, $\mathbf{n}$, is calculated using a finite difference approximation,
+\begin{equation} \label{eq:n}
+\mathbf{n}_{ij} = \frac{1}{2} \begin{Bmatrix}
+\epsilon_{i-1, j} - \epsilon_{i+1, j} \\
+\epsilon_{i, j-1} - \epsilon_{i, j+1}
+\end{Bmatrix}
+\end{equation}
+\noindent where $i$ is the index of the node in the x-direction and $j$ is the index of the node in the y-direction.
+
+\subsection{Boundary Conditions at the Free-Surface} \label{sec:bc-at-fs}
+
+Two important considerations not yet discussed are how boundary conditions are implemented at the interface in order to capture the interaction between the primary phase and the secondary phase, and a still more subtle consideration, how particle distributions that are missing from the streaming step are reconstructed.
+The degrees of freedom, i.e. $f_i$, are not tracked for gas cells.
+After the streaming step, interface cells will be missing particle distributions, $f_i$, that would have streamed from gas cells--an issue that is depicted in \Fref{fig:ps}.
+
+\begin{figure}
+\centering
+\includegraphics{figs/ps}
+\caption{Example of a scenario in which particle distributions are missing post-streaming.}
+\label{fig:ps}
+\end{figure}
+
+The missing particle distributions need reconstructed.
+Also momentum needs to be conserved at the interface.
+When the particle distributions are reconstructed, they will be reconstructed in such a way that momentum is conserved between the primary fluid and the secondary fluid.
+In order to perform the reconstruction, there are a few assumptions that need to be made:
+\begin{enumerate}
+\item The velocity of the secondary fluid is equal to the velocity of the primary fluid at the free-surface, i.e. there is no-slip between the two-fluids.
+\item The secondary fluid is at equilibrium and at constant pressure, $p_G$.
+\item There is a force balance for opposite lattice directions.
+\end{enumerate}
+Because particle distributions are a measure of momentum transport, the pressure of the secondary fluid can be converted to the particle distribution scale and the missing particle distribution can be solved for algebraically.
+Consider \Fref{fig:fbi}.
+Balancing the opposite lattice directions results in:
+\begin{eqnarray}
+f_i + f_\opidx &=& f_\opidx(\rho_G, \mathbf{u}) + f_i(\rho_G, \mathbf{u}), \\
+\label{eq:reconst} f_\opidx &=& f_\opidx(\rho_G, \mathbf{u}) + f_i(\rho_G, \mathbf{u}) - f_i.
+\end{eqnarray}
+Missing distribution functions can be reconstructed according to \eqref{eq:reconst}.
+In order for conservation of momentum to be satisfied along the free-surface, distribution functions coming from the direction of the interface normal, $\mathbf{n}$, must also be reconstructed.
+Thus distribution functions are reconstructed if coming from a gas cell, or if $\mathbf{n} \cdot \pvel_\opidx > 0$.
+
+\begin{figure}
+\centering
+\includegraphics{figs/force-bal-at-interface}
+\caption{Particle distributions at free-surface for a pair of opposing lattice directions after gas pressure, $\rho_G$, is in the particle distribution form.}
+\label{fig:fbi}
+\end{figure}
+
+\subsection{Resulting Algorithm}
+
+The details of the free-surface algorithm have not been presented in chronological order, but instead in a logical order.
+For reasons of clarity, the steps of the algorithm are presented in order:
+\begin{enumerate}
+\item Mass transfer (\Fref{sec:mass-transfer})
+\item Stream
+\item Reconstruct particle distributions (\Fref{sec:bc-at-fs})
+\item Collide
+\item Enforce boundary conditions
+\item Calculate macroscopic variables
+\item Update cell states (\Fref{sec:cell-updates})
+\end{enumerate}
+
+\section{Wellbore Cementing} \label{sec:results}
+
+The free-surface LBM model was implemented and used to simulate primary cementing in a dry annulus.
+The focus of the current study is the performance of different cement slurry mixes and characteristic flows for different imperfect wellbore geometries.
+Because the focus in regards to the wellbore is on geometrical imperfections, the entire wellbore annulus is not simulated, but instead a small section around a geometrical imperfection is considered.
+An example is shown in \Fref{fig:wellbore-cementing-schematic}.
+
+\begin{figure}
+\centering
+\includegraphics{figs/wellbore-cementing-schematic}
+\caption{Example simulation used in wellbore cementing study.
+The black rectangles on the left boundary represent notches protruding from the rock formation surface. The contours are of the primary fluid (cement slurry) mass.}
+\label{fig:wellbore-cementing-schematic}
+\end{figure}
+
+\section{Conclusion} \label{sec:conclusion}
+
+\chapter{Conclusion}
 
 \bibliographystyle{abbrvnat}
 \bibliography{master}
