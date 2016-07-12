@@ -76,6 +76,25 @@
 \copyrightpage
 
 \begin{abstract}
+
+When oil and gas wellbores are drilled, barriers must be put in place to ensure that fluids do not leak out of the wellbore.
+Wellbore leakage can lead to environmental damage, loss of pressure at the wellhead, and consequently, loss of production.
+An important yet vulnerable barrier is the cement annulus.
+Creating the cement annulus, a process known as primary cementing, is difficult to perform optimally.
+Every well has unique subsurface conditions, and so no cement slurry mix design both performs well and is economical for all wells.
+Although some general guidelines and analytical techniques exist for approximating the performance of a cement slurry mix, the mechanics of primary cementing are complex.
+Computational methods can help better understand primary cementing and aid designers in determining the optimal mix.
+The lattice Boltzmann method (LBM) is a promising technique for simulating primary cementing because it is well-suited for efficiently simulating non-Newtonian flows, multiphase multicomponent flows, and flows through complex geometries--namely, some of the complexities associated with the mechanics of primary cementing.
+
+Despite the advantages of LBM, there are considerations that must be made, as with all computational methods, in regards to the accuracy and numerical stability of the solution.
+Issues with accuracy and numerical stability are especially prevalent in non-Newtonian flows because of the nonlinear constitutive relationship.
+\Fref{cha:lbm-stability} is a numerical investigation of the accuracy, stability, and computational efficiency of different LBM models in simulating non-Newtonian flows.
+
+Once the ground-work has been laid for simulating non-Newtonian flows using LBM, the algorithm was extended in \Fref{cha:lbm-cement} to incorporate simulation of free-surface flows.
+The extended LBM model was used to study primary cementing of a dry annulus, i.e. an annulus that is not filled with drilling mud.
+More specifically, the study involved parameterizing different cement slurry flows and investigating how well each slurry flow filled different wellbore geometries.
+The study is followed by conclusions and a discussion of future work.
+
 \end{abstract}
 
 \tableofcontents
@@ -85,7 +104,7 @@
 %\preface
 % acknowledgements and such
 
-\chapter{Numerical Investigation of the Accuracy, Stability, and Efficiency of Lattice Boltzmann Models in Simulating Non-Newtonian Flows}
+\chapter{Numerical Investigation of the Accuracy, Stability, and Efficiency of Lattice Boltzmann Models in Simulating Non-Newtonian Flows} \label{cha:lbm-stability}
 
 \section*{Abstract}
 
@@ -96,7 +115,7 @@ LBM is a statistical mechanical approach for simulating fluid flow.
 Each time step consists of streaming particle distributions to neighboring nodes, and collisions of particle distributions at each node through a collision operator.
 The collision operator is of interest because it has a lot of control over the physics that are simulated, e.g. constitutive laws, interfacial dynamics, etc., and it has implications on numerical stability and computational efficiency.
 In this paper, various collision operators and methods for stability enhancement were examined for their suitability for simulating non-Newtonian flows in terms of accuracy, numerical stability and computational efficiency.
-The investigation was be carried out, not as a rigorous mathematical treatment, but instead as a numerical study looking for qualitative, yet practical, results.
+The investigation was carried out, not as a rigorous mathematical treatment, but instead as a numerical study looking for qualitative, yet practical, results.
 The numerical investigation included testing the BGK and MRT collision operators, with and without entropic filtering, as applied to Bingham plastics and power-law fluid flows.
 Two different benchmark problems were chosen for the flows: Poiseuille flow, and lid-driven square cavity flow.
 
@@ -1110,11 +1129,22 @@ The results showed that:
 
 % MG: should we mention: code is open source? input files used in this study are also freely available?
 
-\chapter{Free Surface and non-Newtonian Simulation of Wellbore Cementing using the Lattice Boltzmann Method}
+\chapter{Free Surface and non-Newtonian Simulation of Wellbore Cementing using the Lattice Boltzmann Method} \label{cha:lbm-cement}
 
 \section*{Abstract}
 
-Wellbore cementing is 
+When oil and gas wellbores are drilled, barriers must be put in place to ensure that fluids do not leak out of the wellbore.
+Wellbore leakage can lead to environmental damage, loss of pressure at the wellhead, and consequently, loss of production.
+An important yet vulnerable barrier is the cement annulus.
+Creating the cement annulus, a process known as primary cementing, is difficult to perform optimally.
+Every well has unique subsurface conditions, and so no cement slurry mix design both performs well and is economical for all wells.
+Although some general guidelines and analytical techniques exist for approximating the performance of a cement slurry mix, the mechanics of primary cementing are complex.
+Computational methods can help better understand primary cementing and aid designers in determining the optimal mix.
+The lattice Boltzmann method (LBM) is a promising technique for simulating primary cementing because it is well-suited for efficiently simulating non-Newtonian flows, multiphase multicomponent flows, and flows through complex geometries--namely, some of the complexities associated with the mechanics of primary cementing.
+In \Fref{sec:numerical-methods}, an algorithm for simulating non-Newtonian free-surface flow using LBM is presented.
+The algorithm was implemented and used to study primary cementing of a dry annulus, i.e. an annulus that is not filled with drilling mud.
+More specifically, the study involved parameterizing different cement slurry flows and investigating how well each slurry flow filled different wellbore geometries.
+The study is followed by conclusions and a discussion of future work.
 
 \section{Introduction}
 
@@ -1436,7 +1466,7 @@ For reasons of clarity, the steps of the algorithm are presented in order:
 \newcommand{\anh}{1'}
 \newcommand{\nsteps}{16000}
 
-\section{Wellbore Cementing} \label{sec:results}
+\section{Primary Cementing} \label{sec:results}
 
 The free-surface LBM model was implemented and used to simulate primary cementing in a dry annulus, i.e. an annulus without drilling mud.
 The focus of the current study was the performance of different cement slurry mixes and characteristic flows when used to cement different imperfect wellbore geometries.
@@ -1500,8 +1530,6 @@ The lattice Boltzmann method extended for simulating non-Newtonian and free-surf
 \item LBM is easily written in parallel and as hardware architectures shifts sequential to parallel computing, it becomes increasingly important that code for simulating complex and computationally expense phenomena be written in parallel.
 \item The LBM no-slip boundary condition works well with complex geometries, such as those that occur in realistic rock formation surfaces in drilled wellbores.
 \end{itemize}
-
-\chapter{Conclusion}
 
 \bibliographystyle{abbrvnat}
 \bibliography{master}
