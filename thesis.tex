@@ -216,7 +216,7 @@ A numerical study can help to determine approximate numerical values, domains, a
 
 %MG: is the beginning of this methods section too much fluff now? Would our audiance consider it fluff?
 
-\subsection{Lattice Boltzmann Method: Overview}
+\subsection{Lattice Boltzmann Method: Overview} \label{sec:LBM}
 
 The Lattice Boltzmann method is a numerical approach that uses statistical mechanics to represent a variety of physical processes, such as fluid flow.
 More specifically, LBM can be thought of as a special finite difference discretization of the lattice Boltzmann equation~\cite{chen1998lattice}.
@@ -253,6 +253,7 @@ The lattice is two-dimensional with nine discrete velocities at each node.
 There is a stationary particle, there are four discrete velocities of magnitude 1, $(\pm1,0)$, $(0,\pm1)$, and there are four discrete velocities of magnitude $\sqrt{2}$, $(\pm1, \pm1)$.
 
 \begin{figure}
+  \centering
   \includegraphics[]{figs/d2q9}
   \caption{D2Q9 lattice}
   \label{fig:d2q9}
@@ -343,12 +344,14 @@ An example of the nonphysical oscillations that would occur for $f_5$ in \Fref{f
 Considering the effect oscillations of particle distributions will have on macroscopic variables and, consequently, local quasiequilibriums, positive feedback loops can occur causing the system to ``blow up'' or ``pollute'' the system enough to make the results highly nonphysical and altogether useless \cite{gorban2014enhancement}.
 
 \begin{figure}
+	\centering
     \includegraphics[width=\linewidth]{figs/sharp_gradient}
     \caption{Example of an LBM approximation with a sharp gradient in the macroscopic flow velocity}
     \label{fig:sharp-grad}
 \end{figure}
 
 \begin{figure}
+	\centering
     \includegraphics[width=\linewidth]{figs/overrelaxation_tau-0513}
     \caption{Example of oscillations that can occur as a result of overrelaxation (this example is related to the example shown in \Fref{fig:sharp-grad}); the relaxation time, $\omega = 1.95$ and $\nu \approx 0.0043$}
     \label{fig:overrelaxation}
@@ -514,7 +517,7 @@ The increase in computational expense is exacerbated by the fact that approximat
 
 \subsection{Non-Newtonian Constitutive Equations}
 
-\subsubsection{Bingham Plastic}
+\subsubsection{Bingham Plastic} \label{sec:bp}
 
 The Bingham plastic constitutive model is popular for yield stress flows.
 A Bingham plastic does not flow, i.e. the strain-rate is zero, when the shear stress is below the yield stress, and behaves in an almost Newtonian manner when the shear stress is above the yield stress.
@@ -582,6 +585,7 @@ The total height of the channel will be denoted by $H$.
 The center of the channel is $y = 0$ and $y \in [-h, h]$ where $h = \frac{H}{2}$.
 
 \begin{figure}
+	\centering
     \includegraphics[width=\linewidth]{figs/poise-schematic}
     \caption{Schematic of Poiseuille flow; no-slip boundary conditions are enforced at the top and bottom boundaries, and periodic boundary conditions are enforced at the left and right boundaries.}
     \label{fig:poise-schematic}
@@ -613,6 +617,7 @@ The Bingham number was computed by $Bn = \frac{\tau_y H}{\mu_p U}$.
 % MG: it might be better to normalize the time with respect to the fastest, BGK with no filtering
 
 \begin{table}
+\centering
 \caption{Bingham plastic Poiseuille flow}
 \vspace{0.5cm}
 \begin{tabulary}{\linewidth}{l l r r r r r r r r}
@@ -657,12 +662,14 @@ The LBM approximations are plotted with the analytical solution for the BGK coll
 In order to better understand why median filtering did not eliminate the noise in high yield stress flows, but instead exacerbate the problem, it is necessary to investigate what is happening at the particle distribution scale.
 
 \begin{figure}
+\centering
 \includegraphics[width=\textwidth]{figs/poise-bingham/bgk-5/analytical-vs-approx.png}
 \caption{LBM approximation using BGK and $m = 10^5$ compared to the analytical solution for $\tau_y = 16 \times 10^{-5}$.}
 \label{fig:bing-analyt-bgk-5}
 \end{figure}
 
 \begin{figure}
+	\centering
     \includegraphics[width=\textwidth]{figs/poise-bingham/bgk-8/analytical-vs-approx.png}
     \caption{LBM approximation using BGK and $m = 10^8$ compared to the analytical solution for $\tau_y = 16 \times 10^{-5}$.}
 \label{fig:bing-analyt-bgk-8}
@@ -676,6 +683,7 @@ All filtering schemes suffered from approximately the same level of noise.
 
 %MG: reformat these images so that text is more readable
 \begin{figure}
+\centering
 \begin{tabulary}{\linewidth}{c c}
 \includegraphics[width=2.1in]{figs/poise-bingham/bgk-5/feq-vs-f_5.png}
 &
@@ -695,6 +703,7 @@ The MRT collision operator was therefor the most accurate solution for all cases
 \Fref{fig:feq-vs-f_mrt} compares particle distributions to quasiequilibrium for the MRT model; in contrast to the BGK with $m = 10^8$, there is no noise in the quasiequilibrium distributions.
 
 \begin{figure}
+	\centering
     \begin{tabulary}{\linewidth}{c c}
         \includegraphics[width=2.1in]{figs/poise-bingham/mrt/feq-vs-f_5.png}
         &
@@ -713,8 +722,9 @@ A natural question would be to ask ``if the strength of the MRT collision operat
 The values measured for the BGK with $m = 10^8$, with and without median filtering, were significantly higher than for either the MRT or BGK with $m = 10^5$ collision schemes--which suggests that the numerical noise the BGK with $m = 10^8$ suffered from was in part due to the $\epsilon$ moment.
 
 \begin{figure}
+	\centering
     \includegraphics[width=\linewidth]{figs/poise-bingham/epsilon}
-    \caption{Evoluation of relative $L_2$, $\epsilon^{neq}$ with time. The norm of the $\epsilon^{neq}$ across the height of the channel is an indicator of an increase in oscillations at the lattice level due to the $\epsilon$ moment.}
+    \caption{Evolution of relative $L_2$, $\epsilon^{neq}$ with time. The norm of the $\epsilon^{neq}$ across the height of the channel is an indicator of an increase in oscillations at the lattice level due to the $\epsilon$ moment.}
     \label{fig:epsilon}
 \end{figure}
 
@@ -729,8 +739,9 @@ As expected, the $q_x^{neq}$ relative $L_2$ for the BGK with $m = 10^8$ was slig
 These results are consistent with the solution noise and error.
 
 \begin{figure}
+	\centering
     \includegraphics[width=\linewidth]{figs/poise-bingham/qx}
-    \caption{Evoluation of relative $L_2$, $q_x^{neq}$ with time. The norm of the $q_x^{neq}$ across the height of the channel is an indicator of an increase in oscillations at the lattice level due to the $q_x$ moment.}
+    \caption{Evolution of relative $L_2$, $q_x^{neq}$ with time. The norm of the $q_x^{neq}$ across the height of the channel is an indicator of an increase in oscillations at the lattice level due to the $q_x$ moment.}
     \label{fig:qx}
 \end{figure}
 
@@ -768,6 +779,7 @@ The Reynold's number was computed by $Re = \frac{\rho U^{2-n} H^n}{k}$, where $U
 % MG: it might be better to normalize the time with respect to the fastest, BGK with no filtering
 
 \begin{table}
+\centering
 \caption{Power-law Poiseuille flow}
 \vspace{0.5cm}
 \begin{tabulary}{\linewidth}{l l r r r r r}
@@ -811,6 +823,7 @@ Lid-driven cavity flow is generally characterized by a square cavity where a flu
 Lid-driven cavity flow is depicted in \Fref{fig:lid-driven}.
 
 \begin{figure}
+\centering
 \includegraphics{figs/lid-driven}
 \caption{Schematic of lid-driven cavity flow; a velocity is prescribed tangential to the top boundary and no-slip is enforced at the remaining boundaries.}
 \label{fig:lid-driven}
@@ -827,6 +840,7 @@ In reference to computational time, each of the simulations in this section were
 The lid velocity was prescribed at $u_o = 0.1$.
 For the MRT relaxation matrix, the free parameters were set to $s_1 = 1.1$, $s_2 = 1.0$, and $s_4 = s_6 = 1.2$.
 All coordinate values presented in this section (used to describe the location of the center of vortices) are given normalized with respect to the length of the cavity side, i.e. as $(x / L, y / L)$.
+Note that all results presented as ``-'' indicate that the tests were numerically unstable to the extent that the degrees of freedom all over the domain were ``NaN''.
 
 \subsubsection{Bingham Plastic Fluids}
 
@@ -836,7 +850,9 @@ Tables \ref{tab:lid-bing1}--\ref{tab:lid-bing100} compare the center location of
 The main vortex location is determined by calculating the stream function using Simpson's rule and finding where it attains a maximum.
 
 \begin{table}
+\centering
 \caption{Bingham plastic, lid-driven cavity flow; $Bn = 1$.}
+\small
 \vspace{0.5cm}
 \begin{tabulary}{\linewidth}{r r l l r r r r}
 $Bn$ & $Re$ & \pbox{20cm}{Collision \\ Operator} & \pbox{20cm}{Median \\ Filter} & $m$ & \pbox{20cm}{Vortex \\ Center \\ (literature)} &  \pbox{20cm}{Vortex \\ Center \\ (LBM)} & \pbox{20cm}{Time \\ (sec)} \\
@@ -873,7 +889,9 @@ $Bn$ & $Re$ & \pbox{20cm}{Collision \\ Operator} & \pbox{20cm}{Median \\ Filter}
 \label{tab:lid-bing1}
 \end{table}
 \begin{table}
+\centering
     \caption{Bingham plastic, lid-driven cavity flow; $Bn = 10$.}
+    \small
     \vspace{0.5cm}
 \begin{tabulary}{\linewidth}{r r l l r r r r}
     $Bn$ & $Re$ & \pbox{20cm}{Collision \\ Operator} & \pbox{20cm}{Median \\ Filter} & $m$ & \pbox{20cm}{Vortex \\ Center \\ (literature)} &  \pbox{20cm}{Vortex \\ Center \\ (LBM)} & \pbox{20cm}{Time \\ (sec)} \\
@@ -910,7 +928,9 @@ $Bn$ & $Re$ & \pbox{20cm}{Collision \\ Operator} & \pbox{20cm}{Median \\ Filter}
 \label{tab:lid-bing10}
 \end{table}
 \begin{table}
+\centering
     \caption{Bingham plastic, lid-driven cavity flow; $Bn = 100$.}
+    \small
     \vspace{0.5cm}
     \begin{tabulary}{\linewidth}{r r l l r r r r}
         $Bn$ & $Re$ & \pbox{20cm}{Collision \\ Operator} & \pbox{20cm}{Median \\ Filter} & $m$ & \pbox{20cm}{Vortex \\ Center \\ (literature)} &  \pbox{20cm}{Vortex \\ Center \\ (LBM)} & \pbox{20cm}{Time \\ (sec)} \\
@@ -977,7 +997,9 @@ The main vortex location is determined by calculating the stream function using 
 
 %MG: two values still need filled in in these tables
 \begin{table}
+\centering
 \caption{Power-law, lid-driven cavity flow; $n = 0.5$.}
+\small
 \vspace{0.5cm}
 \begin{tabulary}{\linewidth}{r r l l r r r}
 $n$ & $Re$ & \pbox{20cm}{Collision \\ Operator} & \pbox{20cm}{Median \\ Filter} & \pbox{20cm}{Vortex \\ Center \\ (literature)} &  \pbox{20cm}{Vortex \\ Center \\ (LBM)} & \pbox{20cm}{Time \\ (sec)} \\
@@ -1011,7 +1033,9 @@ $n$ & $Re$ & \pbox{20cm}{Collision \\ Operator} & \pbox{20cm}{Median \\ Filter} 
 \end{table}
 
 \begin{table}
+\centering
 \caption{Power-law, lid-driven cavity flow; $n = 1.5$.}
+\small
 \vspace{0.5cm}
 \begin{tabulary}{\linewidth}{r r l l r r r}
 $n$ & $Re$ & \pbox{20cm}{Collision \\ Operator} & \pbox{20cm}{Median \\ Filter} & \pbox{20cm}{Vortex \\ Center \\ (literature)} &  \pbox{20cm}{Vortex \\ Center \\ (LBM)} & \pbox{20cm}{Time \\ (sec)} \\
@@ -1085,8 +1109,6 @@ The results showed that:
 \end{itemize}
 
 % MG: should we mention: code is open source? input files used in this study are also freely available?
-
-\section*{Acknowledgements}
 
 \chapter{Free Surface and non-Newtonian Simulation of Wellbore Cementing using the Lattice Boltzmann Method}
 
@@ -1173,7 +1195,20 @@ What follows in \Fref{sec:results} is a preliminary study on how different chara
 
 % We need to explain/justify why 2D vs. 3D
 
-\subsection{Yield Stress Flow}
+For the sake of computational simplicity and computational efficiency, the numerical study was carried out using a two-dimensional lattice Boltzmann method on the D2Q9 lattice.
+The collision operator used was the linear BGK collision operator.
+For more details on the Lattice Boltzmann Method, the D2Q9 lattice, or the BGK collision operator, see \Fref{sec:LBM}.
+
+\subsection{Cement Slurry Constitutive Relationship}
+
+Cement slurry is best modeled using a non-Newtonian constitutive relationship.
+A simple, yet accurate constitutive relationship for cement slurry is the Bingham plastic constitutive relationship.
+Bingham plastics are characterized by a plastic viscosity, which is analogous to the dynamic viscosity for Newtonian fluids, and a yield stress, which is a stress threshold that, if the shear stress does not exceed, the strain-rate is zero.
+The Bingham plastic constitutive model is difficult to work with numerically.
+Often, a smooth approximation is used instead--the Papastasiou approximation.
+Throughout this chapter the Papastasiou approximation with a stress growth exponent of $m = 10^6$ is used.
+The BGK collision operator with $m = 10^6$ can be seen as a compromise between computational efficiency and accuracy for simulating Bingham plastic flows.
+For more detail on Bingham plastics or the Papastasiou approximation, see \Fref{sec:bp}.
 
 \subsection{Free Surface Flow}
 
@@ -1193,7 +1228,7 @@ The fluid fraction concept is similar to how fluids are tracked in Volume of Flu
 
 \subsubsection{Mass Transfer}
 
-It is important to note that the particle distributions, $f_0, f_1, ..., f_8$, cannot be used to directly determine the fluid fraction of a cell.
+It is important to note that the particle distributions, $f_0, ..., f_8$, cannot be used to directly determine the fluid fraction of a cell.
 Neither can the zeroth velocity moment of the particle distributions, $\rho = \sum_i f_i$.
 For the algorithm used in this work, neither can be considered a measure of the amount of primary fluid in a cell, i.e. $\epsilon(\pos, t) \neq \epsilon(\mathbf{f(\pos, t)}, \rho(\pos, t))$.
 Instead, each $f_i$ is related to the amount of primary fluid advection in each of the $\pvel_i$ discrete velocity directions.
@@ -1395,10 +1430,16 @@ For reasons of clarity, the steps of the algorithm are presented in order:
 \item Update cell states (\Fref{sec:cell-updates})
 \end{enumerate}
 
+\newcommand{\nodesi}{50}
+\newcommand{\nodesj}{500}
+\newcommand{\anw}{$1\frac{1}{4}$"}
+\newcommand{\anh}{1'}
+\newcommand{\nsteps}{16000}
+
 \section{Wellbore Cementing} \label{sec:results}
 
-The free-surface LBM model was implemented and used to simulate primary cementing in a dry annulus.
-The focus of the current study is the performance of different cement slurry mixes and characteristic flows for different imperfect wellbore geometries.
+The free-surface LBM model was implemented and used to simulate primary cementing in a dry annulus, i.e. an annulus without drilling mud.
+The focus of the current study was the performance of different cement slurry mixes and characteristic flows when used to cement different imperfect wellbore geometries.
 Because the focus in regards to the wellbore is on geometrical imperfections, the entire wellbore annulus is not simulated, but instead a small section around a geometrical imperfection is considered.
 An example is shown in \Fref{fig:wellbore-cementing-schematic}.
 
@@ -1410,7 +1451,55 @@ The black rectangles on the left boundary represent notches protruding from the 
 \label{fig:wellbore-cementing-schematic}
 \end{figure}
 
+The simulations were carried out on a $\nodesi \times \nodesj$ lattice, which corresponds to an annulus width of \anw \hspace{0.05cm} and a cross-sectional height of \anh.
+For the mass inlet, a \citet{zou1997pressure} velocity boundary condition was used in conjuction with a constant mass boundary condition, i.e. $M(\pos_i, t) = M_0 = 1.0$ for all $\pos_j$ along the inlet.
+This corresponded to a constant mass flow, $\dot{M}_{in} = M_0 u_0$, at inlet.
+For the outlet, mass was allowed to transfer out of the domain during the mass transfer step such that $f_\opidx(\pos + \pvel_i \Delta t, t) = 0$ in \eqref{eq:dM} for all $\pos + \pvel_i$ that lie outside of the domain on the other side of the mass outlet, i.e. there is no backflow.
+All simulations were executed for \nsteps time steps.
+
+Both the rock formation geometries and cement slurry flow properties were parameterized.
+The different imperfect geometries that were considered at the rock formation surface were: flow over a cavity that is 30\% of the annulus width, ``cav $30 \times 1$''; flow over a cavity that is 60\% of the annulus width, ``cav $60 \times 1$''; flow over a square obstacle with sides that are 30\% of the annulus width, ``obs $30 \times 1$''; flow over two square obstacles with sides that are 30\% of the annulus width, ``obs $30 \times 2$''; flow over a square obstacle with sides that are 60\% of the annulus width, ``obs $60 \times 1$''; flow over two square obstacles with sides that are 60\% of the annulus width, ``obs $60 \times 2$''; and flow over a rectangular obstacle with width that is 60\% of the annulus width and length that is four times the width, ``obs $60 \times L$''.
+The wellbore geometries are depicted in \Fref{fig:wellbore-geometries}.
+
+\begin{figure}
+\includegraphics[width=\linewidth]{figs/wellbore-geometries}
+\caption{Wellbore geometries considered in the study.}
+\label{fig:wellbore-geometries}
+\end{figure}
+
+In addition to wellbore geometry, different cement slurry material properties and cement slurry flow rates were parameterized, which are characterized by the dimensionless Reynold's number, $Re = \frac{\rho U L}{\mu_p}$, and Bingham number, $Bn = \frac{\tau_y L}{\mu_p U}$, of the flow where $L \equiv $ the width of the annulus.
+The goal of the study was to investigate which Reynold's numbers and Bingham numbers were preferable for each geometry, and which Reynold's numbers and Bingham numbers performed well for all geometries.
+The dimensionless numbers were parameterized as follows, $(Re, Bn) = (1.00, 4.00)$,  $(2.50, 0.00)$, $(2.50, 1.00)$, $(2.50, 10.0)$, $(2.50, 25.0)$, $(5.00, 5.00)$, and $(12.5, 2.0)$.
+\Fref{fig:percent-filled} shows the percentage of the \anh \hspace{0.05cm} section wellbore filled after cementing.
+
+\begin{figure}
+\centering
+\includegraphics[width=\linewidth]{figs/percent_filled}
+\caption{Wellbore geometries considered in the study.}
+\label{fig:percent-filled}
+\end{figure}
+
+\Fref{fig:percent-filled} shows that there are some general statements to be made about what properties of the cement slurry flow are preferable.
+For example, low yield stress, i.e. low Bingham number flows, had good fill for every wellbore geometry considered.
+In addition, the good performance of the $Re = 5.00, Bn = 5.00$ and $Re = 12.5, Bn = 2.0$ slurry flows suggests that a if the ratio of $Bn / Re$ is low, that the slurry flow will perform well for cementing a dry hole.
+As $Bn / Re$ increases, it appears that, in certain cases and wellbore geometries, the slurry flow tends to perform worse.
+What is interesting to note is that for slurry flows that performed poorly in some cases, there was a lack of consistency across wellbore geometries in terms of which slurry flow performed worse and which slurry flows performed better, which suggests that generalities cannot always be made and that computational methods are necessary for understanding and designing slurry mixes for real-life wellbores.
+
 \section{Conclusion} \label{sec:conclusion}
+
+An LBM model for simulating the non-Newtonnian and free-surface flows that occurs while cementing dry annuli in oil and gas wellbores was implemented and presented.
+It was then used to study how different cement slurry flows, parameterized by different Reynold's numbers and Bingham numbers, would perform in different wellbore geometries.
+It was found that in general, it is preferable that the yield stress and $Bn / Re$ ratio of the slurry flow be low.
+However, beyond these considerations, it is not clear what slurry flow may be preferable for a given rock formation geometry.
+The results suggest that computational methods are necessary for (a) better understanding the mechanics of primary cementing and (b) for designing a cement mix for a given wellbore.
+It is a goal of the current work to identify a computational method for efficiently simulating cement slurry flow through a realistic wellbore so that optimization methods may be used to determine the optimal cement slurry flow for primary cementing.
+The lattice Boltzmann method extended for simulating non-Newtonian and free-surface flows as presented in the current work has several properties that make it a good candidate for such a design framework:
+\begin{itemize}
+\item LBM is well-suited for simulating non-Newtonian fluids because the strain-rate tensor is computed local to each node and is second-order accurate~\cite{kruger2009shear,kruger2010second}.
+\item LBM is well-suited for simulating multiphase multicomponent flows and free-surface flows because it can handle complicated interface shapes between fluid phases and components.
+\item LBM is easily written in parallel and as hardware architectures shifts sequential to parallel computing, it becomes increasingly important that code for simulating complex and computationally expense phenomena be written in parallel.
+\item The LBM no-slip boundary condition works well with complex geometries, such as those that occur in realistic rock formation surfaces in drilled wellbores.
+\end{itemize}
 
 \chapter{Conclusion}
 
