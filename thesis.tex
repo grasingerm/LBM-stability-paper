@@ -42,7 +42,7 @@
 \newcommand{\pos}{\mathbf{x}}
 \newcommand{\pvel}{\boldsymbol{\xi}}
 \newcommand{\mvel}{\mathbf{u}}
-\newcommand{\colop}{\boldsymbol{\Omega}}
+\newcommand{\colop}{\Omega}
 \newcommand{\grad}{\boldsymbol{\nabla}}
 \newcommand{\mmom}{\mathbf{j}}
 \newcommand{\transM}{\mathbf{M}}
@@ -353,8 +353,8 @@ For incompressible Newtonian flow, the relaxation time is related to the kinemat
 From this relationship it is clear that $\omega \in [0.0, 2.0]$, otherwise the viscosity would be negative.
 
 Despite the utility of the BGK collision operator, it does have a few drawbacks.
-For example, in low viscosity flows the BGK operator results in an over relaxation of particle distributions toward quasiequilibrium.
-It is well known that when large nonequilibrium distributions exist in the LBM approximation that over relaxation can result in nonphysical oscillations that are slow to decay~\cite{brownlee2007stability,dellar2003incompressible}.
+For example, in low viscosity flows the BGK operator results in an overrelaxation of particle distributions toward quasiequilibrium.
+It is well known that when large nonequilibrium distributions exist in the LBM approximation that overrelaxation can result in nonphysical oscillations that are slow to decay~\cite{brownlee2007stability,dellar2003incompressible}.
 To illustrate this, consider the example shown in \Fref{fig:sharp-grad}.
 If $a >> 0$, then when $f_5(x,y)$ propagates to $f_5(x+1,y+1)$ during the streaming step (where $\pos = [x,y]$, $\pvel_5 = [1,1]$, and $\Delta t = 1$), $f_5(x+1,y+1)$ will be ``far'' from $f^{eq}_5(x+1,y+1)$ for the subsequent collision step.
 If $\nu \rightarrow 0$ then $\omega \rightarrow 2$ and \eqref{eq:bgk} results in $f_5(x+1,y+1)$ still being ``far'' from $f^{eq}_5(x+1,y+1)$ but on the ``other side''.
@@ -447,7 +447,7 @@ It is common practice, and~\citet{lallemand2000theory} recommends, that these th
 
 The MRT collision operator has a greater numerical stability than its BGK counterpart~\cite{lallemand2000theory,dellar2003incompressible,d2002multiple}, and because of the challenges associated with simulating non-Newtonian flow, the MRT collision operator has become popular for simulating non-Newtonian flows~\cite{chen2014simulations,fallah2012multiple,tang2011bingham,vikhansky2008lattice,chai2011multiple,grasinger2015simulation}.
 The main drawback of the MRT collision operator is its computational expense.
-Why MRT is more computationally expense is clear when one considers that \eqref{eq:mrt-colop} requires multiple matrix multiplications and \eqref{eq:bgk} requires none.
+Why MRT is more computationally expensive is clear when one considers that \eqref{eq:mrt-colop} requires multiple matrix multiplications and \eqref{eq:bgk} requires none.
 It has been reported that MRT is approximately 15\% slower than BGK~\cite{d2002multiple}, but this was in the context of Newtonian flow.
 As will be shown later, for certain LBM implementations and non-Newtonian flows the increase in computational expense can be much greater.
 
@@ -462,7 +462,7 @@ From this goal two questions naturally arise: ``under what criteria does one dec
 
 To answer the first question, consider the discussion in \Fref{sec:bgk} on problems with overrelaxation and nonphysical oscillations.
 Nonphysical oscillations due to overrelaxation would be damped out more quickly if particle distributions ``far'' from quasiequilibrium were brought closer to quasiequilibrium.
-A particle distribution vector, $\mathbf{f}$, ``far'' from equilibrium would therefor be a good candidate for artificial dissipation.
+A particle distribution vector, $\mathbf{f}$, ``far'' from equilibrium would therefore be a good candidate for artificial dissipation.
 There are many ways one can measure the distance between $\mathbf{f}$ and $\mathbf{f}^{eq}$; for example, a reasonable choice would be $||\mathbf{f} - \mathbf{f}^{eq}||_p$ for some $p$ norm.
 A metric that has been developed and used successfully for determining when artificial dissipation should be introduced at a lattice site is the so called relative nonequilibrium entropy~\cite{gorban2014enhancement,brownlee2006stabilization,brownlee2007stability,brownlee2008nonequilibrium,packwood2009entropy}.
 The relative nonequilibrium entropy, $\Delta S$, is given by:
@@ -492,7 +492,7 @@ In the current work, the criteria that is used for determining whether dissipati
 
 \noindent where $\overline{\Delta S}$ and $\sigma_{\Delta S}$ are the mean and standard of $\Delta S$, respectively--both are calculated using values over the domain for the current timestep--and $n_\sigma$ is the number of standard deviations greater than $\overline{\Delta S}$ that $\Delta S$ must be before dissipation is added.
 The number of standard deviations, $n_\sigma$, is chosen \textit{a priori}.
-The criteria described in \ref{eq:dissipation-criteria} has the advantage that one does not need to determine \textit{a priori} what constitutes ``far'' from quasiequilibrium, but instead can think in terms of what would be the maximum percentage of sites one would want artificial dissipation to be added to.
+The criteria described in \eqref{eq:dissipation-criteria} has the advantage that one does not need to determine \textit{a priori} what constitutes ``far'' from quasiequilibrium, but instead can think in terms of what would be the maximum percentage of sites one would want artificial dissipation to be added to.
 
 Just as there are many ways to measure a lattice site's distance from quasiequilibrium, or from that measure define criteria for artificial dissipation, there are also many different ways of deciding how much dissipation to add.
 One method of adding dissipation is the so-called Ehrenfests' regularization~\cite{brownlee2006stabilization}, and involves setting a lattice site that is chosen for artificial dissipation to its quasiequilibrium state.
@@ -532,7 +532,7 @@ D_{\alpha \beta} = -\frac{1}{2 \rho c_s^2 \Delta t} \sum_i \xi_{i \alpha} \xi_{i
 \noindent Computing the strain-rate tensor by either \eqref{eq:srtensor-bgk} or \eqref{eq:srtensor-mrt} is second order accurate in space~\cite{kruger2009shear,kruger2010second}.
 
 Upon comparison of \eqref{eq:srtensor-bgk} and \eqref{eq:srtensor-mrt}, it is clear that calculating the strain-rate tensor for the MRT collision operator is more computationally expensive than it is for the BGK collision operator.
-The increase in computational expense is exacerbated by the fact that approximating the apparent viscosity, $\mu_{app}$, by the algorithm outlined in \Fref{sec:lbm-for-nnf} requires iteration and therefor multiple calculations of the strain-rate tensor.
+The increase in computational expense is exacerbated by the fact that approximating the apparent viscosity, $\mu_{app}$, by the algorithm outlined in \Fref{sec:lbm-for-nnf} requires iteration and therefore multiple calculations of the strain-rate tensor.
 
 \subsection{Non-Newtonian Constitutive Equations}
 
@@ -572,7 +572,7 @@ The power-law relationship is given by,
 \tau = k \dot{\gamma}^n,
 \end{equation}
 \noindent where $k$ is the flow consistency index and $n$ is the flow behavior index.
-When $n = 1$, the \eqref{eq:pl} results in a Newtonian constitutive relationship with dynamic viscosity, $\mu = k$.
+When $n = 1$, \eqref{eq:pl} results in a Newtonian constitutive relationship with dynamic viscosity, $\mu = k$.
 A flow consistency index of $n < 1$ results in shear-thinning behavior, where as $n > 1$ results in shear-thickening.
 As with the Bingham plastic relationship, \eqref{eq:pl} can be modified to determine an apparent viscosity,
 \begin{equation} \label{eq:pl-mu-app}
@@ -718,7 +718,7 @@ All filtering schemes suffered from approximately the same level of noise.
 
 On average, the LBM model using the MRT collision operator was 2.9 times slower than the fastest model for the given material parameters.
 However, the increased computational time can be justified for the MRT collision operator because it did not suffer from the same level of noise as the BGK collision operator when using the more accurate approximation of the Bingham plastic model, i.e. when $m = 10^8$. 
-The MRT collision operator was therefor the most accurate solution for all cases.
+The MRT collision operator was therefore the most accurate solution for all cases.
 \Fref{fig:feq-vs-f_mrt} compares particle distributions to quasiequilibrium for the MRT model; in contrast to the BGK with $m = 10^8$, there is no noise in the quasiequilibrium distributions.
 
 \begin{figure}
@@ -864,7 +864,7 @@ Note that all results presented as ``-'' indicate that the tests were numericall
 \subsubsection{Bingham Plastic Fluids}
 
 For the Bingham plastic numerical tests the Reynold's number was varied, $Re = 100, 1000, 5000, 1000$, and the Bingham number was varied, $Bn = 1, 10, 100$ ($Bn$ and $Re$ were calculated the same as in \Fref{sec:poise-bing}).
-The collision schemes that were tested were: (1) BGK with $m = 10^5$, (2) BGK with $m = 10^8$, (3) BGK-BRT with $m = 10^8$, (4) BGK with $m = 10^8$ and median filtering, (5) MRT with $m = 10^8$ and MRT with $m = 10^8$ and median filtering.
+The collision schemes that were tested were: (1) BGK with $m = 10^5$, (2) BGK with $m = 10^8$, (3) BGK-BRT with $m = 10^8$, (4) BGK with $m = 10^8$ and median filtering, (5) MRT with $m = 10^8$ and (6) MRT with $m = 10^8$ and median filtering.
 Tables \ref{tab:lid-bing1}--\ref{tab:lid-bing100} compare the center location of the main vortex to literature values taken from~\citet{syrakos2014performance}.
 The main vortex location is determined by calculating the stream function using Simpson's rule and finding where it attains a maximum.
 
@@ -992,7 +992,7 @@ However, although the BGK with $m = 10^5$ was the fastest model in all cases, it
 
 For flows with $Re \ge 5000$, the BGK with $m = 10^8$ and median filtering produced numerically stable results, but did not always seem to be consistent with literature values.
 The apparent inaccuracy with regards to BGK with $m = 10^8$ and median filtering is probably due to how the numerical stability is enhanced--namely through artificial, nonphysical dissipation.
-In contrast to the nonphysical natural in which median filtering enhances stability, the stability enhancement used by MRT does not directly affect the macroscopic hydrodynamics of interest, so it again provides a stable, and typically, the most accurate solution. % MG: verify this sentence is correct
+In contrast to the nonphysical nature in which median filtering enhances stability, the stability enhancement used by MRT does not directly affect the macroscopic hydrodynamics of interest, so it again provides a stable, and typically, the most accurate solution. % MG: verify this sentence is correct
 The apparent superiority in terms of stability and accuracy of the MRT collision operator still comes at a price though.
 The MRT collision operator was, in general, 5-10 times slower than any of the BGK collision schemes.
 The extreme increase in computational expense is probably not due to the collision process itself, i.e. \eqref{eq:mrt-colop}, but instead calculating the strain-rate \eqref{eq:srtensor-mrt} for each iteration of the solution for $\mu_{app}$.
@@ -1010,7 +1010,7 @@ In summary,
 \subsubsection{Power-law Fluids}
 
 For the power-law numerical tests the Reynold's number was varied, $Re = 100, 1000, 5000, 1000$, and the flow behavior index was varied, $n = 0.5, 1.5$ ($Re$ was calculated the same as in \Fref{sec:poise-powerlaw}).
-The collision schemes that were tested were: (1) BGK, (2) BGK-BRT, (3) BGK with median filtering, (5) MRT with $m = 10^8$ and MRT with $m = 10^8$ and median filtering.
+The collision schemes that were tested were: (1) BGK, (2) BGK-BRT, (3) BGK with median filtering, (4) MRT with $m = 10^8$ and (5) MRT with $m = 10^8$ and median filtering.
 \Fref{tab:lid-powerlaw05} and \Fref{tab:lid-powerlaw15} compare the center location of the main vortex to literature values taken from~\citet{li2014simulation}.
 The main vortex location is determined by calculating the stream function using Simpson's rule and finding where it attains a maximum.
 
@@ -1107,7 +1107,7 @@ The numerical investigation included testing the BGK and MRT collision operators
 Two different benchmark problems were chosen for the flows: Poiseuille flow, and lid-driven square cavity flow.
 The results showed that:
 \begin{itemize}
-  \item For high yield stress fluid, Poiseuille flows only the MRT collision operator did not suffer from numerical noise.
+  \item For high yield stress fluids in Poiseuille-type flows, only the MRT collision operator did not suffer from numerical noise.
   \begin{itemize}
       \item The noise appeared to be due to oscillations arising from high nonequilibrium values for the moment related to the square of the energy, $\epsilon$, and the energy flux moment in the direction of flow, $q_x$.
       \item If a collision scheme is to be developed for high yield stress, Poiseuille-type flows that is more accurate than the BGK with $m = 10^5$ and more computationally efficient than the MRT, then it should focus on dampening the nonequilibrium energy flux moment.
