@@ -311,33 +311,26 @@ The method for simulating non-Newtonian flow in the current work involves approx
 Despite the utility of the BGK collision operator, it does have a few drawbacks.
 For example, in low viscosity flows the BGK operator results in an overrelaxation of particle distributions toward quasiequilibrium.
 It is well known that when large nonequilibrium distributions exist in the LBM approximation that overrelaxation can result in nonphysical oscillations that are slow to decay~\cite{brownlee2007stability,dellar2003incompressible}.
-To illustrate this, consider the example shown in \Fref{fig:sharp-grad}.
-If $a >> 0$, then when $f_5(x,y)$ propagates to $f_5(x+1,y+1)$ during the streaming step (where $\pos = [x,y]$, $\pvel_5 = [1,1]$, and $\Delta t = 1$), $f_5(x+1,y+1)$ will be ``far'' from $f^{eq}_5(x+1,y+1)$ for the subsequent collision step.
-If $\nu \rightarrow 0$ then $\omega \rightarrow 2$ and \eqref{eq:bgk} results in $f_5(x+1,y+1)$ still being ``far'' from $f^{eq}_5(x+1,y+1)$ but on the ``other side''.
-If, as in \Fref{fig:sharp-grad}, the LBM macroscopic variables dictate that $f^{eq}_i$ remain mostly constant (or, at the very least, far from $f_i$) in the direction of propagation for $f_i$, then this leads to oscillations in the particle distribution, $f_i$.
-An example of the nonphysical oscillations that would occur for $f_5$ in \Fref{fig:sharp-grad} can be seen in \Fref{fig:overrelaxation}.
-Considering the effect oscillations of particle distributions will have on macroscopic variables and, consequently, local quasiequilibriums, positive feedback loops can occur causing the system to ``blow up'' or ``pollute'' the system enough to make the results highly nonphysical and altogether useless~\cite{gorban2014enhancement}.
-
-\begin{figure}
-	\centering
-    \includegraphics[width=\linewidth]{figs/sharp_gradient}
-    \caption{Example of an LBM approximation with a sharp gradient in the macroscopic flow velocity}
-    \label{fig:sharp-grad}
-\end{figure}
+To illustrate this, consider a flow in which there is a sharp spatial gradient in either $\rho$ or $\mvel$ at $\pos$.
+As $f_i^{eq}$ depends on both $\rho$ and $\mvel$ \eqref(eq:feq), it may be the case that $|f_i^{eq}(\pos, t) - f_i^{eq}(\pos + \pvel_i \Delta t, t + \Delta t)| >> 0$, i.e. there may be a large difference in the quasiequilibrium for the $i^{th}$ discrete velocity at $(\pos, t)$ and $(\pos + \pvel_i \Delta t, t + \Delta t)$.
+In this case, if $f_i$ is ``near'' to quasiequilibrium at $\pos$ it will be ``far'' from quasiequilibrium after the streaming step when it moves to the node at $\pos + \pvel_i \Delta$.
+Overrelaxation will occur if $\nu \rightarrow 0$ because consquently $\omega \rightarrow 2$ and \eqref{eq:bgk} results in $f_i(\pos + \mvel \Delta t,t + \Delta t)$ still being ``far'' from $f^{eq}_i(\pos + \mvel \Delta t,t + \Delta t)$ but on the ``other side''.
+Overrelaxation in subsequent time steps (along the streaming trajectory of $f_i$) could result in nonphysical oscillations such as those depicted in \Fref{fig:overrelaxation}.
+Considering the effect oscillations of particle distributions will have on macroscopic variables and, consequently, local quasiequilibriums, positive feedback loops can occur causing the system to diverge or ``pollute'' the system enough to make the results highly nonphysical and altogether useless~\cite{gorban2014enhancement}.
 
 \begin{figure}
 	\centering
     \includegraphics[width=\linewidth]{figs/overrelaxation_tau-0513}
-    \caption{Example of oscillations that can occur as a result of overrelaxation (this example is related to the example shown in \Fref{fig:sharp-grad}); the relaxation time, $\omega = 1.95$ and $\nu \approx 0.0043$}
+    \caption{Example of oscillations that can occur as a result of overrelaxation; the collision frequency, $\omega = 1.95$ and $\mu_{app} \approx 0.0043$}
     \label{fig:overrelaxation}
 \end{figure}
 
-In contrast to low viscosity flows, the challenge associated with high viscosity flows (using the BGK collision operator) is that particular distributions may never relax as ``far'' toward quasiequilibrium as is physical because as $\nu \rightarrow \infty$, $\omega \rightarrow 0$, resulting in extreme underrelaxation to the point of being negligible. %MG: this needs cleaned up, I think
+The challenge associated with high viscosity flows is that particular distributions may never relax as ``far'' toward quasiequilibrium as is physical because $\omega \rightarrow 0$ as $\nu \rightarrow \infty$, resulting in extreme underrelaxation to the point of being negligible. %MG: this needs cleaned up, I think
 
 Concerns with sharp gradients, overrelaxation, and underrelaxation are particularly relevant in non-Newtonian flows because of the nonlinear constitutive relationship between shear stress and strain-rate.
-The nonlinear constitutive relationship can lead to sharp gradients, and depending on the form of $\dot{\gamma} \mapsto \mu_{app}$, the apparent viscosity, $\mu(\dot{\gamma}(\pos))$, may result in overrelaxation in certain parts of the domain and extreme underrelaxation in others.
+The nonlinear constitutive relationship can lead to sharp gradients in $\rho$ or $\mvel$, and depending on the form of the function $\mu_{app}(\dot{\gamma})$, the apparent viscosity, $\mu(\dot{\gamma}(\pos))$, may result in overrelaxation in certain parts of the domain and extreme underrelaxation in others.
 
-Due to the instabilities associated with the collision frequency being too high, e.g. approaching 2, or too low, e.g. approaching 0, a natural, albiet nonphysical, approach to using the BGK collision operator for non-Newtonian flows is to simply put bounds on the values in which the collision frequency may attain.
+Due to the instabilities associated with the collision frequency being too high, e.g. approaching 2, or too low, e.g. approaching 0, a natural, albiet nonphysical, approach to using the BGK collision operator for non-Newtonian flows is to simply put bounds on the values in which the collision frequency may attain (such as in~\citet{svec2011flow,svec2012free,gabbanelli2005lattice}).
 This simple methodology for increasing stability will henceforth be referred to bounded-relaxation time BGK, or BGK-BRT.
 
 \subsubsection{Multiple-relaxation Time (MRT)}
