@@ -101,8 +101,12 @@ The study is followed by conclusions and a discussion of future work.
 \listoftables
 \listoffigures
 
-%\preface
-% acknowledgements and such
+\preface
+I would like to thank my wife and best friend, Shelby, my parents, and my family.
+Without their love, support, and example, I would have nothing.
+I would like to thank my advisor, Dr. John Brigham, for his patience and for all that he has taught me. 
+I would also like to thank the other members of my committee, Dr. Julie Vandenbossche, and Dr. Anthony Iannacchione, whom have both been great guides and teachers to me.
+Lastly, I would like to thank my fellow students for helping me along the way to learn and for the comradery that every graduate student needs.
 
 \chapter{Numerical Investigation of the Accuracy, Stability, and Efficiency of Lattice Boltzmann Models in Simulating Non-Newtonian Flows} \label{chap:lbm-stability}
 
@@ -218,7 +222,7 @@ Solving for the fluid pressure in traditional method is more computationally exp
 
 \subsection{The Boltzmann Equation}
 The Boltzmann equation (BE) can be thought of as a conservation of particle distributions.
-The BE is given as 
+The BE is given as:
 \begin{equation}
 \frac{\partial f}{\partial t} + \pvel \cdot \grad f = \colop,
 \end{equation}
@@ -336,11 +340,11 @@ This simple methodology for increasing stability will henceforth be referred to 
 \subsubsection{Multiple-relaxation Time (MRT)}
 
 An alternative to the BGK collision operator is the multiple-relaxation-time (MRT) collision operator.
-In the LB-MRT scheme, one constructs a space based on the particle velocity, $\pvel$, moments of $\mathbf{f}$, herein referred to as the ``moment space''.
+In the LB-MRT scheme, one constructs a space based on the particle velocity, $\pvel$, moments of $\mathbf{f} = \begin{Bmatrix}f_0 & f_1 & ... & f_8\end{Bmatrix}$, herein referred to as the ``moment space''.
 The collision is then performed in the moment space.
-There a few reasons why it is advantageous to perform the collision in the moment space as opposed to the particle distribution space:
+There are a few reasons why it is advantageous to perform the collision in the moment space as opposed to the particle distribution space:
 \begin{enumerate}
-    \item Physical processes in fluids can be approximately described by coupling or interacting among modes; and hydrodynamic modes are directly related to, i.e. linear combinations of, mass and momentum moments~\cite{lallemand2000theory}.
+    \item Physical processes in fluids can be approximately described by coupling or interacting among modes, and the modes are directly related to the moments~\cite{lallemand2000theory}.
     \item For the D2Q9 lattice, there are nine distribution functions, $f_0, f_1, ..., f_8$, but only six variables that affect the intended hydrodynamics on a macroscopic scale, namely: $\rho$, $\mathbf{u}$, and $\mathbf{\Pi}$, where $\mathbf{\Pi}$ is the momentum flux tensor~\cite{dellar2003incompressible}.
     Of the nine relaxation rates available, the three that correspond to the extra variables--often referred to as ``ghost variables'', and their associated modes as ``ghost modes''--can be tuned in order to dampen out their associated ghost modes, ensuring these modes do not dominate or cause numerical instabilities at the lattice scale.
 \end{enumerate}
@@ -386,7 +390,7 @@ The relaxation matrix, $\relaxM$, is a diagonal matrix where each of the element
 In the case when $s_0 = s_1 = ... = s_8 = \omega$ ($\omega$ is the collision frequency in the BGK sense), the MRT collision operator is equivalent to the BGK collision operator.
 The relaxation parameters $s_0$, $s_3$, and $s_5$ are all set to zero as mass and momentum should be conserved.
 The relaxation parameters $s_1$ and $s_7 = s_8$ are related to the bulk and shear viscosities, respectively.
-The relationship for the shear viscosity is given by,
+The relationship for the shear viscosity is given by:
 \begin{equation} \label{eq:mrt-s7}
 \nu = c_s^2 \Delta t (\frac{1}{s_7} - \frac{1}{2}),
 \end{equation}
@@ -407,11 +411,11 @@ The idea of artificial dissipation is to increase numerical stability, while sac
 A model that has more physical justification but produces unstable and nonsensical results is much less useful than a model with some minor artificial features yet produces more stable results.
 %Lyapanov stability is the idea that solutions at equilibrium stay there.
 A practical goal then would be to use only the necessary amount of artificial dissipation in order to ensure a stable solution.
-From this goal two questions naturally arise: ``under what criteria does one decide that artificial dissipation necessary?'' and ``how much artificial dissipation does one introduce when it is necessary?''.
+From this goal two questions naturally arise: ``under what criteria does one decide that artificial dissipation is necessary?'' and ``how much artificial dissipation does one introduce when it is necessary?''.
 
 To answer the first question, consider the discussion in \Fref{sec:bgk} on problems with overrelaxation and nonphysical oscillations.
 Nonphysical oscillations due to overrelaxation would be damped out more quickly if particle distributions ``far'' from quasiequilibrium were brought closer to quasiequilibrium.
-A particle distribution vector, $\mathbf{f}$, ``far'' from equilibrium would therefore be a good candidate for artificial dissipation.
+A particle distribution vector, $\mathbf{f}$, ``far'' from equilibrium would be a good candidate for artificial dissipation.
 There are many ways one can measure the distance between $\mathbf{f}$ and $\mathbf{f}^{eq}$; for example, a reasonable choice would be $||\mathbf{f} - \mathbf{f}^{eq}||_p$ for some $p$ norm.
 A metric that has been developed and used successfully for determining when artificial dissipation should be introduced at a lattice site is the so called relative nonequilibrium entropy~\cite{gorban2014enhancement,brownlee2006stabilization,brownlee2007stability,brownlee2008nonequilibrium,packwood2009entropy}.
 The relative nonequilibrium entropy, $\Delta S$, is given by:
@@ -420,7 +424,7 @@ The relative nonequilibrium entropy, $\Delta S$, is given by:
 \Delta S = \sum_i f_i \ln(\frac{f_i}{f^{eq}_i}).
 \end{equation}
 
-\noindent A more computationally efficient approximation of $\Delta S$ can be achieved by instead using the second order Taylor expansion of \eqref{eq:rel-noneq-entropy},
+\noindent A more computationally efficient approximation of $\Delta S$ can be achieved by instead using the second order Taylor expansion of \eqref{eq:rel-noneq-entropy}:
 
 \begin{equation} \label{eq:quadratic-entropy}
 \Delta S \approx \sum_i \frac{(f_i - f^{eq}_i)^2}{2f^{eq}_i}.
@@ -428,24 +432,24 @@ The relative nonequilibrium entropy, $\Delta S$, is given by:
 
 \noindent Note that limiting nonequilibrium entropy in LBM is analogous to what flux limiters do in finite difference, finite volume, and finite element methods~\cite{brownlee2008nonequilibrium}.
 
-An option for defining criteria for when to introduce artificial dissipation that has been used successfully is to define a threshold, $\theta$, such that dissipation is added when $\Delta S > \theta$~\cite{gorban2014enhancement,brownlee2006stabilization,brownlee2007stability,brownlee2008nonequilibrium}.
+A criteria for introducing artificial dissipation that has been used successfully is to define a threshold, $\theta$, such that dissipation is added when $\Delta S > \theta$~\cite{gorban2014enhancement,brownlee2006stabilization,brownlee2007stability,brownlee2008nonequilibrium}.
 A potential drawback of defining a threshold \textit{a priori} is that in order to ensure the model still retains some physical integrity, only a small number of sites can have artificial dissipation added.
 If the threshold is too low, too many sites may have dissipation added.
 If the threshold is too high, a stable solution may not be achieved.
 The threshold can be determined on a case-by-case basis through trial-and-error or by a preliminary analysis.
-In the current work, the criteria that is used for determining whether dissipation should be added is,
+In the current work, the criteria that is used for determining whether dissipation should be added is:
 
 \begin{equation} \label{eq:dissipation-criteria}
     \Delta S > \overline{\Delta S} + n_\sigma \cdot \sigma_{\Delta S},
 \end{equation}
 
-\noindent where $\overline{\Delta S}$ and $\sigma_{\Delta S}$ are the mean and standard of $\Delta S$, respectively--both are calculated using values over the domain for the current timestep--and $n_\sigma$ is the number of standard deviations greater than $\overline{\Delta S}$ that $\Delta S$ must be before dissipation is added.
+\noindent where $\overline{\Delta S}$ and $\sigma_{\Delta S}$ are the mean and standard deviation of $\Delta S$, respectively--both are calculated using values over the domain for the current timestep--and $n_\sigma$ is the number of standard deviations greater than $\overline{\Delta S}$ that $\Delta S$ must be before dissipation is added.
 The number of standard deviations, $n_\sigma$, is chosen \textit{a priori}.
 The criteria described in \eqref{eq:dissipation-criteria} has the advantage that one does not need to determine \textit{a priori} what constitutes ``far'' from quasiequilibrium, but instead can think in terms of what would be the maximum percentage of sites one would want artificial dissipation to be added to.
 
 Just as there are many ways to measure a lattice site's distance from quasiequilibrium, or from that measure define criteria for artificial dissipation, there are also many different ways of deciding how much dissipation to add.
 One method of adding dissipation is the so-called Ehrenfests' regularization~\cite{brownlee2006stabilization}, and involves setting a lattice site that is chosen for artificial dissipation to its quasiequilibrium state.
-Although this achieves the desired result, namely damping out large nonequilibrium fluctuations, it does so in an intense manner.
+Although this achieves the desired result, namely damping out large nonequilibrium fluctuations, it does so in a way that is not smooth or gradual, but sharp.
 An alternative, the median filter, has been used successfully in conjunction with both the BGK and MRT collision schemes for simulating one-dimensional shock tubes and lid-driven cavity flows~\cite{brownlee2008nonequilibrium,gorban2014enhancement,packwood2009entropy}.
 Median filtering is an effective noise reduction technique, often used in image processing, for ``speckle noise'' or ``salt and pepper noise''~\cite{brownlee2008nonequilibrium}.
 In other words, median filters are good at reducing high frequency noise while having a minimal effect on lower frequency noise.
@@ -481,18 +485,18 @@ f_i(\pos + \pvel_i \Delta t, t + \Delta t) = f_i(\pos, t) + \Omega_i(f) + \frac{
 
 \subsection{Strain-rate Tensor}
 
-In order to use the Picard-type algorithm outlined in \Fref{sec:lbm-for-nnf}, one must calculate the strain-rate, $\dot{\gamma}$.
-The strain-rate is given by the second invariant of the strain-rate tensor, $\srtensor$, i.e.
+In order to solve for the apparent viscosity, $\mu_{app}$, using the Picard-type algorithm outlined in \Fref{sec:lbm-for-nnf}, one must calculate the strain-rate, $\dot{\gamma}$.
+The strain-rate is given by the second invariant of the strain-rate tensor, $\srtensor$, i.e.:
 \begin{equation} \label{eq:second-invariant}
 \dot{\gamma} = \sqrt{\srtensor : \srtensor}.
 \end{equation}
 
-\noindent When using the BGK collision scheme, the strain-rate tensor is determined by,
+\noindent When using the BGK collision scheme, the strain-rate tensor is determined by:
 \begin{equation} \label{eq:srtensor-bgk}
 D_{\alpha \beta} = -\frac{\omega}{2 \rho c_s^2} \sum_i \xi_{i \alpha} \xi_{i \beta} (f_i - f^{eq}_i),
 \end{equation} % MG: verify this
 
-\noindent and for the MRT collision scheme, the strain-rate tensor is determined by
+\noindent and for the MRT collision scheme, the strain-rate tensor is determined by:
 \begin{equation} \label{eq:srtensor-mrt}
 D_{\alpha \beta} = -\frac{1}{2 \rho c_s^2 \Delta t} \sum_i \xi_{i \alpha} \xi_{i \beta} \sum_j (\transM^{-1} \relaxM \transM)_{ij}(f_i - f^{eq}_i).
 \end{equation} % MG: verify this
@@ -526,8 +530,7 @@ Thus, a smooth approximation to \eqref{eq:bingham} formulated by~\citet{papanast
 The larger the value of $m$, the closer the approximation is to the Bingham plastic model.
 
 Alternatively, the constitutive relationship can be interpreted through the apparent viscosity.
-The apparent viscosity is the value of the viscosity assuming a Newtonian relationship between stress and strain rate, $\mu_{app} = \frac{\tau}{\dot{\gamma}}$, and is used to determine the collision frequency for the BGK collision operator or $s_7$ and $s_8$ of the relaxation matrix for the MRT collision operator.
-Rearranging \eqref{eq:papa} results in the following expression for the apparent viscosity:
+Noting that $\mu_{app} = \frac{\tau}{\dot{\gamma}}$ and rearranging \eqref{eq:papa} results in the following expression for the apparent viscosity:
 \begin{equation} \label{eq:bing-mu-app}
 \mu_{app} = \frac{\tau_y}{\dot{\gamma}} (1 - e^{-m |\dot{\gamma}|}) + \mu_p.
 \end{equation}
@@ -535,14 +538,14 @@ Rearranging \eqref{eq:papa} results in the following expression for the apparent
 \subsubsection{Power-law}
 
 The power-law constitutive relationship is useful for modeling fluids that experience shear-thinning or shear-thickening.
-The power-law relationship is given by,
+The power-law relationship is given by:
 \begin{equation} \label{eq:pl}
 \tau = k \dot{\gamma}^n,
 \end{equation}
 \noindent where $k$ is the flow consistency index and $n$ is the flow behavior index.
 When $n = 1$, \eqref{eq:pl} results in a Newtonian constitutive relationship with dynamic viscosity, $\mu = k$.
 A flow consistency index of $n < 1$ results in shear-thinning behavior, where as $n > 1$ results in shear-thickening.
-As with the Bingham plastic relationship, \eqref{eq:pl} can be modified to determine an apparent viscosity,
+As with the Bingham plastic relationship, \eqref{eq:pl} can be modified to determine an apparent viscosity:
 \begin{equation} \label{eq:pl-mu-app}
 \mu_{app} = k \dot{\gamma}^{n-1}.
 \end{equation}
@@ -550,7 +553,7 @@ As with the Bingham plastic relationship, \eqref{eq:pl} can be modified to deter
 \section{Numerical Study}
 
 A numerical study was carried out in order to investigate the suitability of different LBM collision schemes for simulating non-Newtonian flows in terms of accuracy, numerical stability and computational efficiency.
-For all simulations presented in this section, the apparent viscosity is approximated using its corresponding constitutive relationship and the Picard-type algorithm outlined in \Fref{sec:lbm-for-nnf} with the maximum number of iterations set at 15 and the convergence criteria,
+For all simulations presented in this section, the apparent viscosity is approximated using its corresponding constitutive relationship and the Picard-type algorithm outlined in \Fref{sec:lbm-for-nnf} with the maximum number of iterations set at 15 and the convergence criteria:
 \begin{equation} \label{eq:mu-app-conv}
 \frac{\left|\mu_{app}^{k+1} - \mu_{app}^{k}\right|}{\mu_{app}^{k}} < 1.0 \times 10^{-6}.
 \end{equation}
