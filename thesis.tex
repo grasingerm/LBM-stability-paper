@@ -299,7 +299,7 @@ This equilibrium is determined by the macroscopic physical behavior of interest.
 In the case of incompressible flow, the quasiequilibrium particle distribution, $f_i^{eq} = f_i^{eq}(\pos, t)$, is often given by:
 
 \begin{equation} \label{eq:feq}
-  f_i^{eq} = w_i \rho \left[1 + \frac{\pvel_i \cdot \mvel}{c_s^2} + \frac{(\pvel_i \cdot \mvel)^2}{2c_s^2} - \frac{\mvel^2}{2c_s^2} \right],
+  f_i^{eq} = w_i \rho \left[1 + \frac{\pvel_i \cdot \mvel}{c_s^2} + \frac{(\pvel_i \cdot \mvel)^2}{4c_s^2} - \frac{\mvel^2}{2c_s^2} \right],
 \end{equation}
 
 \noindent where $\rho$ and $\mvel$ are dependent on $\pos$ and $t$, and $w_i$ is the weight in the $i^{th}$:%MG: maybe say something about where this comes from, e.g. feq is a Hermite polynomial expansion of the Maxwell-Boltzmann distribution
@@ -497,14 +497,14 @@ f_i(\pos + \pvel_i \Delta t, t + \Delta t) = f_i(\pos, t) + \Omega_i(f) + \frac{
 
 \noindent where $\mathbf{F}$ is the body force vector.
 
-\newcommand{\srtensor}{\mathbf{D}}
+\newcommand{\srtensor}{D_{\alpha\beta}}
 
 \subsection{Strain-rate Tensor}
 
 In order to solve for the apparent viscosity, $\mu_{app}$, using the Picard-type algorithm outlined in \Fref{sec:lbm-for-nnf}, one must calculate the strain-rate, $\dot{\gamma}$.
 The strain-rate is given by the second invariant of the strain-rate tensor, $\srtensor$, i.e.:
 \begin{equation} \label{eq:second-invariant}
-\dot{\gamma} = \sqrt{\srtensor : \srtensor}.
+\dot{\gamma} = \sqrt{2 \sum_{\alpha,\beta=1}^{2} \srtensor}.
 \end{equation}
 
 \noindent When using the BGK collision scheme, the strain-rate tensor is determined by:
