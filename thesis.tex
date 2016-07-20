@@ -504,7 +504,7 @@ f_i(\pos + \pvel_i \Delta t, t + \Delta t) = f_i(\pos, t) + \Omega_i(f) + \frac{
 In order to solve for the apparent viscosity, $\mu_{app}$, using the Picard-type algorithm outlined in \Fref{sec:lbm-for-nnf}, one must calculate the strain-rate, $\dot{\gamma}$.
 The strain-rate is given by the second invariant of the strain-rate tensor, $\srtensor$, i.e.:
 \begin{equation} \label{eq:second-invariant}
-\dot{\gamma} = \sqrt{2 \sum_{\alpha,\beta=1}^{2} \srtensor}.
+\dot{\gamma} = \sqrt{2 \sum_{\alpha,\beta=1}^{2} \srtensor \srtensor}.
 \end{equation}
 
 \noindent When using the BGK collision scheme, the strain-rate tensor is determined by:
