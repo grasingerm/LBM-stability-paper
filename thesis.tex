@@ -848,7 +848,7 @@ Note that all results presented as ``-'' indicate that the tests were numericall
 
 \subsubsection{Bingham Plastic Fluids}
 
-For the Bingham plastic numerical tests the Reynold's number was varied, $Re = 100, 1000, 5000, 1000$, and the Bingham number was varied, $Bn = 1, 10, 100$ ($Bn$ and $Re$ were calculated the same as in \Fref{sec:poise-bing}).
+For the Bingham plastic numerical tests the Reynold's number was varied, $Re = 100, 1000, 5000, 10000$, and the Bingham number was varied, $Bn = 1, 10, 100$ ($Bn$ and $Re$ were calculated the same as in \Fref{sec:poise-bing}).
 The collision schemes that were tested were: (1) BGK with $m = 10^5$, (2) BGK with $m = 10^8$, (3) BGK-BRT with $m = 10^8$, (4) BGK with $m = 10^8$ and median filtering, (5) MRT with $m = 10^8$ and (6) MRT with $m = 10^8$ and median filtering.
 Tables \ref{tab:lid-bing1}--\ref{tab:lid-bing100} compare the center location of the main vortex to literature values taken from~\citet{syrakos2014performance}.
 The main vortex location is determined by calculating the stream function using Simpson's rule and finding where it attains a maximum.
@@ -1023,13 +1023,13 @@ $n$ & $Re$ & \pbox{20cm}{Collision \\ Operator} & \pbox{20cm}{Median \\ Filter} 
 0.5 & 5000 & BGK     & No  & (0.53, 0.52) & - & - \\
     &      & BGK-BRT & No  &              & - & - \\
     &      & BGK     & Yes &              & (0.63, 0.68) & 23517 \\
-    &      & MRT     & No  &              &              &       \\
+    &      & MRT     & No  &              & - & - \\
     &      & MRT     & Yes &              & (0.51, 0.58) & 54225 \\
 \\
 0.5 & 10000 & BGK     & No  & (0.53, 0.52) & - & - \\
     &       & BGK-BRT & No  &              & - & - \\
     &       & BGK     & Yes &              & (0.50, 0.55) & 22603 \\
-    &       & MRT     & No  &              &              &       \\
+    &       & MRT     & No  &              & - & - \\
     &       & MRT     & Yes &              & (0.50, 0.54) & 63892 \\
 \\
 \end{tabulary}
