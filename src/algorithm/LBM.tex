@@ -1,0 +1,47 @@
+\begin{algorithm}
+\caption{Lattice Boltzmann Method} \label{algo:lbm}
+\begin{algorithmic}[1]
+  \Procedure{LBM}{$\rho_0$, $u_0$, $t_{max}$} \Comment{$\rho_0$, $u_0$ specify initial conditions on $\rho$, $\mathbf{u}$}
+\Statex \Comment{Initialize data structures}
+\State Initialize 3D array, $f$, to size $9 \times ni \times nj$
+\State Initialize 3D array, $u$, to size $2 \times ni \times nj$
+\State Initialize 2D array, $\rho$, to size $ni \times nj$
+\For{each node $(i, j)$} \Comment{Set $f$, $u$, and $\rho$ to initial conditions}
+  \If {$(i, j)$ is in bounds and is not a solid wall}
+    \For{$k = 0:8$}
+      %\Comment{Initialize to $\rho_0$ and $\mathbf{u}_0$ at equilibrium}
+      \State $f[k, i, j] = f^{eq}(\rho_0[i, j], \mathbf{u}_0[i, j], k)$ \Comment{$\mathbf{u}_0 \equiv \{u_0[1, i, j], u_0[2, i, j]\}$}
+    \EndFor
+    \State $u[1, i, j] = u_0[1, i, j]$ \Comment{Initialize macroscopic variables}
+    \State $u[2, i, j] = u_0[2, i, j]$
+    \State $\rho[i, j] = \rho_0[i, j]$
+  \EndIf
+\EndFor
+\Statex \Comment{Main loop}
+\For{$t = 1:t_{max}$}
+  \State Stream particle distributions, \Call{Streaming}{$f$}
+  \State Particle collisions, \Call{Collide}{$f$, $\rho$, $u$}
+  \State Enforce boundary conditions
+  \Statex \Comment{Update macroscopic variables}
+  \For{each node $(i, j)$}
+    \If {$(i, j)$ is in bounds and is not a solid wall}
+      \State $\rho[i, j] = 0$
+      \State $u[1, i, j] = 0$
+      \State $u[2, i, j] = 0$
+      \For{$k = 0:8$}
+        \State $\rho[i, j] = \rho[i, j] + f[k, i, j]$
+        \State $u[1, i, j] = u[1, i, j] + f[k, i, j] * \pvel_{k1}$
+        \State $u[2, i, j] = u[2, i, j] + f[k, i, j] * \pvel_{k2}$
+      \EndFor
+      \If {$\rho[i, j] \ne 0$}
+        \State $u[1, i, j] = u[1, i, j] / \rho[i, j]$
+        \State $u[2, i, j] = u[2, i, j] / \rho[i, j]$
+      \EndIf
+    \EndIf
+  \EndFor
+\EndFor
+\Statex
+\State Post-process
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}

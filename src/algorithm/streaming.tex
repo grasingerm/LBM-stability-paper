@@ -1,8 +1,20 @@
 \begin{algorithm}
 \caption{Streaming} \label{algo:streaming}
 \begin{algorithmic}[1]
-\Procedure{streaming}{$f$}
-Initialize temporary 3D array the size of lattice, $f_temp$
+\Procedure{streaming}{$f$} \Comment{$f$ is a 3D Array of particle distributions}
+\Statex \Comment{$f[k, i, j] \equiv f_k(\pos_{ij}, t)$}
+\State Initialize temporary 3D array the size of lattice, $f_{temp}$
+\Statex
+\For{each node $(i, j)$}
+  \For{each discrete velocity vector, $\pvel_k$}
+    \If {$(i + \pvel_{k1} \Delta t, j + \pvel_{k2} \Delta t)$ is in bounds and is not a solid wall}
+      \State $f_{temp}[k, i + \pvel_{k1} \Delta t, j + \pvel_{k2} \Delta t] = f[k, i, j]$
+    \EndIf
+  \EndFor
+\EndFor
+\Statex
+\State \textbf{copy} $f_{temp}$ to $f$
+\Statex
 \EndProcedure
 \end{algorithmic}
 \end{algorithm}
