@@ -161,7 +161,7 @@ It is generally more practical to approximate non-Newtonian flows using numerica
 However, the nonlinear constitutive equation--typically of the form \begin{equation} \label{eq:non-newtonian}
 \tau = \mu_{app}(\dot{\gamma}) \dot{\gamma},
 \end{equation}\noindent where the apparent viscosity, $\mu_{app}$ is a function of the strain rate--results in certain challenges for numerical methods as well.
-Determining the apparent viscosity and strain-rate of a flow will often require an iterative solution, a general Picard-type algorithm is:
+Determining the apparent viscosity and strain-rate distribution of a flow over time will often require an iterative solution at every time step, a general Picard-type algorithm for such a process can be given as:
 
 \begin{enumerate}
 	\item Start with initial guess for the apparent viscosity, $\mu_k = \mu_0$.
@@ -279,7 +279,7 @@ The mass density is given by the sum of the particle distributions and the momen
 
 \begin{align}
 \label{eq:rho} \rho(\pos, t) =& \sum_{i} f_i(\pos, t), \\
-\label{eq:mom} \mmom(\pos, t) = \rho(\pos, t) \mvel(\pos, t) =& \sum_{i} \pvel_i(\pos, t) f_i(\pos, t)
+\label{eq:mom} \mmom(\pos, t) = \rho(\pos, t) \mvel(\pos, t) =& \sum_{i} \pvel_i f_i(\pos, t)
 \end{align}
 
 \noindent The fluid pressure is related to macroscopic density through an equation of state:
@@ -290,7 +290,7 @@ The mass density is given by the sum of the particle distributions and the momen
 
 \noindent where $c_s$ is the lattice speed of sound ($c_s = \frac{1}{\sqrt{3}}$, for D2Q9).
 
-\subsection{Collision Operator}
+\subsection{Collision Operator} \label{sec:colop}
 
 \subsubsection{Bhatnagar-Gross-Krook (BGK)} \label{sec:bgk}
 
@@ -333,9 +333,9 @@ Despite the utility of the BGK collision operator, it does have a few drawbacks.
 For example, in low viscosity flows the BGK operator results in an overrelaxation of particle distributions toward quasiequilibrium.
 It is well known that when large nonequilibrium distributions exist in the LBM approximation that overrelaxation can result in nonphysical oscillations that are slow to decay~\cite{brownlee2007stability,dellar2003incompressible}.
 To illustrate this, consider a flow in which there is a sharp spatial gradient in either $\rho$ or $\mvel$ at $\pos$.
-As $f_i^{eq}$ depends on both $\rho$ and $\mvel$ \eqref(eq:feq), it may be the case that $|f_i^{eq}(\pos, t) - f_i^{eq}(\pos + \pvel_i \Delta t, t + \Delta t)| >> 0$, i.e. there may be a large difference in the quasiequilibrium for the $i^{th}$ discrete velocity at $(\pos, t)$ and $(\pos + \pvel_i \Delta t, t + \Delta t)$.
-In this case, if $f_i$ is ``near'' to quasiequilibrium at $\pos$ it will be ``far'' from quasiequilibrium after the streaming step when it moves to the node at $\pos + \pvel_i \Delta$.
-Overrelaxation will occur if $\nu \rightarrow 0$ because consquently $\omega \rightarrow 2$ and \eqref{eq:bgk} results in $f_i(\pos + \mvel \Delta t,t + \Delta t)$ still being ``far'' from $f^{eq}_i(\pos + \mvel \Delta t,t + \Delta t)$ but on the ``other side''.
+As $f_i^{eq}$ depends on both $\rho$ and $\mvel$ \eqref{eq:feq}, it may be the case that $|f_i^{eq}(\pos, t) - f_i^{eq}(\pos + \pvel_i \Delta t, t + \Delta t)| >> 0$, i.e. there may be a large difference in the quasiequilibrium for the $i^{th}$ discrete velocity at $(\pos, t)$ and $(\pos + \pvel_i \Delta t, t + \Delta t)$.
+In this case, if $f_i$ is ``near'' to quasiequilibrium at $\pos$ it will be ``far'' from quasiequilibrium after the streaming step when it moves to the node at $\pos + \pvel_i \Delta t$.
+Overrelaxation will occur if $\nu \rightarrow 0$ because consquently $\omega \rightarrow 2$ and \eqref{eq:bgk} results in $f_i(\pos + \pvel_i \Delta t,t + \Delta t)$ still being ``far'' from $f^{eq}_i(\pos + \pvel_i \Delta t,t + \Delta t)$ but on the ``other side''.
 Overrelaxation in subsequent time steps (along the streaming trajectory of $f_i$) could result in nonphysical oscillations such as those depicted in \Fref{fig:overrelaxation}.
 Considering the effect oscillations of particle distributions will have on macroscopic variables and, consequently, local quasiequilibriums, positive feedback loops can occur causing the system to diverge or ``pollute'' the system enough to make the results highly nonphysical and altogether useless~\cite{gorban2014enhancement}.
 
@@ -484,7 +484,7 @@ To use the median filter one performs the collision step and then checks over th
 
 %MG: show equation for feq that maximizes entropy and give a brief word why we should care
 
-\subsection{Boundary Conditions}
+\subsection{Boundary Conditions} \label{sec:bcs}
 
 No slip, or zero velocity, which is commonly imposed at walls in a domain, is accomplished by simulating the particle distributions as "bouncing back" at the walls in the opposite direction from which they stream.
 For example, for a particle distribution streaming in the direction of a south wall, $f_2 = f_4$, $f_5 = f_7$, and $f_6 = f_8$.
@@ -1289,7 +1289,7 @@ The change in mass is calculated for fluid and interface cells (i.e. $\pos \in \
 \Delta M_i(\pos, t) = \begin{cases}
 f_\opidx(\pos + \pvel_i \Delta t, t) - f_i(\pos, t), & \pos \in \fset \text{ or } \pos + \pvel_i \Delta t \in \fset \\
 %\left[(\epsilon(\pos, t) + \epsilon(\pos + \pvel_i \Delta t, t)) / 2\right]\left(f_\opidx(\pos + \pvel_i, t) - f_i(\pos, t)\right), & \pos \in \iset \text{ and } \pos + \pvel_i \Delta t \in \iset \\
-\frac{\epsilon(\pos, t) + \epsilon(\pos + \pvel_i \Delta t, t}{2} (f_\opidx(\pos + \pvel_i, t) - f_i(\pos, t)), & \pos \in \iset \text{ and } \pos + \pvel_i \Delta t \in \iset \\
+\frac{\epsilon(\pos, t) + \epsilon(\pos + \pvel_i \Delta t, t}{2} (f_\opidx(\pos + \pvel_i \Delta t, t) - f_i(\pos, t)), & \pos \in \iset \text{ and } \pos + \pvel_i \Delta t \in \iset \\
 0, & \pos + \pvel_i \Delta t \in \gset
 \end{cases}
 \end{equation}
@@ -1342,9 +1342,9 @@ It is presented here as \Fref{algo:update-cell-states} for the sake of completen
 \input{src/algorithm/update-cell-states.tex}
 
 \Fref{algo:update-cell-states}, as presented, ensures both mass conservation and continuity of the free-surface.
-Moreover, when mass redistribution inevitably occurs, it is first attempted to be redistributed and weighted in the direction in which the interface is propagating (e.g. line \algref{algo:update-cell-states}{line:redist-dop-f} or line \algref{line:redist-dop-g}.
-If there are no interface cells in the direction of interface propagation, it is instead redistributed to neighboring interface cells (e.g. line \algref{line:redist-neighbors-f} or line \algref{line:redist-neighbors-g}).
-If there is no neighboring cells which are interface cells, the excess mass is added onto the global excess mass, $M_{gex}$, which is eventually redistributed among all of the interface cells (e.g. line \algref{line:final-redist}).
+Moreover, when mass redistribution inevitably occurs, it is first attempted to be redistributed and weighted in the direction in which the interface is propagating (e.g. line \algref{algo:update-cell-states}{line:redist-dop-f} or line \algref{algo:update-cell-states}{line:redist-dop-g}.
+If there are no interface cells in the direction of interface propagation, it is instead redistributed to neighboring interface cells (e.g. line \algref{algo:update-cell-states}{line:redist-neighbors-f} or line \algref{algo:update-cell-states}{line:redist-neighbors-g}).
+If there is no neighboring cells which are interface cells, the excess mass is added onto the global excess mass, $M_{gex}$, which is eventually redistributed among all of the interface cells (e.g. line \algref{algo:update-cell-states}{line:final-redist}).
 The hierarchy of possible redistribution steps ensures that mass redistribution is done in the most physically meaningful way as is possible. % We may need to hard code references to steps in here...
 Lastly, note that the interface normal, $\mathbf{n}$, is calculated using a finite difference approximation,
 \begin{equation} \label{eq:n}
@@ -1419,13 +1419,13 @@ A schematic of an example primary cementing simulation, including boundary condi
 \includegraphics{figs/wellbore-cementing-schematic}
 \caption{Example simulation used in primary cementing study.
 The black rectangles on the left boundary represent notches protruding from the rock formation surface. The contours are of the primary fluid (cement slurry) mass.
-The figure on the right is originally from~\cite{cementing2015web}}
+The schematic on the right is courtesy of~\cite{cementing2015web}}.
 \label{fig:wellbore-cementing-schematic}
 \end{figure}
 
 %The simulations were carried out on a $\nodesi \times \nodesj$ lattice, which corresponds to an annulus width of \anw \hspace{0.05cm} and a sectional height of \anh.
 The simulations were carried out on a $\nodesi \times \nodesj$ lattice.
-For the mass inlet, a~\citet{zou1997pressure} velocity boundary condition was used in conjuction with a constant mass boundary condition, i.e. $M(\pos_i, t) = M_0 = 1.0$ for all $\pos_j$ along the inlet.
+For the mass inlet, a~\citet{zou1997pressure} velocity boundary condition was used in conjuction with a constant mass boundary condition, i.e. $M(\pos_j, t) = M_0 = 1.0$ for all $\pos_j$ along the inlet.
 This corresponded to a constant mass flow, $\dot{M}_{in} = M_0 u_0$, at inlet.
 For the outlet, mass was allowed to transfer out of the domain during the mass transfer step such that $f_\opidx(\pos + \pvel_i \Delta t, t) = 0$ in \eqref{eq:dM} for all $\pos + \pvel_i \Delta t$ that lie outside of the domain on the other side of the mass outlet (i.e. the boundary condition at the outlet is such that there is no backflow).
 All simulations were executed for $\nsteps$ time steps.
