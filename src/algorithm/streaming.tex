@@ -7,8 +7,8 @@
 \Statex
 \For{each node $(i, j)$}
   \For{each discrete velocity vector, $\pvel_k$}
-    \If {$(i + \pvel_{k1} \Delta t, j + \pvel_{k2} \Delta t)$ is in bounds and is not a solid wall}
-      \State $f_{temp}[k, i + \pvel_{k1} \Delta t, j + \pvel_{k2} \Delta t] = f[k, i, j]$
+    \If {$(i + \xi_{k1} \Delta t, j + \xi_{k2} \Delta t)$ is in bounds and is not a solid wall}
+      \State $f_{temp}[k, i + \xi_{k1} \Delta t, j + \xi_{k2} \Delta t] = f[k, i, j]$
     \EndIf
   \EndFor
 \EndFor

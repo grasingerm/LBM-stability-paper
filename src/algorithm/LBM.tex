@@ -30,8 +30,8 @@
       \State $u[2, i, j] = 0$
       \For{$k = 0:8$}
         \State $\rho[i, j] = \rho[i, j] + f[k, i, j]$
-        \State $u[1, i, j] = u[1, i, j] + f[k, i, j] * \pvel_{k1}$
-        \State $u[2, i, j] = u[2, i, j] + f[k, i, j] * \pvel_{k2}$
+        \State $u[1, i, j] = u[1, i, j] + f[k, i, j] * \xi_{k1}$
+        \State $u[2, i, j] = u[2, i, j] + f[k, i, j] * \xi_{k2}$
       \EndFor
       \If {$\rho[i, j] \ne 0$}
         \State $u[1, i, j] = u[1, i, j] / \rho[i, j]$

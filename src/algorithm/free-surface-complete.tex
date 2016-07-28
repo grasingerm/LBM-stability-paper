@@ -1,0 +1,23 @@
+\begin{algorithm}
+\caption{Free-Surface Flow using the Lattice Boltzmann Method} \label{algo:free-surface-complete}
+\begin{algorithmic}[1]
+  \Procedure{FreeSurfaceLBM}{$\rho_0$, $u_0$, $M_0$, $t_{max}$} \Comment{$\rho_0$, $u_0$ $M_0$ specify initial conditions}
+\Statex \Comment{Initialize data structures}
+\State Initialize $\rho(\pos, 0)$ and $\mathbf{u}(\pos, 0)$ to initial conditions for each $\pos \in \domain$
+\State Initialize $f$ to quasiequilibrium, $f_i(\pos, 0) = f_i^{eq}(\rho(\pos, 0), \mathbf{u}(\pos, 0))$
+
+\Statex \Comment{Main loop}
+\For{$t = 1:t_{max}$}
+\State Mass transfer, $M(\pos, t + \Delta t) = M(\pos, t) + \sum_i \Delta M_i(\pos, t)$, (\Fref{sec:mass-transfer})
+  \State Stream particle distributions, $f_i(\pos + \pvel \Delta t, t + \Delta t) = f_i(\pos, t)$
+  \State Reconstruct particle distributions (\Fref{sec:bc-at-fs})
+  \State Particle collisions, $\colop$
+  \State Enforce boundary conditions
+  \State Calculate macroscopic variables
+  \State Update cell states (\Fref{sec:cell-updates})
+\EndFor
+\Statex
+\State Post-process
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}

@@ -1,4 +1,5 @@
-\begin{algorithm} \small
+\begin{algorithm}
+%\small
 \caption{Update Cell States and Mass Redistribution} \label{algo:update-cell-states}
 \begin{algorithmic}[1]
 \Procedure{UpdateStates}{}
@@ -32,6 +33,15 @@
   \EndFor
 \EndFor
 
+\algstore{ucsalg1}
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}
+%\small
+\begin{algorithmic}[1]
+\algrestore{ucsalg1}
+
 \Statex
 \ForAll{cells $\pos \in \iset_g$}
 \Statex \Comment{Prepare neighborhoods of $\iset$ cells that are to be transitioned to $\gset$ cells}
@@ -42,18 +52,19 @@
   \EndFor
 \EndFor
 
-\algstore{ucsalg1}
+\algstore{ucsalg6}
 \end{algorithmic}
 \end{algorithm}
 
-\begin{algorithm} \small
+\begin{algorithm}
+%\small
 \begin{algorithmic}[1]
-\algrestore{ucsalg1}
+\algrestore{ucsalg6}
+
 \ForAll{cells $\pos \in \iset_f$} 
 \Statex \Comment{Transition from $\iset$ to $\fset$ and redistribute excess mass}
   \State Let $M_{ex} = M(\pos, t) - \rho(\pos, t)$
-  \State Approximate the unit normal from the interface toward empty space,
-  \Statex \indent \hspace{1.0in} $\mathbf{n} = \frac{1}{2} \begin{Bmatrix}
+  \State Approximate the unit normal from the interface toward empty space, \indent \hspace{0.3in} $\mathbf{n} = \frac{1}{2} \begin{Bmatrix}
 \epsilon_{i-1, j} - \epsilon_{i+1, j} \\
 \epsilon_{i, j-1} - \epsilon_{i, j+1}
 \end{Bmatrix}$ \Comment{Central difference of fluid fraction}
@@ -89,14 +100,15 @@
 \end{algorithmic}
 \end{algorithm}
 
-\begin{algorithm} \small
+\begin{algorithm}
+%\small
 \begin{algorithmic}[1]
 \algrestore{ucsalg2}
+
 \ForAll{cells $\pos \in \iset_g$}
 \Statex \Comment{Transition from $\iset$ to $\gset$ and redistribute excess mass}
   \State Let $M_{ex} = M(\pos, t)$
-  \State Approximate the unit normal from the interface toward empty space, 
-  \Statex \indent \hspace{1.0in} $\mathbf{n} = \frac{1}{2} \begin{Bmatrix}
+  \State Approximate the unit normal from the interface toward empty space, \indent \hspace{0.3in} $\mathbf{n} = \frac{1}{2} \begin{Bmatrix}
 \epsilon_{i-1, j} - \epsilon_{i+1, j} \\
 \epsilon_{i, j-1} - \epsilon_{i, j+1}
 \end{Bmatrix}$ \Comment{Central difference of fluid fraction}
@@ -127,6 +139,15 @@
   \State Transition $\pos$ from an $\iset$ state to $\gset$ state
   \State Set $M(\pos, t) = 0$
 \EndFor
+
+\algstore{ucsalg9}
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}
+%\small
+\begin{algorithmic}[1]
+\algrestore{ucsalg9}
 
 \Statex
 \State Let $n_i$ be the number of cells in $\iset$
