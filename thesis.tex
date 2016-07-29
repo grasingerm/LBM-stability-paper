@@ -66,10 +66,10 @@
 
 \newcommand{\expnumber}[2]{{#1}\mathrm{e}{#2}}
 
-\title{Evaluating the Capabilities of Lattice Boltzmann Method for non-Newtonian and Free-surface Flows towards Applications in Wellbore Cementing}
+\title{Evaluating the Capabilities of the Lattice Boltzmann Method for non-Newtonian and Free-surface Flow towards Applications in Wellbore Cementing}
 % The optional argument is the version of the title that will appear in Acrobat Reader's Document Info dialog box.
 \author{Matthew Grasinger}
-\degree{BS in Civil and Environmental Engineering, University of Pittsburgh, Pittsburgh, PA 2013}
+\degree{BS in Civil Engineering, University of Pittsburgh, Pittsburgh, PA 2013}
 \date{July 21, 2016}
 \keywords{lattice Boltzmann method, non-Newtonian flow, free surface flow, primary cementing}
 \subject{Draft}
@@ -83,7 +83,7 @@
 
 % For the committee membership page, you have to provide the names and affiliations of the members. The first one will
 % be treated by pittetd as the committee chair (thesis/dissertation advisor).
-\committeemember{John C. Brigham, PhD, Senior Lecturer, School of Engineering and Computing Sciences at Durham University}
+\committeemember{John C. Brigham, PhD, Associate Professor, Department of Civil and Environmental Engineering}
 \committeemember{Julie M. Vandenbossche, PhD, Associate Professor, Department of Civil and Environmental Engineering}
 \committeemember{Anthony T. Iannacchione, PhD, Associate Professor, Department of Civil and Environmental Engineering}
 
@@ -96,19 +96,17 @@
 When oil and gas wellbores are drilled, barriers must be put in place to ensure that fluids do not leak out of the wellbore.
 Wellbore leakage can lead to environmental damage, loss of pressure at the wellhead, and consequently, loss of production.
 An important yet vulnerable barrier is the cement annulus.
-Creating the cement annulus, a process known as primary cementing, is difficult to perform optimally.
-Every well has unique subsurface conditions, and so no cement slurry mix design both performs well and is economical for all wells.
-Although some general guidelines and analytical techniques exist for approximating the performance of a cement slurry mix, the mechanics of primary cementing are complex.
-Computational methods can help better understand primary cementing and aid designers in determining the optimal mix.
+Every well has unique subsurface conditions, and so no cement slurry mix design both performs well and is economical for cementing all wells.
 The lattice Boltzmann method (LBM) is a promising technique for simulating primary cementing because it is well-suited for efficiently simulating non-Newtonian flows, multiphase multicomponent flows, and flows through complex geometries--namely, some of the complexities associated with the mechanics of primary cementing.
 
 Despite the advantages of LBM, there are considerations that must be made, as with all computational methods, in regards to the accuracy and numerical stability of the solution.
-Issues with accuracy and numerical stability are especially prevalent in non-Newtonian flows because of the nonlinear constitutive relationship.
-\Fref{chap:lbm-stability} is a numerical investigation of the accuracy, stability, and computational efficiency of different LBM models in simulating non-Newtonian flows.
+Issues with accuracy and numerical stability are especially relevant in non-Newtonian flows because of the nonlinear constitutive relationship between shear stress and strain-rate.
+\Fref{chap:lbm-stability} is a numerical investigation of the accuracy, stability, and computational efficiency of different LB methods in simulating non-Newtonian flows.
+The accuracy and computational time are presented in \Fref{sec:numerical-study} for various LB methods applied to two different benchmark problems, Poiseuille flow and lid-driven cavity flow, with two different non-Newtonian constitutive models, the Bingham plastic constitutive relationship and a power-law constitutive relationship.
 
 Once the ground-work has been laid for simulating non-Newtonian flows using LBM, the algorithm was extended in \Fref{chap:lbm-cement} to incorporate simulation of free-surface flows.
 The extended LBM model was used to study primary cementing of a dry annulus, i.e. an annulus that is not filled with drilling mud.
-More specifically, the study involved parameterizing different cement slurry flows and investigating how well each slurry flow filled different wellbore geometries.
+More specifically, the study involved defining different cement slurry flows and investigating how well each slurry flow filled different wellbore geometries.
 The study is followed by conclusions and a discussion of future work.
 
 \end{abstract}
@@ -125,15 +123,15 @@ I would like to thank the best advisor ever, Dr. John Brigham, for his patience 
 I would also like to thank the other members of my committee, Dr. Julie Vandenbossche, and Dr. Anthony Iannacchione, whom have both been great guides and teachers to me.
 Lastly, I would like to thank my fellow students, especially Rob, Jing, Mo, and Scott, for helping me to learn along the way and for the comradery that every graduate student needs.
 
-\chapter{Numerical Investigation of the Accuracy, Stability, and Efficiency of Lattice Boltzmann Models in Simulating Non-Newtonian Flows} \label{chap:lbm-stability}
+\chapter{Numerical Investigation of the Accuracy, Stability, and Efficiency of Lattice Boltzmann Models in Simulating Non-Newtonian Fluid Flow} \label{chap:lbm-stability}
 
 \section*{Abstract}
 
-The Lattice Boltzmann method (LBM) is a method based on computational statistical mechanics that is well-suited for complex flows such as non-Newtonian, free surface, and multiphase multicomponent flows.
-Non-Newtonian flows are the primary focus of this paper, as many practical engineering problems such as the flow of cement slurries and concretes, the filling of molds by molten metals and plastics, blood flows, etc., are best modeled as non-Newtonian fluids.
+The Lattice Boltzmann method (LBM) is a method based on computational statistical mechanics that is well-suited for complex flow such as non-Newtonian, free surface, and multiphase multicomponent flow.
+Non-Newtonian flow is the primary focus of this paper, as many practical engineering problems such as the flow of cement slurries and concretes, the filling of molds by molten metals and plastics, blood flows, etc., are best modeled as non-Newtonian fluids.
 LBM is typically applied to simulate flow through a series of time seps, each consisting of streaming particle distributions to neighboring nodes, and collisions of particle distributions at each node through a collision operator.
 The collision operator is of interest because it, along with the equilibrium distribution function, determine the physics that are simulated, e.g. constitutive laws, interfacial dynamics, etc., and it has implications on numerical stability and computational efficiency.
-In this paper, various collision operators and methods for stability enhancement were examined for their suitability for simulating non-Newtonian flows in terms of accuracy, numerical stability and computational efficiency.
+In this chapter, various collision operators and methods for stability enhancement were examined for their suitability for simulating non-Newtonian flows in terms of accuracy, numerical stability and computational efficiency.
 The investigation was carried out as a numerical study looking for qualitative, yet practical, results; it included testing the BGK and MRT collision operators, with and without entropic filtering, as applied to Bingham plastics and power-law fluid flows.
 Two different benchmark problems were chosen for the flows: Poiseuille flow, and lid-driven square cavity flow.
 The test results are followed by recommendations for choice collision scheme given the modeler's priorities and problem type.
@@ -572,7 +570,7 @@ As with the Bingham plastic relationship, \eqref{eq:pl} can be modified to deter
 \mu_{app} = k \dot{\gamma}^{n-1}.
 \end{equation}
 
-\section{Numerical Study}
+\section{Numerical Study} \label{sec:numerical-study}
 
 A numerical study was carried out in order to investigate the suitability of different LBM collision schemes for simulating non-Newtonian flows in terms of accuracy, numerical stability and computational efficiency.
 For all simulations presented in this section, the apparent viscosity is approximated using its corresponding constitutive relationship and the Picard-type algorithm outlined in \Fref{sec:lbm-for-nnf} with the maximum number of iterations set at 15 and the convergence criteria:
