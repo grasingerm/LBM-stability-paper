@@ -71,7 +71,7 @@
   \EndFor
   \If{$v_{sum} > 0$}
     \ForAll{cells $\pos_j \in \iset_r$}
-    \State $M(\pos_j, t) = M(\pos_j, t) + M_{ex} \frac{v_i}{v_{sum}}$ \label{enum:redist-dop-f}
+    \State $M(\pos_j, t) = M(\pos_j, t) + M_{ex} \frac{v_i}{v_{sum}}$ \label{line:redist-dop-f}
     \EndFor
   \ElsIf{$v_{sum} = 0$ and $\iset_r \neq \emptyset$}
     \State Let $n_r$ be the number of cells in $\iset_r$
@@ -114,7 +114,7 @@
   \EndFor
   \If{$v_{sum} > 0$}
     \ForAll{cells $\pos_j \in \iset_r$}
-      \State $M(\pos_j, t) = M(\pos_j, t) + M_{ex} \frac{v_i}{v_{sum}}$ \label{enum:redist-dop-g}
+      \State $M(\pos_j, t) = M(\pos_j, t) + M_{ex} \frac{v_i}{v_{sum}}$ \label{line:redist-dop-g}
     \EndFor
   \ElsIf{$v_{sum} = 0$ and $\iset_r \neq \emptyset$}
     \State Let $n_r$ be the number of cells in $\iset_r$

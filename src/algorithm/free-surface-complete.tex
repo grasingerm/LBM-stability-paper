@@ -5,7 +5,7 @@
 \Statex \Comment{Initialize data structures}
 \State Initialize $\rho(\pos, 0)$ and $\mathbf{u}(\pos, 0)$ to initial conditions
 %\Statex \Comment{Quasiequilibrium is defined in \Fref{eq:
-\State Initialize $f$ to quasiequilibrium, $f_i(\pos, 0) = f_i^{eq}(\rho(\pos, 0), \mathbf{u}(\pos, 0))$
+\State Initialize $f$ to quasiequilibrium, $f_i(\pos, 0) = f_i^{eq}(\rho(\pos, 0), \mathbf{u}(\pos, 0))$ (\Fref{eq:feq})
 
 \Statex \Comment{Main loop}
 \For{$t = 0:\Delta t:t_{max}$}
@@ -15,8 +15,8 @@
   \State Reconstruct particle distributions (\Fref{sec:bc-at-fs})
   \State Particle collisions (\Fref{sec:colop})
   \State Enforce boundary conditions (\Fref{sec:bcs})
-  \State Calculate macroscopic variables
-  \State Update cell states (\Fref{algo:update-cell-updates})
+  \State Calculate macroscopic variables (\Fref{eq:rho}, \Fref{eq:mom}, \Fref{eq:pres})
+  \State Update cell states (\Fref{algo:update-cell-states})
 \EndFor
 \Statex
 \State Post-process

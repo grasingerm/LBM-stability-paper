@@ -114,13 +114,13 @@ The study is followed by conclusions and a discussion of future work.
 \tableofcontents
 \listoftables
 \listoffigures
-\listofalgorithms
+%\listofalgorithms
 
 \preface
 I would like to thank my wife and best friend, Shelby, my parents, and my family.
 Their love, support, and example means everything to me.
 I would like to thank the best advisor ever, Dr. John Brigham, for his patience and for all that he has taught me. 
-I would also like to thank the other members of my committee, Dr. Julie Vandenbossche, and Dr. Anthony Iannacchione, whom have both been great guides and teachers to me.
+I would also like to thank the other members of my committee, Dr. Julie Vandenbossche, and Dr. Anthony Iannacchione, both of whom have been great guides and teachers to me.
 Lastly, I would like to thank my fellow students, especially Rob, Jing, Mo, and Scott, for helping me to learn along the way and for the comradery that every graduate student needs.
 
 \chapter{Numerical Investigation of the Accuracy, Stability, and Efficiency of Lattice Boltzmann Models in Simulating Non-Newtonian Fluid Flow} \label{chap:lbm-stability}
@@ -271,6 +271,7 @@ f_i(\pos + \pvel_i \Delta t, t + \Delta t) = f_i(\pos, t) + \colop_i(\pos, t),
   \label{fig:d2q9}
 \end{figure}
 
+\pagebreak
 The macroscopic variables of interest can be calculated from the particle distribution functions, $f(\pos, \pvel, t)$, by integrating moments of $f$ over velocity space.
 Due to the discrete nature of velocity in LBM, the integrals simply become summations.
 The mass density is given by the sum of the particle distributions and the momentum density is given by the first moment of the particle distributions over the velocity space:
@@ -464,8 +465,8 @@ In the current work, the criteria that is used for determining whether dissipati
 \noindent where $\overline{\Delta S}$ and $\sigma_{\Delta S}$ are the mean and standard deviation of $\Delta S$, respectively--both are calculated using values over the domain for the current timestep--and $n_\sigma$ is the number of standard deviations greater than $\overline{\Delta S}$ that $\Delta S$ must be before dissipation is added.
 The number of standard deviations, $n_\sigma$, is chosen \textit{a priori}.
 The criteria described in \eqref{eq:dissipation-criteria} has the advantage that one does not need to determine \textit{a priori} what constitutes ``far'' from quasiequilibrium, but instead can think in terms of what would be the maximum percentage of sites one would want artificial dissipation to be added to.
-A disadvantage of \eqref{eq:dissipation-critera} is that if $\overline{\Delta S}$ and $n_\sigma$ are both small then it is possible for dissipation to be added when $\Delta S(\pos, t)$ is low and artifical dissipation is unnecessary.
-By required that both \eqref{eq:ds-theshold} and \eqref{eq:dissipation-criteria} be met before artifical dissipation is added, there is the potential for \eqref{eq:ds-threshold} and \eqref{eq:dissipation-criteria} to compensate for the each other's disadvantage.
+A disadvantage of \eqref{eq:dissipation-criteria} is that if $\overline{\Delta S}$ and $n_\sigma$ are both small then it is possible for dissipation to be added when $\Delta S(\pos, t)$ is low and artifical dissipation is unnecessary.
+By required that both \eqref{eq:ds-threshold} and \eqref{eq:dissipation-criteria} be met before artifical dissipation is added, there is the potential for \eqref{eq:ds-threshold} and \eqref{eq:dissipation-criteria} to compensate for the each other's disadvantage.
 
 Just as there are many ways to measure a lattice site's distance from quasiequilibrium, or from that measure define criteria for artificial dissipation, there are also many different ways of deciding how much dissipation to add.
 One method of adding dissipation is the so-called Ehrenfests' regularization~\cite{brownlee2006stabilization}, and involves setting a lattice site that is chosen for artificial dissipation to its quasiequilibrium state.
@@ -473,7 +474,7 @@ Although this achieves the desired result, namely damping out large nonequilibri
 An alternative, the median filter, has been used successfully in conjunction with both the BGK and MRT collision schemes for simulating one-dimensional shock tubes and lid-driven cavity flow~\cite{brownlee2008nonequilibrium,gorban2014enhancement,packwood2009entropy}.
 Median filtering is an effective noise reduction technique, often used in image processing, for ``speckle noise'' or ``salt and pepper noise''~\cite{brownlee2008nonequilibrium}.
 In other words, median filters are good at reducing high frequency noise while having a minimal effect on lower frequency noise.
-In LBM this is a desirable way to introduce dissipation because it has the potential to reduce high frequency nonequilibrium fluctuations that might lead to numerical instability while retaining the lower frequency dynamics.
+In LBM this is a desirable way to introduce dissipation because it has the potential to reduce high frequency nonequilibrium fluctuations that might lead to numerical instability while retaining the lower frequency dynamics. \pagebreak
 To use the median filter one performs the collision step and then checks over the domain for lattice sites with $\Delta S$ that meet the criteria for artificial dissipation; sites that meet the criteria are updated as follows:
 \begin{equation} \label{eq:median-filter}
 \mathbf{f} = \mathbf{f}^{eq} + \delta (\mathbf{f} - \mathbf{f}^{eq}),
@@ -661,7 +662,7 @@ MRT & No & $10^8$ & 4.0 & 6.05 & 0.68 & 0.0013 & 0.0013 & 5914 \\
 
 As has been reported previously, for the BGK collision operator, using a stress growth exponent of $m = 10^5$ is more accurate with respect to the analytical solution than using a stress growth exponent of $m = 10^8$~\cite{chen2014simulations}.
 A larger stress growth exponent results in a more accurate Papastasiou approximation of the true Bingham plastic constitutive model, however, it leads to more nonphysical oscillations that degrade the numerical solution for the BGK collision operator.
-Upon inspection of \Fref{tab:poise-bing}, it does not appear that entropic median filtering helps mitigate errors that occur as a result of using $m = 10^8$ for Bingham plastic Poiseuille flow.
+Upon inspection of \Fref{tab:poise-bing}, it does not appear that entropic median filtering helps mitigate errors that occur as a result of using $m = 10^8$ for Bingham plastic Poiseuille flow. \pagebreak
 In fact, the median filter resulted in a less accurate solution in all cases other than the case with the lowest yield stress considered (i.e., the smoothest flow field), and rendered the solution altogether useless for the higher yield stress fluids (relative errors of approximately 25-75\%).
 
 In general, the BGK collision operator using a stress growth exponent of $m = 10^5$ had the lowest computational time.
@@ -1123,7 +1124,7 @@ The results showed that:
     \begin{itemize}
   \item for low Reynold's number flow the BGK collision operator with $m = 10^5$ provides an accurate solution with a short computation time,
     \item for high Reynold's number flow the BGK collision operator requires entropic filtering to remain stable.
-    \end{itemize}
+    \end{itemize} \pagebreak
   \item To summarize power-law, lid-driven cavity flow,
     \begin{itemize}
       \item for shear-thinning fluids at high Reynold's numbers ($Re \ge 5000$) median filtering is necessary to produce a stable solution,
@@ -1247,7 +1248,7 @@ For more detail on Bingham plastics or the Papastasiou approximation, see \Fref{
 A free-surface flow is a flow in which two-fluids exist but the dynamics of one fluid does not need to be explicitly modeled.
 Typically, the phase of the primary fluid, or the fluid of interest, is a liquid; and the secondary phase that does not need to be explicitly modeled is a gas, often times air at atmospheric pressure.
 The primary fluid is modeled using a standard CFD method, such as LBM, and the interaction of the secondary fluid on the primary fluid is modeled as a boundary condition at the interface between the two fluids.
-The interface is what is referred to as the free-surface.
+The interface is what is referred to as the free-surface. \pagebreak
 The advantage of modeling a multiphase multicomponent flow as a free-surface is that, because the dynamics of the secondary fluid are not explicitly tracked and simulated, the resulting algorithm is more computationally efficient in terms of both memory and CPU overhead.
 The algorithm for extending the Lattice Boltzmann Method for free-surface flow used in this work follows the algorithm developed and presented in~\citet{korner2005lattice} and \citet{thurey2005interactive}.
 
@@ -1443,7 +1444,7 @@ The dimensionless numbers were defined as follows, $(Re, Bn) = (1.00, 4.00)$,  $
 \Fref{fig:percent-filled} shows the percentage of the wellbore annulus section filled at the end of the cement simulation duration.
 The percent fill was calculated as:
 \begin{equation}
-  \frac{\sum_{\pos \in \domain} \epsilon(\pos, 16000)}{\sum_{\pos \in \domain} 1.0}.
+  \frac{\sum\limits_{\pos \in \domain} \epsilon(\pos, 16000)}{\sum\limits_{\pos \in \domain} 1.0}.
 \end{equation}
 
 \begin{figure}
@@ -1456,12 +1457,12 @@ The percent fill was calculated as:
 Based upon \Fref{fig:percent-filled}, some general statements can be made about what properties of the cement slurry flow are preferable.
 For example, low yield stress, and consquently low Bingham number flows ($Bn \le 1.0$), approximately completely filled the annulus for every wellbore geometry considered.
 In addition, the negligible percentage of voids for the ($Re = 5.00, Bn = 5.00$) and ($Re = 12.5, Bn = 2.0$) slurry flows suggests that a if the ratio of $Bn / Re$ is low, that the slurry flow will result in a low percentage of voids for cementing a dry hole as is desired.
-As $Bn / Re$ increases, it appears that, in certain cases and wellbore geometries, the slurry flow tends to result in a larger percentage of voids (approximately 10\%-40\%).
+As $Bn / Re$ increases, it appears that, in certain cases and wellbore geometries, the slurry flow tends to result in a larger percentage of voids (approximately 10\%-40\%). \pagebreak
 What is interesting to note is that for slurry flows that resulted in a percentage of voids greater than 3\%, there was a lack of consistency across wellbore geometries in terms of which slurry flow resulted in more voids and which slurry flow resulted in less, which suggests that generalities cannot always be made and that computational methods are necessary for understanding and designing slurry mixes for real-life wellbores.
 
 \section{Conclusions} \label{sec:conclusion}
 
-An LBM model for simulating non-Newtonnian and free-surface flow to represent cementing dry annuli in oil and gas wellbores was presented.
+An LBM model for simulating non-Newtonian and free-surface flow to represent cementing dry annuli in oil and gas wellbores was presented.
 The model was then used to study how different cement slurry flows, defined by different Reynold's numbers and Bingham numbers, would perform in different wellbore geometries.
 The results showed that in general, it is preferable that the yield stress and $Bn / Re$ ratio of the slurry flow be low.
 However, beyond these considerations, it is not clear what slurry flow may be preferable for a given rock formation geometry.
@@ -1474,6 +1475,11 @@ The lattice Boltzmann method extended for simulating non-Newtonian and free-surf
 \item The LBM no-slip boundary condition works well with complex geometries, such as those that occur in realistic rock formation surfaces in drilled wellbores.
 \end{itemize}
 
+Future work would include developing a more physically realistic model.
+Primary cementing can involve multiple phases and multiple components, namely the cement slurry, a spacer fluid, and drilling mud.
+Possible future work would be make the model more general so as to be capable of simulating multiphase multicomponent flow.
+In addition, a more physically realistic model would simulate three-dimensional flow so as to be able to simulate eccentric annuli and three-dimensional rock formation imperfections.
+
 \chapter{Conclusions}
 
 Various Lattice Boltzmann methods were investigated for their efficacy in simulating primary cementing.
@@ -1482,9 +1488,21 @@ In \Fref{chap:lbm-stability}, the accuracy, stability, and efficiency of Lattice
 Two different benchmark problems were chosen for the study: Poiseuille flow, and lid-driven square cavity flow, as Poiseuille flow is characterized by the development of velocity profiles and lid-driven cavity flow is characterized by the development of vortices.
 Conclusions from the study were presented in \Fref{sec:numerical-study-conclusions}.
 In the context of studying the accuracy, stability, and efficiency of Lattice Boltzmann models for simulating non-Newtonian flow, future work would include investigating the effect of the choice of time step size and simulation Mach number (as in~\cite{conrad2015accuracy}) on the convergence rate and accuracy of the results and LB methods presented in \Fref{sec:numerical-study}.
-In addition, possible future work could include investigating other physical problems such as planar sudden expansion flow~\cite{tang2011binghami,chai2011multiple,chen2014simulations}, reentrant corner flow~\cite{gabbanelli2005lattice},
+In addition, possible future work could include investigating other physical problems such as planar sudden expansion flow~\cite{tang2011binghami,chai2011multiple,chen2014simulations,wang2008lattice}, reentrant corner flow~\cite{gabbanelli2005lattice,yoshino2007numerical}, and flow around a cylinder~\cite{fallah2012multiple}.
+In the context of simulating wellbore cementing, future work would include studying the accuracy, stability, and efficiency of Lattice Boltzmann models for simulating the thixotropic and time-dependent behavior of cement slurry~\cite{roussel2005steady}.
 
-\bibliographystyle{abbrvnat}
-\bibliography{master}
-	
+In \Fref{chap:lbm-cement}, the LBM algorithm for non-Newtonian flow is extended to simulate free surface flow.
+The extended LBM model is then used to study wellbore cementing.
+Future work for the wellbore cementing study would include developing a more physically realistic model.
+Primary cementing can involve multiple phases and multiple components, namely the cement slurry, a spacer fluid, and drilling mud.
+Possible future work would be make the model more general so as to be capable of simulating multiphase multicomponent flow.
+In addition, a more physically realistic model would simulate three-dimensional flow so as to be able to simulate eccentric annuli and three-dimensional rock formation imperfections.
+
+%\bibliographystyle{abbrvnat}
+%\bibliography{master}
+
+% bullshit Pitt formatting
+\bibliographystyle{unsrt}
+\safebibliography{master}
+
 \end{document}
