@@ -154,6 +154,7 @@ Shear-thickening fluids are also known as \emph{dilatants}, and some examples in
 
 \label{sec:lbm-for-nnf}
 
+\pagebreak
 Analytical solutions rarely exist for even the simplest non-Newtonian fluid flows because of the complexity that a nonlinear constitutive relationship entails.
 It is generally more practical to approximate the flow of non-Newtonian fluids using numerical methods.
 However, the nonlinear constitutive equation--typically of the form \begin{equation} \label{eq:non-newtonian}
@@ -176,9 +177,9 @@ This means that although an iterative solution is still required to determine th
 Because hardware architectures have shifted from single, sequential processing systems to parallel processing systems, the local nature of the stress--strain-rate relationship in LBM gives it a distinct advantage for simulating non-Newtonian flow over some other numerical methods.
 
 The lattice Boltzmann method has been studied and successively applied to modeling various flows of non-Newtonian fluids.
-For example, ~\citet{tang2011bingham,chai2011multiple,fallah2012multiple,chen2014simulations,vikhansky2008lattice,wang2008lattice} developed LBM models for simulating yield stress flow.
+For example, ~\cite{tang2011bingham,chai2011multiple,fallah2012multiple,chen2014simulations,vikhansky2008lattice,wang2008lattice} developed LBM models for simulating yield stress flow.
 The LBM model results agreed well when compared to analytical solutions for Bingham plastic Poiseuille flow and values from literature for lid-driven cavity flow, which shows the feasibility of using LBM models for yield-stress fluids.
-LBM models for power-law fluid flow~\citet{wang2011lattice,wang2015localized,boyd2006second,chai2011multiple}, and blood flows using the K-L, Casson, and Carreau-Yasuda constitutive relationships~\citet{ashrafizaadeh2009comparison}, have also been successfully developed and verified. %MG: does citing this way appear too dense?
+LBM models for power-law fluid flow~\cite{wang2011lattice,wang2015localized,boyd2006second,chai2011multiple}, and blood flows using the K-L, Casson, and Carreau-Yasuda constitutive relationships~\cite{ashrafizaadeh2009comparison}, have also been successfully developed and verified. %MG: does citing this way appear too dense?
 
 %MG: probably include a discussion of the work done by Conrad et. al. 2015 here
 LBM does however, have its drawbacks.
@@ -196,14 +197,14 @@ This means particle distribution functions will always relax toward equilibrium 
 The equilibrium distribution function is derived for the specific constitutive relationship of interest using the Chapman-Enskog multiscale expansion.
 The equilibrium distribution functions for Bingham plastic fluids, and for power-law and Carreau fluids were derived, implemented, and verified in~\cite{wang2008lattice} and~\cite{yoshino2007numerical}, respectively.
 The strategy of using an equilibrium distribution function that incorporates the local shear-rate effect has the advantage that, because the collision frequency is constant (at unity), the collision frequency will not approach zero, and will not result in overrelaxation, and the collision frequency will not reach values much greater than one, and so there is no reason to bound the collision frequency in a way that is nonphysical.
-\citet{wang2011lattice} developed another constant-collision frequency LBM scheme for non-Newtonian flow by splitting the effects of constitutive relationship into Newtonian and non-Newtonian parts.
+\cite{wang2011lattice} developed another constant-collision frequency LBM scheme for non-Newtonian flow by splitting the effects of constitutive relationship into Newtonian and non-Newtonian parts.
 The Newtonian part was modeled in the usual way, namely scaling the collision frequency to achieve the macroscopic (Newtonian) viscosity, and the non-Newtonian part was modeled as a source of momentum, i.e. as an external forcing term, that is dependent on local shear-rate.
 Although the constant-collision frequency strategies present interesting alternatives, the variable collision scheme is used in the present study because of its simplicity and generality, i.e. it can be easily fitted to any constitutive equation without for example, performing Chapman-Enskog multiscale expansion.
 
-To improve upon the stability of LBM models,~\citet{d1994generalized} developed a multiple-relaxation-time (MRT) collision operator, that takes place in moment space and allows each moment to relax at a different rate.
-\citet{lallemand2000theory} used von Neumann stability analysis to investigate the stability of the newly constructed LBM-MRT model and concluded LBM with the MRT collision operator was more stable, but with increased computational expense than the commonly used BGK collision operator.
+To improve upon the stability of LBM models,~\cite{d1994generalized} developed a multiple-relaxation-time (MRT) collision operator, that takes place in moment space and allows each moment to relax at a different rate.
+\cite{lallemand2000theory} used von Neumann stability analysis to investigate the stability of the newly constructed LBM-MRT model and concluded LBM with the MRT collision operator was more stable, but with increased computational expense than the commonly used BGK collision operator. \pagebreak
 Note that although this increased computational expense was decided to not be significant for Newtonian flows ($\approx$ 10-20\%~\cite{lallemand2000theory}), the issue may be magnified for non-Newtonian flow because an iterative solution for the constitutive equation can require that certain expensive computations be performed at each iteration (the strain rate tensor is determined from the nonequilibrium particle distribution which must be mapped into moment space when using the MRT collision operator).
-\citeauthor{chen2014simulations} concluded that the MRT collision operator was more stable for Bingham plastic flow and allowed the use of a more accurate approximation to the Bingham plastic constitutive relationship.
+\cite{chen2014simulations} concluded that the MRT collision operator was more stable for Bingham plastic flow and allowed the use of a more accurate approximation to the Bingham plastic constitutive relationship.
 However, what remains unclear is:
 \begin{itemize}
     \item What is the increased cost associated with the MRT collision operator when applied to non-Newtonian flow?
@@ -212,7 +213,7 @@ However, what remains unclear is:
     \item What are additional strategies for increasing stability and accuracy, and what are their associated computational costs?
 \end{itemize}
 In regards to the last question, much work has been done recently to enhance stability of LBM models beyond the MRT collision operator.
-\citet{brownlee2006stabilization,brownlee2007stability,brownlee2008nonequilibrium,packwood2009entropy,gorban2014enhancement} have all developed and tested means for introducing artificial dissipation in order to dampen out high frequency, nonphysical oscillations.
+\cite{brownlee2006stabilization,brownlee2007stability,brownlee2008nonequilibrium,packwood2009entropy,gorban2014enhancement} have all developed and tested means for introducing artificial dissipation in order to dampen out high frequency, nonphysical oscillations.
 Stability enhancement through artificial dissipation and entropic filtering has shown a lot of promise, but to the authors' knowledge has not been tested for use in simulating the flow of non-Newtonian fluids.
 
 The goal of this Chapter is to numerically study the implications of accuracy, stability, and efficiency for some of the different strategies for simulating non-Newtonian flow using LBM. The intention of the study is to aid scientists and engineers in understanding which strategy is best suited to their priorities and applications of interest so as to maximize the advantages LBM has in simulating non-Newtonian flow.
@@ -256,6 +257,7 @@ Instead the collision operator is formulated in such a way that particle distrib
 What defines equilibrium depends on the mechanics of interest to be modeled.
 \end{itemize}
 
+\pagebreak
 The D2Q9 lattice was used in the current work (shown in \Fref{fig:d2q9}), which is commonly used for two-dimensional, incompressible flow simulations~\cite{Suc01}. % MG: do we even need this citation?
 The lattice is two-dimensional with nine discrete velocities at each node.
 There is a stationary particle, there are four discrete velocities of magnitude 1, $\begin{Bmatrix}1 & 0\end{Bmatrix}^T$, $\begin{Bmatrix}0 & 1\end{Bmatrix}^T$, $\begin{Bmatrix}-1 & 0\end{Bmatrix}^T$, $\begin{Bmatrix}0 & -1\end{Bmatrix}^T$, and there are four discrete velocities of magnitude $\sqrt{2}$, $\begin{Bmatrix}1 & 1\end{Bmatrix}^T$, $\begin{Bmatrix}-1 & 1\end{Bmatrix}^T$, $\begin{Bmatrix}-1 & -1\end{Bmatrix}^T$, $\begin{Bmatrix}1 & -1\end{Bmatrix}^T$.
@@ -271,7 +273,6 @@ f_i(\pos + \pvel_i \Delta t, t + \Delta t) = f_i(\pos, t) + \colop_i(\pos, t),
   \label{fig:d2q9}
 \end{figure}
 
-\pagebreak
 The macroscopic variables of interest can be calculated from the particle distribution functions, $f(\pos, \pvel, t)$, by integrating moments of $f$ over velocity space.
 Due to the discrete nature of velocity in LBM, the integrals simply become summations.
 The mass density is given by the sum of the particle distributions and the momentum density is given by the first moment of the particle distributions over the velocity space:
@@ -350,7 +351,7 @@ The challenge associated with high viscosity fluids is that particular distribut
 Concerns with sharp gradients, overrelaxation, and underrelaxation are particularly relevant in non-Newtonian flow because of the nonlinear constitutive relationship between shear stress and strain-rate.
 The nonlinear constitutive relationship can lead to sharp gradients in $\rho$ or $\mvel$, and depending on the form of the function $\mu_{app}(\dot{\gamma})$, the apparent viscosity, $\mu(\dot{\gamma}(\pos))$, may result in overrelaxation in certain parts of the domain and extreme underrelaxation in others.
 
-Due to the instabilities associated with the collision frequency being too high (e.g. approaching 2) or too low (e.g. approaching 0), a natural, albiet nonphysical, approach to using the BGK collision operator for non-Newtonian flow is to simply put bounds on the values in which the collision frequency may attain (such as in~\citet{svec2011flow,svec2012free,gabbanelli2005lattice}).
+Due to the instabilities associated with the collision frequency being too high (e.g. approaching 2) or too low (e.g. approaching 0), a natural, albiet nonphysical, approach to using the BGK collision operator for non-Newtonian flow is to simply put bounds on the values in which the collision frequency may attain (such as in~\cite{svec2011flow,svec2012free,gabbanelli2005lattice}).
 This simple methodology for increasing stability will henceforth be referred to bounded-relaxation time BGK, or BGK-BRT.
 
 \subsubsection{Multiple-relaxation Time (MRT)}
@@ -358,7 +359,7 @@ This simple methodology for increasing stability will henceforth be referred to 
 An alternative to the BGK collision operator is the multiple-relaxation-time (MRT) collision operator.
 In the LB-MRT scheme, one constructs a space based on the particle velocity, $\pvel$, moments of $\mathbf{f} = \begin{Bmatrix}f_0 & f_1 & ... & f_8\end{Bmatrix}$, herein referred to as the ``moment space''.
 The collision is then performed in the moment space.
-There are a few reasons why it is advantageous to perform the collision in the moment space as opposed to the particle distribution space:
+There are a few reasons why it is advantageous to perform the collision in the moment space as opposed to the particle distribution space: \pagebreak
 \begin{enumerate}
     \item Physical processes in fluids can be approximately described by coupling or interacting among modes, and the modes are directly related to the moments~\cite{lallemand2000theory}.
     \item For the D2Q9 lattice, there are nine distribution functions, $f_0, f_1, ..., f_8$, but only six variables that affect the intended hydrodynamics on a macroscopic scale, namely: $\rho$, $\mathbf{u}$, and $\mathbf{\Pi}$, where $\mathbf{\Pi}$ is the momentum flux tensor~\cite{dellar2003incompressible}.
@@ -412,7 +413,7 @@ The relationship for the shear viscosity is given by:
 \end{equation}
 \noindent which is equivalent with the relationship to the collision frequency, $\omega$, in the BGK sense (when $\Delta t = 1$).
 The remaining relaxation parameters, $s_2$, $s_4$, and $s_6$, are tuned in order to dampen out and separate the ghost modes from the modes affecting hydrodynamic transport.
-It is common practice, and~\citet{lallemand2000theory} recommends, that these three relaxation parameters be set to slightly larger than one.
+It is common practice, and~\cite{lallemand2000theory} recommends, that these three relaxation parameters be set to slightly larger than one.
 
 The MRT collision operator has a greater numerical stability than its BGK counterpart~\cite{lallemand2000theory,dellar2003incompressible,d2002multiple}, and because of the challenges associated with simulating non-Newtonian flow, the MRT collision operator has become popular for simulating non-Newtonian fluids~\cite{chen2014simulations,fallah2012multiple,tang2011bingham,vikhansky2008lattice,chai2011multiple,grasinger2015simulation}.
 The main drawback of the MRT collision operator is its computational expense.
@@ -452,7 +453,7 @@ A criteria for introducing artificial dissipation that has been used successfull
 \begin{equation} \label{eq:ds-threshold}
   \Delta S(\pos, t) > \theta.
 \end{equation}
-A potential drawback of defining a threshold \textit{a priori} is that in order to ensure the model still retains some physical integrity, only a small number of sites can have artificial dissipation added.
+A potential drawback of defining a threshold \textit{a priori} is that in order to ensure the model still retains some physical integrity, only a small number of sites can have artificial dissipation added. \pagebreak
 If the threshold is too low, too many sites may have dissipation added.
 If the threshold is too high, a stable solution may not be achieved.
 The threshold can be determined on a case-by-case basis through trial-and-error or by a preliminary analysis.
@@ -474,7 +475,7 @@ Although this achieves the desired result, namely damping out large nonequilibri
 An alternative, the median filter, has been used successfully in conjunction with both the BGK and MRT collision schemes for simulating one-dimensional shock tubes and lid-driven cavity flow~\cite{brownlee2008nonequilibrium,gorban2014enhancement,packwood2009entropy}.
 Median filtering is an effective noise reduction technique, often used in image processing, for ``speckle noise'' or ``salt and pepper noise''~\cite{brownlee2008nonequilibrium}.
 In other words, median filters are good at reducing high frequency noise while having a minimal effect on lower frequency noise.
-In LBM this is a desirable way to introduce dissipation because it has the potential to reduce high frequency nonequilibrium fluctuations that might lead to numerical instability while retaining the lower frequency dynamics. \pagebreak
+In LBM this is a desirable way to introduce dissipation because it has the potential to reduce high frequency nonequilibrium fluctuations that might lead to numerical instability while retaining the lower frequency dynamics. 
 To use the median filter one performs the collision step and then checks over the domain for lattice sites with $\Delta S$ that meet the criteria for artificial dissipation; sites that meet the criteria are updated as follows:
 \begin{equation} \label{eq:median-filter}
 \mathbf{f} = \mathbf{f}^{eq} + \delta (\mathbf{f} - \mathbf{f}^{eq}),
@@ -487,9 +488,10 @@ To use the median filter one performs the collision step and then checks over th
 
 No slip, or zero velocity, which is commonly imposed at walls in a domain, is accomplished by simulating the particle distributions as "bouncing back" at the walls in the opposite direction from which they stream.
 For example, for a particle distribution streaming in the direction of a south wall, $f_2 = f_4$, $f_5 = f_7$, and $f_6 = f_8$.
-For velocity or pressure boundary conditions, the method proposed by~\citet{zou1997pressure} can be used.
+For velocity or pressure boundary conditions, the method proposed by~\cite{zou1997pressure} can be used.
 The particle distributions that are missing after the streaming step are solved for by assuming a bounceback of the nonequilibrium distribution in the direction normal to the boundary; e.g., for a south inlet or outlet, $f_2 - f_2^{eq} = f_4 - f_4^{eq}$.
 
+\pagebreak
 \subsection{Applied Forces}
 
 Incorporating external forces, such as gravity, pressure gradients, etc., is done by adding a source of particle distributions in the direction of the force.
@@ -543,7 +545,7 @@ The Bingham plastic relationship is described mathematically as:
 \noindent where $\tau$ is the shear stress, $\tau_y$ is the yield stress, and $\mu_p$ is the plastic viscosity~\cite{bingham1922fluidity}.
 
 Due to the discontinuous nature of \eqref{eq:bingham}, the Bingham plastic model is difficult to work with numerically.
-Thus, a smooth approximation to \eqref{eq:bingham} formulated by~\citet{papanastasiou1987flows} is often used as:
+Thus, a smooth approximation to \eqref{eq:bingham} formulated by~\cite{papanastasiou1987flows} is often used as:
 \begin{equation} \label{eq:papa}
 \tau = \tau_y (1 - e^{-m |\dot{\gamma}|}) + \mu_p \dot{\gamma},
 \end{equation}
@@ -661,8 +663,8 @@ MRT & No & $10^8$ & 4.0 & 6.05 & 0.68 & 0.0013 & 0.0013 & 5914 \\
 \end{table}
 
 As has been reported previously, for the BGK collision operator, using a stress growth exponent of $m = 10^5$ is more accurate with respect to the analytical solution than using a stress growth exponent of $m = 10^8$~\cite{chen2014simulations}.
-A larger stress growth exponent results in a more accurate Papastasiou approximation of the true Bingham plastic constitutive model, however, it leads to more nonphysical oscillations that degrade the numerical solution for the BGK collision operator.
-Upon inspection of \Fref{tab:poise-bing}, it does not appear that entropic median filtering helps mitigate errors that occur as a result of using $m = 10^8$ for Bingham plastic Poiseuille flow. \pagebreak
+A larger stress growth exponent results in a more accurate Papastasiou approximation of the true Bingham plastic constitutive model, however, it leads to more nonphysical oscillations that degrade the numerical solution for the BGK collision operator. \pagebreak
+Upon inspection of \Fref{tab:poise-bing}, it does not appear that entropic median filtering helps mitigate errors that occur as a result of using $m = 10^8$ for Bingham plastic Poiseuille flow.
 In fact, the median filter resulted in a less accurate solution in all cases other than the case with the lowest yield stress considered (i.e., the smoothest flow field), and rendered the solution altogether useless for the higher yield stress fluids (relative errors of approximately 25-75\%).
 
 In general, the BGK collision operator using a stress growth exponent of $m = 10^5$ had the lowest computational time.
@@ -743,7 +745,7 @@ Another important question to ask is, if the strength of the MRT collision opera
 \begin{equation}
 \frac{||\boldsymbol{\epsilon} - \boldsymbol{\epsilon}^{eq}||_2}{||\boldsymbol{\epsilon}^{eq}||_2}
 \end{equation}
-\noindent where $||\hdots||_2$ is the Euclidean norm, $\epsilon_j = 4f_0(\pos_j) - 2f_1(\pos_j) - 2f_2(\pos_j) - 2f_3(\pos_j) - 2f_4(\pos_j) + f_5(\pos_j) + f_6(\pos_j) + f_7(\pos_j) + f_8(\pos_j)$ is related to the square of the energy, and $\pos_j = \begin{Bmatrix}16 & y_j\end{Bmatrix}^T$ for $j = 1, 2, ..., 64$, i.e. $\pos_j$ is taken at 16 nodes in from the left in the x-direction and for the full height of the channel in the y-direction.
+\noindent where $||\hdots||_2$ is the Euclidean norm, $\epsilon_j = 4f_0(\pos_j) - 2f_1(\pos_j) - 2f_2(\pos_j) - 2f_3(\pos_j) - 2f_4(\pos_j) + f_5(\pos_j) + f_6(\pos_j) + f_7(\pos_j) + f_8(\pos_j)$ is related to the square of the energy, and $\pos_j = \begin{Bmatrix}16 & y_j\end{Bmatrix}^T$ for $j = 1, 2, ..., 64$, i.e. $\pos_j$ is taken at 16 nodes in from the left in the x-direction and for the full height of the channel in the y-direction. \pagebreak
 The values measured for the BGK with $m = 10^8$, with and without median filtering, were significantly higher than for either the MRT or BGK with $m = 10^5$ collision schemes, which suggests that the nonphysical oscillations the BGK with $m = 10^8$ suffered from was in part due to the $\epsilon$ moment.
 
 \begin{figure}
@@ -877,7 +879,7 @@ Note that all results presented as ``-'' indicate that the tests were numericall
 
 For the Bingham plastic numerical tests the Reynold's number was varied:$[100, 1000, 5000, 10000]$, and the Bingham number was varied: $[1, 10, 100]$ ($Bn$ and $Re$ were calculated the same as in \Fref{sec:poise-bing}).
 The collision schemes that were tested were: (1) BGK with $m = 10^5$, (2) BGK with $m = 10^8$, (3) BGK-BRT with $m = 10^8$, (4) BGK with $m = 10^8$ and median filtering, (5) MRT with $m = 10^8$ and (6) MRT with $m = 10^8$ and median filtering.
-Tables \ref{tab:lid-bing1}--\ref{tab:lid-bing100} compare the center location of the main vortex to literature values taken from~\citet{syrakos2014performance}.
+Tables \ref{tab:lid-bing1}--\ref{tab:lid-bing100} compare the center location of the main vortex to literature values taken from~\cite{syrakos2014performance}.
 The main vortex location is determined by calculating the stream function using Simpson's rule and finding where it attains a maximum.
 
 \begin{table}
@@ -1008,7 +1010,7 @@ The apparent inaccuracy with regards to BGK with $m = 10^8$ and median filtering
 In contrast to the nonphysical nature in which median filtering enhances stability, the stability enhancement used by MRT does not directly affect the macroscopic hydrodynamics of interest, so it again provides a stable, and in most of the cases examined herein, the most accurate solution. % MG: verify this sentence is correct
 The apparent superiority in terms of stability and accuracy of the MRT collision operator still comes at a price though.
 The MRT collision operator was, in general, 5-10 times slower than any of the BGK collision schemes.
-The extreme increase in computational expense is probably not due to the collision process itself, i.e. \eqref{eq:mrt-colop}, but instead calculating the strain-rate \eqref{eq:srtensor-mrt} for each iteration of the solution for $\mu_{app}$.
+The extreme increase in computational expense is probably not due to the collision process itself, i.e. \eqref{eq:mrt-colop}, but instead calculating the strain-rate \eqref{eq:srtensor-mrt} for each iteration of the solution for $\mu_{app}$. \pagebreak
 
 In summary for the lid-driven cavity flow of a Bingham plastic fluid, 
 \begin{itemize}
@@ -1021,7 +1023,7 @@ In summary for the lid-driven cavity flow of a Bingham plastic fluid,
 
 For the power-law numerical tests the Reynold's number was varied: $[100, 1000, 5000, 10000]$, and the flow behavior index, $n$, was varied: $[0.5, 1.5]$ ($Re$ was calculated the same as in \Fref{sec:poise-powerlaw}).
 The collision schemes that were tested were: (1) BGK, (2) BGK-BRT, (3) BGK with median filtering, (4) MRT with $m = 10^8$ and (5) MRT with $m = 10^8$ and median filtering.
-\Fref{tab:lid-powerlaw05} and \Fref{tab:lid-powerlaw15} compare the center location of the main vortex to literature values taken from~\citet{li2014simulation}.
+\Fref{tab:lid-powerlaw05} and \Fref{tab:lid-powerlaw15} compare the center location of the main vortex to literature values taken from~\cite{li2014simulation}.
 
 %MG: two values still need filled in in these tables
 \begin{table}
@@ -1101,6 +1103,7 @@ However, the solutions became unstable at higher Reynold's numbers and entropic 
 Although there still appears to be somewhat of a tradeoff between computational efficiency and accuracy in regards to the BGK with median filtering and MRT with median filtering, it does not seem to be nearly as drastic as when simulating Bingham plastic lid-driven flow; e.g. neither collision scheme consistently agrees with the literature values; and the MRT with median filtering is only 2-3 times slower than the BGK with median filtering.
 A good example of this tradeoff is the shear-thinning results for $Re = 5000$: the location of the main vortex for the BGK with median filtering differed from literature by more than 10\% in both the $x$ and $y$ directions but the MRT with median filtering has approximately twice the computational cost.
 
+\pagebreak
 For the shear-thickening results, $n = 1.5$, there were no issues of stability.
 What is interesting is that all of the collision schemes produce similar results for each of the cases, with the difference in the location of the main vortex being no greater than 1\% in either the $x$ or $y$ direction for any two collision schemes (with the exception of the high Reynold's number case, $Re = 10000$).
 The BGK-BRT consistently needed the least amount of computation time.
@@ -1124,7 +1127,7 @@ The results showed that:
     \begin{itemize}
   \item for low Reynold's number flow the BGK collision operator with $m = 10^5$ provides an accurate solution with a short computation time,
     \item for high Reynold's number flow the BGK collision operator requires entropic filtering to remain stable.
-    \end{itemize} \pagebreak
+    \end{itemize}
   \item To summarize power-law, lid-driven cavity flow,
     \begin{itemize}
       \item for shear-thinning fluids at high Reynold's numbers ($Re \ge 5000$) median filtering is necessary to produce a stable solution,
@@ -1176,22 +1179,22 @@ If the hydrostatic pressure of the cement column drops below the pressure of a f
 % Before the end of this paragraph--modeling is important because...
 
 In order to better understand, and thus improve primary cementing for zonal isolation, several works have attempted to model certain aspects of the multiphase and multiphysics processes of wellbore cement placement.
-For example,~\citet{Bei77} developed a mathematical model to describe the displacement of drilling mud by the the cement slurry during primary cementing.
+For example,~\cite{Bei77} developed a mathematical model to describe the displacement of drilling mud by the the cement slurry during primary cementing.
 Among their assumptions were that the flow as laminar, the process could be modeled in a quasi-steady manner, the volumetric flow rate was constant at each cross section of the flow, and the pressure fields were only dependent on the distance from the center of the annulus to either the rock formation or steel casing surface.
 The model was then used to explore the effect of various parameters on the displacement efficiency of the spacer, such as the density ratio between the mud and the spacer, the viscosity ratio between the mud and the spacer, the displacement rate, the displaced phase yield stress, and the displacing phase yield stress.
 It was concluded that displacement efficiency could be improved by increasing the density of the displacing phase, increasing the viscosity of the displacing phase, (in general) decreasing the displacement rate, decreasing the yield stress of the displaced phase, and increasing the yield stress of the displacing phase.
-\citet{Bit02} developed a mathematical model for primary cementing of an oil well using a Hele-Shaw displacement model.
-The model was more general than the model developed by~\citet{Bei77} as it used less restrictive assumptions and was able to consider an eccentric annulus.
+\cite{Bit02} developed a mathematical model for primary cementing of an oil well using a Hele-Shaw displacement model.
+The model was more general than the model developed by~\cite{Bei77} as it used less restrictive assumptions and was able to consider an eccentric annulus.
 The bulk fluid motion of the spacer and drilling mud during primary cementing were investigated.
 The intended use of the model was not to make general statements about what properties of the spacer and drilling mud were desirable, but to instead be used iteratively during the design process for the cement job.
 Results showed that the model was able to simulate an unyielded channel of mud left on the narrow side of the annulus.
-\citet{Zul12} used a computational fluids dynamics (CFD) solver with volume of fluid (VOF) method to simulate the cementing process of a 50 ft. section of wellbore.
-The model included the interfacial dynamics of, not just the spacer and drilling mud, but also the cement slurry--which was not considered in either~\citet{Bei77} or~\citet{Bit02}.
+\cite{Zul12} used a computational fluids dynamics (CFD) solver with volume of fluid (VOF) method to simulate the cementing process of a 50 ft. section of wellbore.
+The model included the interfacial dynamics of, not just the spacer and drilling mud, but also the cement slurry--which was not considered in either~\cite{Bei77} or~\cite{Bit02}.
 The drilling mud and cement slurry properties were kept constant, while the spacer density, viscosity, and displacement rates were varied.
-\citet{Zul12} concluded that the high displacement efficiency occurred when the spacer was the same density as the drilling mud and had a smaller viscosity, similar to that of water.
+\cite{Zul12} concluded that the high displacement efficiency occurred when the spacer was the same density as the drilling mud and had a smaller viscosity, similar to that of water.
 The displacement efficiency was poor for all scenarios in which the spacer and cement slurry densities were equal.
-\citet{zhao2016lattice} developed a model simulating primary cementing using the Lattice Boltzmann Method.
-\citet{zhao2016lattice} used the model to investigate the shape of the interface between the displacing phase (i.e. cement slurry) and displaced phase (i.e. drilling mud) in a horizontal, eccentric annulus.
+\cite{zhao2016lattice} developed a model simulating primary cementing using the Lattice Boltzmann Method.
+\cite{zhao2016lattice} used the model to investigate the shape of the interface between the displacing phase (i.e. cement slurry) and displaced phase (i.e. drilling mud) in a horizontal, eccentric annulus.
 It was found, in general, that a greater density ratio between the displacing phase and displaced phase and lower eccentricity results in better displacement in a horizontal, eccentric annulus.
 
 % talk about new LBM study
@@ -1203,7 +1206,7 @@ If an adequate bond does not develop, debonding can occur as a result of thermal
 Even if most of the annulus is filled by the cement slurry, a small gap at the cement--formation interface that stretches for a long enough span of the wellbore would still be susceptible to fluid and gas migration, i.e. loss of zonal isolation.
 One could even argue that the characteristic of the cement slurry flow is most important local to the cement--formation interface, and that considering imperfections in the rock formation is imperative to determining whether zonal isolation has been achieved.
 
-The purpose of the current work is to develop a computational approach to investigate the flow of cement slurry in and around the--possibly--imperfect features of a rock formation in a vertical section of a wellbore, with the hope of better understanding what parameters of the primary cement job will lead to a good fill of the cement annulus and high bond strength at imperfect rock formation features.
+The purpose of the current work is to develop a computational approach to investigate the flow of cement slurry in and around the--possibly--imperfect features of a rock formation in a vertical section of a wellbore, with the hope of better understanding what parameters of the primary cement job will lead to a good fill of the cement annulus and high bond strength at imperfect rock formation features. \pagebreak
 The Lattice Boltzmann Method (LBM) was chosen as the most suitable modeling technique for the desired purpose because of its ability to model flow through and around complex geometries~\cite{thorne2006lattice}, such as those found at the surface of the rock formation.
 LBM also has other advantages as an approach for simulating primary cementing:
 \begin{itemize}
@@ -1248,9 +1251,9 @@ For more detail on Bingham plastics or the Papastasiou approximation, see \Fref{
 A free-surface flow is a flow in which two-fluids exist but the dynamics of one fluid does not need to be explicitly modeled.
 Typically, the phase of the primary fluid, or the fluid of interest, is a liquid; and the secondary phase that does not need to be explicitly modeled is a gas, often times air at atmospheric pressure.
 The primary fluid is modeled using a standard CFD method, such as LBM, and the interaction of the secondary fluid on the primary fluid is modeled as a boundary condition at the interface between the two fluids.
-The interface is what is referred to as the free-surface. \pagebreak
+The interface is what is referred to as the free-surface. 
 The advantage of modeling a multiphase multicomponent flow as a free-surface is that, because the dynamics of the secondary fluid are not explicitly tracked and simulated, the resulting algorithm is more computationally efficient in terms of both memory and CPU overhead.
-The algorithm for extending the Lattice Boltzmann Method for free-surface flow used in this work follows the algorithm developed and presented in~\citet{korner2005lattice} and \citet{thurey2005interactive}.
+The algorithm for extending the Lattice Boltzmann Method for free-surface flow used in this work follows the algorithm developed and presented in~\cite{korner2005lattice} and \cite{thurey2005interactive}.
 
 \subsection{Capturing the Free-Surface}
 
@@ -1335,17 +1338,18 @@ On the right, the three cells highlighted in red were transitioned from fluid to
 \subsubsection{Updating Cell States and Mass Redistribution} \label{sec:cell-updates}
 
 The rules for updating cell states in \Fref{tab:cell-transition-rules} are fairly intuitive, however, there are some details that must be considered in order to ensure mass is properly conserved and interface continuity is achieved (e.g. note that if the rules outlined in \Fref{tab:cell-transition-rules} are followed naively that mass is not conserved when interface cells transition to fluid cells or gas cells).
-The algorithm for updating cell states follows that which was presented in~\citet{thurey2005interactive}.
+The algorithm for updating cell states follows that which was presented in~\cite{thurey2005interactive}.
 It is presented here as \Fref{algo:update-cell-states} for the sake of completeness and for outlining minor modifications.
 
 \input{src/algorithm/update-cell-states.tex}
 
+\pagebreak
 \Fref{algo:update-cell-states}, as presented, ensures both mass conservation and continuity of the free-surface.
 Moreover, when mass redistribution inevitably occurs, it is first attempted to be redistributed and weighted in the direction in which the interface is propagating (e.g. line \algref{algo:update-cell-states}{line:redist-dop-f} or line \algref{algo:update-cell-states}{line:redist-dop-g}.
-If there are no interface cells in the direction of interface propagation, it is instead redistributed to neighboring interface cells (e.g. line \algref{algo:update-cell-states}{line:redist-neighbors-f} or line \algref{algo:update-cell-states}{line:redist-neighbors-g}).
+If there are no interface cells in the direction of interface propagation, it is instead redistributed to neighboring interface cells (e.g. line \algref{algo:update-cell-states}{line:redist-neighbors-f} or line \algref{algo:update-cell-states}{line:redist-neighbors-g}). \pagebreak
 If there is no neighboring cells which are interface cells, the excess mass is added onto the global excess mass, $M_{gex}$, which is eventually redistributed among all of the interface cells (e.g. line \algref{algo:update-cell-states}{line:final-redist}).
 The hierarchy of possible redistribution steps ensures that mass redistribution is done in the most physically meaningful way as is possible. % We may need to hard code references to steps in here...
-Lastly, note that the interface normal, $\mathbf{n}$, is calculated using a finite difference approximation,
+Lastly, note that the interface normal, $\mathbf{n}$, is calculated using a finite difference approximation:
 \begin{equation} \label{eq:n}
 \mathbf{n}_{ij} = \frac{1}{2} \begin{Bmatrix}
 \epsilon_{i-1, j} - \epsilon_{i+1, j} \\
@@ -1424,7 +1428,7 @@ The schematic on the right is courtesy of~\cite{cementing2015web}}.
 
 %The simulations were carried out on a $\nodesi \times \nodesj$ lattice, which corresponds to an annulus width of \anw \hspace{0.05cm} and a sectional height of \anh.
 The simulations were carried out on a $\nodesi \times \nodesj$ lattice.
-For the mass inlet, a~\citet{zou1997pressure} velocity boundary condition was used in conjuction with a constant mass boundary condition, i.e. $M(\pos_j, t) = M_0 = 1.0$ for all $\pos_j$ along the inlet.
+For the mass inlet, a~\cite{zou1997pressure} velocity boundary condition was used in conjuction with a constant mass boundary condition, i.e. $M(\pos_j, t) = M_0 = 1.0$ for all $\pos_j$ along the inlet.
 This corresponded to a constant mass flow, $\dot{M}_{in} = M_0 u_0$, at inlet.
 For the outlet, mass was allowed to transfer out of the domain during the mass transfer step such that $f_\opidx(\pos + \pvel_i \Delta t, t) = 0$ in \eqref{eq:dM} for all $\pos + \pvel_i \Delta t$ that lie outside of the domain on the other side of the mass outlet (i.e. the boundary condition at the outlet is such that there is no backflow).
 All simulations were executed for $\nsteps$ time steps.
@@ -1439,7 +1443,7 @@ The wellbore geometries that were considered herein are depicted in \Fref{fig:we
 \end{figure}
 
 In addition to wellbore geometry, different cement slurry material properties and cement slurry flow rates were considered, which are characterized by the dimensionless Reynold's number, $Re = \frac{\rho U L}{\mu_p}$, and Bingham number, $Bn = \frac{\tau_y L}{\mu_p U}$, of the flow, where $L \equiv $ the width of the annulus.
-A particular goal of the study was to investigate which Reynold's numbers and Bingham numbers were preferable for each geometry, and which Reynold's numbers and Bingham numbers performed well for all geometries.
+A particular goal of the study was to investigate which Reynold's numbers and Bingham numbers were preferable for each geometry, and which Reynold's numbers and Bingham numbers performed well for all geometries. \pagebreak
 The dimensionless numbers were defined as follows, $(Re, Bn) = (1.00, 4.00)$,  $(2.50, 0.00)$, $(2.50, 1.00)$, $(2.50, 10.0)$, $(2.50, 25.0)$, $(5.00, 5.00)$, and $(12.5, 2.0)$.
 \Fref{fig:percent-filled} shows the percentage of the wellbore annulus section filled at the end of the cement simulation duration.
 The percent fill was calculated as:
@@ -1457,7 +1461,7 @@ The percent fill was calculated as:
 Based upon \Fref{fig:percent-filled}, some general statements can be made about what properties of the cement slurry flow are preferable.
 For example, low yield stress, and consquently low Bingham number flows ($Bn \le 1.0$), approximately completely filled the annulus for every wellbore geometry considered.
 In addition, the negligible percentage of voids for the ($Re = 5.00, Bn = 5.00$) and ($Re = 12.5, Bn = 2.0$) slurry flows suggests that a if the ratio of $Bn / Re$ is low, that the slurry flow will result in a low percentage of voids for cementing a dry hole as is desired.
-As $Bn / Re$ increases, it appears that, in certain cases and wellbore geometries, the slurry flow tends to result in a larger percentage of voids (approximately 10\%-40\%). \pagebreak
+As $Bn / Re$ increases, it appears that, in certain cases and wellbore geometries, the slurry flow tends to result in a larger percentage of voids (approximately 10\%-40\%). 
 What is interesting to note is that for slurry flows that resulted in a percentage of voids greater than 3\%, there was a lack of consistency across wellbore geometries in terms of which slurry flow resulted in more voids and which slurry flow resulted in less, which suggests that generalities cannot always be made and that computational methods are necessary for understanding and designing slurry mixes for real-life wellbores.
 
 \section{Conclusions} \label{sec:conclusion}
@@ -1475,7 +1479,7 @@ The lattice Boltzmann method extended for simulating non-Newtonian and free-surf
 \item The LBM no-slip boundary condition works well with complex geometries, such as those that occur in realistic rock formation surfaces in drilled wellbores.
 \end{itemize}
 
-Future work would include developing a more physically realistic model.
+\pagebreak Future work would include developing a more physically realistic model.
 Primary cementing can involve multiple phases and multiple components, namely the cement slurry, a spacer fluid, and drilling mud.
 Possible future work would be make the model more general so as to be capable of simulating multiphase multicomponent flow.
 In addition, a more physically realistic model would simulate three-dimensional flow so as to be able to simulate eccentric annuli and three-dimensional rock formation imperfections.
@@ -1488,7 +1492,7 @@ In \Fref{chap:lbm-stability}, the accuracy, stability, and efficiency of Lattice
 Two different benchmark problems were chosen for the study: Poiseuille flow, and lid-driven square cavity flow, as Poiseuille flow is characterized by the development of velocity profiles and lid-driven cavity flow is characterized by the development of vortices.
 Conclusions from the study were presented in \Fref{sec:numerical-study-conclusions}.
 In the context of studying the accuracy, stability, and efficiency of Lattice Boltzmann models for simulating non-Newtonian flow, future work would include investigating the effect of the choice of time step size and simulation Mach number (as in~\cite{conrad2015accuracy}) on the convergence rate and accuracy of the results and LB methods presented in \Fref{sec:numerical-study}.
-In addition, possible future work could include investigating other physical problems such as planar sudden expansion flow~\cite{tang2011binghami,chai2011multiple,chen2014simulations,wang2008lattice}, reentrant corner flow~\cite{gabbanelli2005lattice,yoshino2007numerical}, and flow around a cylinder~\cite{fallah2012multiple}.
+In addition, possible future work could include investigating other physical problems such as planar sudden expansion flow~\cite{tang2011bingham,chai2011multiple,chen2014simulations,wang2008lattice}, reentrant corner flow~\cite{gabbanelli2005lattice,yoshino2007numerical}, and flow around a cylinder~\cite{fallah2012multiple}.
 In the context of simulating wellbore cementing, future work would include studying the accuracy, stability, and efficiency of Lattice Boltzmann models for simulating the thixotropic and time-dependent behavior of cement slurry~\cite{roussel2005steady}.
 
 In \Fref{chap:lbm-cement}, the LBM algorithm for non-Newtonian flow is extended to simulate free surface flow.
@@ -1499,10 +1503,10 @@ Possible future work would be make the model more general so as to be capable of
 In addition, a more physically realistic model would simulate three-dimensional flow so as to be able to simulate eccentric annuli and three-dimensional rock formation imperfections.
 
 %\bibliographystyle{abbrvnat}
-%\bibliography{master}
 
 % bullshit Pitt formatting
 \bibliographystyle{unsrt}
 \safebibliography{master}
+%\bibliography{master}
 
 \end{document}
