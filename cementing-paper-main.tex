@@ -1,0 +1,79 @@
+\documentclass{article}
+
+\usepackage[pdftex]{graphicx}
+
+\usepackage[affil-it]{authblk}
+\usepackage{lineno}
+\usepackage{soul}
+\usepackage{color}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[square,numbers,sort&compress]{natbib}
+\usepackage{enumitem}
+\setlistdepth{9}
+
+\newlist{myEnumerate}{enumerate}{9}
+\setlist[myEnumerate,1]{label=(\arabic*)}
+\setlist[myEnumerate,2]{label=(\Roman*)}
+\setlist[myEnumerate,3]{label=(\Alph*)}
+\setlist[myEnumerate,4]{label=(\roman*)}
+\setlist[myEnumerate,5]{label=(\alph*)}
+\setlist[myEnumerate,6]{label=(\arabic*)}
+\setlist[myEnumerate,7]{label=(\Roman*)}
+\setlist[myEnumerate,8]{label=(\Alph*)}
+\setlist[myEnumerate,9]{label=(\roman*)}
+
+%\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{mathtools}
+\usepackage{bm}
+\usepackage[plain]{fancyref}
+\usepackage{tabulary}
+\usepackage{pbox}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+
+\makeatletter
+\def\BState{\State\hskip-\ALG@thistlm}
+\def\mkfancyprefix#1#2{%
+  \@namedef{fancyref#1labelprefix}{#1}%
+  \begingroup\def\x{\endgroup\frefformat{plain}}%
+    \expandafter\x\csname fancyref#1labelprefix\endcsname
+      {\MakeLowercase{#2}\fancyrefdefaultspacing##1}%
+  \begingroup\def\x{\endgroup\Frefformat{plain}}%
+    \expandafter\x\csname fancyref#1labelprefix\endcsname
+      {#2\fancyrefdefaultspacing##1}%
+}
+\makeatother
+\mkfancyprefix{algo}{Algorithm}
+
+\input{src/notation.tex}
+
+\title{Free Surface and non-Newtonian Simulation of Wellbore Cementing using the Lattice Boltzmann Method}
+
+\author{{Matthew Grasinger}
+\thanks{Email: \textit{grasingerm@pitt.edu}}}
+
+\author{John Brigham
+\thanks{Email: \textit{brigham@pitt.edu}}}
+\affil{Civil and Environmental Engineering Department, University of Pittsburgh}
+
+\begin{document}
+
+\pagenumbering{gobble}
+\maketitle
+\newpage
+\tableofcontents
+\newpage
+\pagenumbering{arabic}
+
+\input{src/cementing-paper.tex}
+
+\section*{Acknowledgements}
+
+% MG: should we mention: code is open source? input files used in this study are also freely available?
+
+\bibliographystyle{abbrvnat}
+\bibliography{master}
+	
+\end{document}
