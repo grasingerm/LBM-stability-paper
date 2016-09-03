@@ -6,7 +6,7 @@ The collision operator is of interest because it, along with the equilibrium dis
 This work examines various collision operators and methods for stability enhancement for their suitability for simulating non-Newtonian fluid flows in terms of accuracy, numerical stability and computational efficiency.
 The investigation was carried out as a numerical study looking for qualitative, yet practical, results, including testing the BGK and MRT collision operators, with and without entropic filtering, as applied to Bingham plastics and power-law fluids.
 Two different benchmark problems were chosen for the flows: Poiseuille flow, and lid-driven square cavity flow.
-The results of the numerical study showed that the MRT collision operator can have an advantage in terms of stability and accuracy for a variety of non-Newtonian flow behavior, but at an increased computing cost that was, in some cases, as much as five times greater.
+The results of the numerical study showed that the MRT collision operator can have an advantage in terms of stability and accuracy for a variety of non-Newtonian flow behaviors, but at an increased computing cost that was, in some cases, as much as five times greater.
 It was also shown that artificial dissipation can be an effective technique for enhancing numerical stability of non-Newtonian, lid-driven cavity flow, and is particularly effective for efficiently and accurately simulating the flow of shear-thinning fluids.
 
 \section{Introduction} %MG: this intro will potentially be long. Should it be broken up into subsections (as it is now)?
@@ -383,7 +383,7 @@ The present work uses a Picard-type algorithm to approximate a solution for $\do
 	\item Return to Step \ref{step:solve-for-flow} until convergence is met.
 \end{enumerate}
 \noindent where $f$ is form of the constitutive relationship that maps the local strain-rate to a local apparent visocisty.
-More details on the functions that are used for $f$ are given in \Fref{sec:constit}.
+More detail on the functions that are used for $f$ is given in \Fref{sec:constit}.
 
 It is clear that calculating the strain-rate tensor for the MRT collision operator is more computationally expensive than it is for the BGK collision operator.
 The increase in the overall computational expense for simulating non-Newtonian flow using the MRT collision operator is exacerbated by the fact that approximating the apparent viscosity requires iteration and therefore multiple calculations of the strain-rate tensor for each discrete moment in time and for each discrete location in the domain.
@@ -714,10 +714,10 @@ Taking the partial with respect to $y$ of the analytical solution for the flow v
 \end{equation}
 and taking the partial with respect to $y$ of the analytical solution for the flow velocity of a power-law fluid, Poiseuille flow (Equation \eqref{eq:analytical-power-law}) results in:
 \begin{equation} \label{eq:gradu-power-law}
-  \frac{\partial u_x}{\partial y} = \left( -\frac{1}{k} \pgrad \right)^{1/n} \left( -y |y|^{1/n - 1} \right).
+  \frac{\partial u_x}{\partial y} = \left( -\frac{1}{k} \pgrad \right)^{1/n} \left( -y |y|^{\frac{1}{n} - 1} \right).
 \end{equation}
 It can be seen from \eqref{eq:gradu-bingham} and \eqref{eq:gradu-power-law} that $\left| \frac{\partial u_x}{\partial y} \right|$ increases with the yield stress for Bingham plastics, and increases with $\frac{1}{n}$ for power-law fluids, which suggests that one of the challenges associated with the accuracy and stability of simulating higher yield-stress fluids and more extreme shear-thinning fluids (e.g. $n \le 0.5$) in Poiseuille-type flow is a result of having a larger magnitude of the gradient of macroscopic flow.
-This conclusion is consistent with the discussion in \Fref{sec:bgk} with regards to one of the drawbacks of the BGK collision operator, namely that when there is a sharp spatial gradient in either $\rho$ or $\mvel$ that it can lead to nonphysical oscillations that can degrade the accuracy and stability of the solution.
+This conclusion is consistent with the discussion in \Fref{sec:bgk} with regards to one of the drawbacks of the BGK collision operator, namely that a sharp spatial gradient in either $\rho$ or $\mvel$ can lead to nonphysical oscillations that can degrade the accuracy and stability of the solution.
 However, it does not explain why the MRT collision operator was unable to accurately simulate the case of a power-law fluid, Poiseuille flow, with $n = 0.5$.
 
 \subsection{Lid-driven Cavity Flow} % MG: would it be of any use to show streamline plots from some of these flows?
