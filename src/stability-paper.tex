@@ -6,7 +6,8 @@ The collision operator is of interest because it, along with the equilibrium dis
 This work examines various collision operators and methods for stability enhancement for their suitability for simulating non-Newtonian fluid flows in terms of accuracy, numerical stability and computational efficiency.
 The investigation was carried out as a numerical study looking for qualitative, yet practical, results, including testing the BGK and MRT collision operators, with and without entropic filtering, as applied to Bingham plastics and power-law fluids.
 Two different benchmark problems were chosen for the flows: Poiseuille flow, and lid-driven square cavity flow.
-The test results are followed by recommendations for choice collision scheme given priority and problem type.
+The results of the numerical study showed that the MRT collision operator can have an advantage in terms of stability and accuracy for a variety of non-Newtonian flow behavior, but at an increased computing cost that was, in some cases, as much as five times greater.
+It was also shown that artificial dissipation can be an effective technique for enhancing numerical stability of non-Newtonian, lid-driven cavity flow, and is particularly effective for efficiently and accurately simulating the flow of shear-thinning fluids.
 
 \section{Introduction} %MG: this intro will potentially be long. Should it be broken up into subsections (as it is now)?
 
@@ -701,6 +702,23 @@ BGK-BRT & No & 0.50 & 0.0007 & 11.73 & 12.56 & 4450 \\
 \label{tab:poise-power-law}
 \end{tabulary}
 \end{table}
+
+Before closing the discussion on the Poiseuille flow numerical study, it is worthwhile to consider what precisely is common between the higher-yield stress fluids and the shear-thinning fluids, as they were the cases that exhibited numerical instabilities and were simulated with the least amount of accuracy for some of the collision schemes considered.
+One such commonality can be seen when considering the effect of the yield stress, $\tau_y$, and the effect of the flow behavior index, $n$, on the gradient of the theoretical flow velocity.
+Taking the partial with respect to $y$ of the analytical solution for the flow velocity of a Bingham plastic, Poiseuille flow (Equation \eqref{eq:analytical-bingham}) results in:
+\begin{equation} \label{eq:gradu-bingham}
+  \frac{\partial u_x}{\partial y} = \begin{cases}
+    0, & 0 \leq |y| \leq y_{\tau}, \\
+    \frac{1}{\mu_p} \left( \pgrad y + \tau_y \frac{y}{|y|} \right), & y_{\tau} < |y| \leq h,
+  \end{cases}
+\end{equation}
+and taking the partial with respect to $y$ of the analytical solution for the flow velocity of a power-law fluid, Poiseuille flow (Equation \eqref{eq:analytical-power-law}) results in:
+\begin{equation} \label{eq:gradu-power-law}
+  \frac{\partial u_x}{\partial y} = \left( -\frac{1}{k} \pgrad \right)^{1/n} \left( -y |y|^{1/n - 1} \right).
+\end{equation}
+It can be seen from \eqref{eq:gradu-bingham} and \eqref{eq:gradu-power-law} that $\left| \frac{\partial u_x}{\partial y} \right|$ increases with the yield stress for Bingham plastics, and increases with $\frac{1}{n}$ for power-law fluids, which suggests that one of the challenges associated with the accuracy and stability of simulating higher yield-stress fluids and more extreme shear-thinning fluids (e.g. $n \le 0.5$) in Poiseuille-type flow is a result of having a larger magnitude of the gradient of macroscopic flow.
+This conclusion is consistent with the discussion in \Fref{sec:bgk} with regards to one of the drawbacks of the BGK collision operator, namely that when there is a sharp spatial gradient in either $\rho$ or $\mvel$ that it can lead to nonphysical oscillations that can degrade the accuracy and stability of the solution.
+However, it does not explain why the MRT collision operator was unable to accurately simulate the case of a power-law fluid, Poiseuille flow, with $n = 0.5$.
 
 \subsection{Lid-driven Cavity Flow} % MG: would it be of any use to show streamline plots from some of these flows?
 
