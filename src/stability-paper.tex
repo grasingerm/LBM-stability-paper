@@ -178,9 +178,9 @@ The BGK collison operator for the $i^{th}$ discrete velocity is expressed as:
 
 \noindent where $\omega$ is the collision frequency~\cite{Bha54}.
 The collision frequency can be related to macroscopic constitutive properties through Chapman-Enskog multiscale analysis~\cite{wolf2000lattice}.
-For incompressible Newtonian flow, the collision frequency is related to the kinematic viscosity by $\nu = c_s^2(\frac{1}{\omega} - \frac{1}{2})$; and from this relationship it is clear that $\omega \in [0.0, 2.0]$, otherwise the viscosity would be negative.
+For incompressible Newtonian flow, the collision frequency is related to the kinematic viscosity by $\nu = c_s^2(\frac{1}{\omega} - \frac{1}{2})$; and from this relationship it is clear that $\omega \in \begin{bmatrix}0.0,& 2.0\end{bmatrix}$, otherwise the viscosity would be negative.
 The method for simulating non-Newtonian flow in the current work involves approximating a solution to the local value of apparent viscosity, $\mu_{app}(\pos, t)$, where the shear stress, $\tau$, and strain-rate, $\dot{\gamma}$, are dependent on $\pos$ and $t$, and then setting the value of the local collision frequency as follows:
-\begin{equation} \label{eq:colfeq-non-newtonian}
+\begin{equation} \label{eq:colfreq-non-newtonian}
 \omega(\pos, t) = \frac{1}{\frac{\mu_{app}(\pos, t)}{c_s^2 \rho(\pos, t)} + \frac{1}{2}}
 \end{equation}
 
@@ -201,7 +201,7 @@ The nonlinear constitutive relationship can lead to sharp gradients in $\rho$ or
 Due to the instabilities associated with the collision frequency being too high (e.g. approaching 2) or too low (e.g. approaching 0), a natural, albiet nonphysical, approach to using the BGK collision operator for non-Newtonian flow is to simply put bounds on the values in which the collision frequency may attain (such as in~\citet{svec2011flow,svec2012free,gabbanelli2005lattice}).
 This simple methodology for increasing stability will henceforth be referred to bounded-relaxation time BGK, or BGK-BRT.
 
-\subsubsection{Multiple-relaxation Time}
+\subsubsection{Multiple-relaxation Time} \label{sec:mrt}
 
 An alternative to the BGK collision operator is the multiple-relaxation-time (MRT) collision operator.
 In the LB-MRT scheme, one constructs a space based on the particle velocity, $\pvel$, moments of $\mathbf{f} = \begin{Bmatrix}f_0 & f_1 & ... & f_8\end{Bmatrix}^T$, herein referred to as the ``moment space''.
@@ -349,7 +349,9 @@ f_i(\pos + \pvel_i \Delta t, t + \Delta t) = f_i(\pos, t) + \Omega_i(f) + \frac{
 
 \subsection{Strain-rate Tensor}
 
-In order to solve for the apparent viscosity, $\mu_{app}$, using the Picard-type algorithm outlined in \Fref{sec:lbm-for-nnf}, one must calculate the strain-rate, $\dot{\gamma}$.
+In the present work, material behavior is simulated through the collision frequency, $\omega$, when using the BGK collision operator (\Fref{sec:bgk}), or the $s_7$ and $s_8$ relaxation rates when using the MRT collision operator (\Fref{sec:mrt}).
+Both the collision frequency and the $s_7$ and $s_8$ relaxation rates are dependent on the apparent visocity, $\mu_{app}$, through \eqref{eq:colfreq-non-newtonian} and \eqref{eq:mrt-s7}, respectively.
+The apparent viscosity, in the context of non-Newtonian flow, is a function of the local strain-rate, $\dot{\gamma}$.
 The strain-rate is given by the second invariant of the strain-rate tensor, $\srtensor$, i.e.:
 \begin{equation} \label{eq:second-invariant}
 \dot{\gamma} = \sqrt{2 \sum_{\alpha,\beta=1}^{2} \srtensor \srtensor}.
@@ -367,14 +369,29 @@ D_{\alpha \beta} = -\frac{1}{2 \rho c_s^2 \Delta t} \sum_i \xi_{i \alpha} \xi_{i
 
 \noindent Computing the strain-rate tensor by either \eqref{eq:srtensor-bgk} or \eqref{eq:srtensor-mrt} is second order accurate in space~\cite{kruger2009shear,kruger2010second}.
 
-Upon comparison of \eqref{eq:srtensor-bgk} and \eqref{eq:srtensor-mrt}, it is clear that calculating the strain-rate tensor for the MRT collision operator is more computationally expensive than it is for the BGK collision operator.
-The increase in computational expense is exacerbated by the fact that approximating the apparent viscosity, $\mu_{app}$, by the algorithm outlined in \Fref{sec:lbm-for-nnf} requires iteration and therefore multiple calculations of the strain-rate tensor.
+It can be seen from \eqref{eq:srtensor-bgk} and \eqref{eq:srtensor-mrt} that the strain-rate tensor is a function of the collision frequency in the case of the BGK collision operator, or the relaxation matrix, $\relaxM$, in the case of the MRT collision operator.
+This interdependence between the relaxation parameters ($\omega$, $s_7$ and $s_8$) and the strain-rate is a direct result of a nonlinear, non-Newtonian constitutive relationship.
+The present work uses a Picard-type algorithm to approximate a solution for $\dot{\gamma}$ and $\mu_{app}$:
 
-\subsection{Non-Newtonian Constitutive Equations}
+\label{sec:picard}
+\begin{enumerate}
+	\item Start with initial guess for the apparent viscosity, $\mu_k = \mu_0$.
+	      Set $\omega_k$ using \eqref{eq:colfreq-non-newtonian} (, or set $s_7 = s_8$ using \eqref{eq:mrt-s7})
+	\item \label{step:solve-for-flow} Solve for the strain-rate, $\dot{\gamma}_k$, using \eqref{eq:srtensor-bgk} (, or using \eqref{eq:srtensor-mrt}).
+	\item Update the apparent viscosity, $\mu_{k+1} = f(\dot{\gamma}_k)$.
+	\item Return to Step \ref{step:solve-for-flow} until convergence is met.
+\end{enumerate}
+\noindent where $f$ is form of the constitutive relationship that maps the local strain-rate to a local apparent visocisty.
+More details on the functions that are used for $f$ are given in \Fref{sec:constit}.
+
+It is clear that calculating the strain-rate tensor for the MRT collision operator is more computationally expensive than it is for the BGK collision operator.
+The increase in the overall computational expense for simulating non-Newtonian flow using the MRT collision operator is exacerbated by the fact that approximating the apparent viscosity requires iteration and therefore multiple calculations of the strain-rate tensor for each discrete moment in time and for each discrete location in the domain.
+
+\subsection{Non-Newtonian Constitutive Equations} \label{sec:constit}
 
 \subsubsection{Bingham Plastic} \label{sec:bp}
 
-A Bingham plastic does not flow, i.e. the strain-rate is zero, when the shear stress is below the yield stress, and behaves in an almost Newtonian manner when the shear stress is above the yield stress.
+A Bingham plastic does not flow (i.e. the strain-rate is zero) when the shear stress is below the yield stress, and behaves in an almost Newtonian manner when the shear stress is above the yield stress.
 The Bingham plastic relationship is described mathematically as:
 \begin{equation} \label{eq:bingham}
 \begin{cases}
@@ -394,7 +411,7 @@ The larger the value of $m$, the closer the approximation is to the Bingham plas
 Alternatively, the constitutive relationship can be interpreted through the apparent viscosity.
 Noting that $\mu_{app} = \frac{\tau}{\dot{\gamma}}$ and rearranging \eqref{eq:papa} results in the following expression for the apparent viscosity:
 \begin{equation} \label{eq:bing-mu-app}
-\mu_{app} = \frac{\tau_y}{\dot{\gamma}} (1 - e^{-m |\dot{\gamma}|}) + \mu_p.
+  \mu_{app} = f_B(\dot{\gamma}) = \frac{\tau_y}{\dot{\gamma}} (1 - e^{-m |\dot{\gamma}|}) + \mu_p.
 \end{equation}
 
 \subsubsection{Power-law}
@@ -408,13 +425,13 @@ When $n = 1$, \eqref{eq:pl} results in a Newtonian constitutive relationship wit
 A flow consistency index of $n < 1$ results in shear-thinning behavior, whereas $n > 1$ results in shear-thickening.
 As with the Bingham plastic relationship, \eqref{eq:pl} can be modified to determine an apparent viscosity:
 \begin{equation} \label{eq:pl-mu-app}
-\mu_{app} = k \dot{\gamma}^{n-1}.
+  \mu_{app} = f_{PL}(\dot{\gamma}) = k \dot{\gamma}^{n-1}.
 \end{equation}
 
 \section{Numerical Study} \label{sec:numerical-study}
 
 A numerical study was carried out to investigate the suitability of the different LBM collision schemes discussed for simulating non-Newtonian flow in terms of accuracy, numerical stability and computational efficiency.
-For all simulations presented in this section, the apparent viscosity was approximated using its corresponding constitutive relationship and the Picard-type algorithm outlined in \Fref{sec:lbm-for-nnf} with the stopping criteria set as (whichever was first) a maximum number of iterations set at 15 and the convergence criteria:
+For all simulations presented in this section, the apparent viscosity was approximated using its corresponding constitutive relationship and the Picard-type algorithm outlined in \Fref{sec:picard} with the stopping criteria set as (whichever was first) a maximum number of iterations set at 15 and the convergence criteria:
 \begin{equation} \label{eq:mu-app-conv}
 \frac{\left|\mu_{app}^{k+1} - \mu_{app}^{k}\right|}{\mu_{app}^{k}} < 1.0 \times 10^{-6}.
 \end{equation}
@@ -543,7 +560,7 @@ The optimization problem was solved for the cases of using median filtering and 
 For all four cases, the optimal solution was $\theta = 2.0$ and the cost function, $f(2.0)$, was equal to the relative $L_2$ error for the BGK collision operator, $m = 10^8$ and no entropic filtering.
 The results of the optimization show that entropic filtering, at best did not affect the accuracy of LBM, and often adversly affected the accuracy of LBM in approximating Bingham plastic Poiseuille flow, regardless of whether median filtering or Ehrenfests' regularization was used, and regardless of what the $\Delta S$ threshold, $\theta$, was set to.
 
-\newcommand{\figwid}{2.28in}
+\newcommand{\figwid}{0.48\linewidth}
 
 %MG: reformat these images so that text is more readable
 \begin{figure}
@@ -949,26 +966,23 @@ The reason the BGK-BRT may be the most efficient is because the collision freque
 A numerical investigation into the accuracy, stability, and efficiency of LBM collision models when applied to non-Newtonian flow was presented.
 The numerical investigation included testing the BGK and MRT collision operators, with and without entropic filtering, as applied to Bingham plastics and power-law fluids.
 Two different benchmark problems were chosen for the study: Poiseuille flow, and lid-driven square cavity flow.
-The results showed that:
-\begin{itemize}
-  \item For high yield stress fluids in Poiseuille-type flow, only the MRT collision operator did not suffer from nonphysical oscillations.
-  \begin{itemize}
-      \item The oscillations appeared to be due to high nonequilibrium values for the moment related to the square of the energy, $\epsilon$, and the energy flux moment in the direction of flow, $q_x$.
-      \item If a collision scheme is to be developed for high yield stress, Poiseuille-type flow that is more accurate than the BGK with $m = 10^5$ and more computationally efficient than the MRT, then it should focus on dampening the nonequilibrium energy flux moment.
-    \end{itemize}
-  \item Median filtering can be an effective technique for enhancing stability, especially for high Reynold's number flow; however, if the filter is not carefully tuned by properly adjusted the threshold, $\delta$, or number of standard deviations, $n_s$, then the physical intregrity, and consquently accuracy, of the model can be adversely impacted.
-  \item In general, the MRT collision operator is much more computationally expensive than its BGK counterpart and is some times even orders of magnitude slower.
-  \item To summarize Bingham plastic, lid-driven cavity flow,
+The results showed that for high yield stress fluids in Poiseuille-type flow, only the MRT collision operator did not suffer from nonphysical oscillations.
+The oscillations appeared to be due to high nonequilibrium values for the moment related to the square of the energy, $\epsilon$, and the energy flux moment in the direction of flow, $q_x$.
+If a collision scheme is to be developed for high yield stress, Poiseuille-type flow that is more accurate than the BGK with $m = 10^5$ and more computationally efficient than the MRT, then it should focus on dampening the nonequilibrium energy flux moment.
+
+Median filtering can be an effective technique for enhancing stability, especially for high Reynold's number flow; however, if the filter is not carefully tuned by properly adjusted the threshold, $\delta$, or number of standard deviations, $n_s$, then the physical intregrity, and consquently accuracy, of the model can be adversely impacted.
+In general, the MRT collision operator is much more computationally expensive than its BGK counterpart and is some times even orders of magnitude slower.
+
+To summarize Bingham plastic, lid-driven cavity flow,
     \begin{itemize}
   \item for low Reynold's number flow the BGK collision operator with $m = 10^5$ provides an accurate solution with a short computation time,
     \item for high Reynold's number flow the BGK collision operator requires entropic filtering to remain stable.
     \end{itemize}
-  \item To summarize power-law, lid-driven cavity flow,
+To summarize power-law, lid-driven cavity flow,
     \begin{itemize}
       \item for shear-thinning fluids at high Reynold's numbers ($Re \ge 5000$) median filtering is necessary to produce a stable solution,
   \item for shear-thickening, lid-driven cavity flow, there is much less concern for numerical instability.
     \end{itemize}
-\end{itemize}
 
 % MG: should we mention: code is open source? input files used in this study are also freely available?
 
