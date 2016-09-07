@@ -22,9 +22,9 @@ const GAL_TO_CFT     = 0.133681;
 
 Re(u, L, ν) = u * L / ν;
 Bn(τ, L, μ, u) = τ * L / (μ * u);
-Wt(τ, ρ, L) = τ / (ρ * L);
+Wt(τ, ρ, L) = (ρ * L) / τ;
 
 @show Res = [Re(vel_ftps[1], 0.75 / FT_TO_IN, ν_sqftpsec[2]); Re(vel_ftps[2], 0.75 / FT_TO_IN, ν_sqftpsec[1])];
 @show Bns = [Bn(τ_lbpsqft[1], 0.75 / FT_TO_IN, μ_lbpftsec[2], vel_ftps[2]), Bn(τ_lbpsqft[2], 0.75 / FT_TO_IN, μ_lbpftsec[1], vel_ftps[1])];
-@show Wts = [Wt(τ_lbpsqft[1], 0.75 / FT_TO_IN, ρ_lbpcft[2]); Wt(τ_lbpsqft[2], 0.75 / FT_TO_IN, ρ_lbpcft[1])];
+@show Wts = [Wt(τ_lbpsqft[2], 0.75 / FT_TO_IN, ρ_lbpcft[1]); Wt(τ_lbpsqft[1], 0.75 / FT_TO_IN, ρ_lbpcft[2])];
 @show iWts = reverse(map(wt -> 1 / wt, Wts));
