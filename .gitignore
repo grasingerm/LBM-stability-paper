@@ -1,5 +1,6 @@
 ## No need to track main built pdf
 *.pdf
+*.tar
 
 ## Core latex/pdflatex auxiliary files:
 *.aux
