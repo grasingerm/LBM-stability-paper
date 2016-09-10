@@ -47,7 +47,7 @@ Another scheme for incorporating non-Newtonian effects into LBM is to use a cons
 This means particle distribution functions will always relax toward equilibrium at the same rate, but that the definition of equilibrium is modified to represent the correct stress--strain-rate relationship.
 The equilibrium distribution function can be derived for the specific constitutive relationship of interest using the Chapman-Enskog multiscale expansion.
 The equilibrium distribution functions for Bingham plastic fluids, and for power-law and Carreau fluids were derived, implemented, and verified in~\cite{wang2008lattice} and~\cite{yoshino2007numerical}, respectively.
-Using an equilibrium distribution function that incorporates the local shear-rate effect has the advantage that, because the collision frequency is constant (at unity), the collision frequency will not approach values that lead to overrelaxation (e.g. $2$) or underrelaxation (e.g. $\approx 0$).
+Using an equilibrium distribution function that incorporates the local strain-rate effect has the advantage that, because the collision frequency is constant (at unity), the collision frequency will not approach values that lead to overrelaxation (e.g. $2$) or underrelaxation (e.g. $\approx 0$).
 \cite{wang2011lattice} developed another constant-collision frequency LBM scheme for non-Newtonian flow by splitting the effects of constitutive relationship into Newtonian and non-Newtonian parts.
 The Newtonian part was modeled in the usual way, namely scaling the collision frequency to achieve the macroscopic (Newtonian) viscosity, and the non-Newtonian part was modeled as a source of momentum (i.e. as an external forcing term) that is dependent on local shear-rate.
 Although the constant-collision frequency strategies present interesting alternatives, the variable collision frequency scheme is used in the present study because of its simplicity and generality, such as the fact that a variable collision frequency scheme can be fit to any constitutive relationship without performing Chapman-Enskog multiscale expansion.
@@ -56,7 +56,7 @@ Although the constant-collision frequency strategies present interesting alterna
 The Multiple-relaxation-time (MRT) collision operator ~\cite{d1994generalized} is another approach that has been developed to improve upon the stability of LBM.
 The MRT collision takes place in moment space and allows each moment to relax at a different rate.
 \cite{lallemand2000theory} used von Neumann stability analysis to investigate the stability of the newly constructed LBM-MRT model for fluid flow, and concluded LBM with the MRT collision operator was more stable, but with increased computational expense than the commonly used collision operator.
-Note that although this increased computational expense was decided to not be significant for Newtonian flows ($\approx$ 10-20\%~\cite{lallemand2000theory}), the cost may increase significantly for non-Newtonian flow because an iterative solution for the constitutive equation can require that certain expensive computations be performed at each iteration (the strain-rate tensor is determined from the nonequilibrium particle distribution which must be mapped into moment space when using the MRT collision operator).
+Note that although this increased computational expense was decided to not be significant for Newtonian flow ($\approx$ 10--20\%~\cite{lallemand2000theory}), the cost may increase significantly for non-Newtonian flow if an iterative solution is used for the nonlinear constitutive equation because it can require that certain expensive computations be performed multiple times per time step.
 \cite{chen2014simulations} concluded that the MRT collision operator was more stable for Bingham plastic flow and allowed the use of a more accurate approximation to the Bingham plastic constitutive relationship.
 However, what remains unclear is:
 \begin{itemize}
@@ -65,7 +65,7 @@ However, what remains unclear is:
     \item Under what conditions (e.g. material parameters, physical problem, etc.) for power-law fluid flow is the MRT collision operator necessary to maintain stability and/or accuracy?
     \item What are additional strategies for increasing stability and accuracy, and what are their associated computational costs?
 \end{itemize}
-In regards to the last question, much work has been done recently to enhance stability of LBM models beyond the MRT collision operator.
+In regards to the last question, much work has been done recently to enhance stability and accuracy of LBM models beyond the MRT collision operator.
 \cite{brownlee2006stabilization,brownlee2007stability,brownlee2008nonequilibrium,packwood2009entropy,gorban2014enhancement} have all developed and tested means for introducing artificial dissipation in order to dampen out high frequency, nonphysical oscillations.
 Stability enhancement through artificial dissipation and entropic filtering has shown promise, but to the authors' knowledge has not yet been tested for use in simulating the flow of non-Newtonian fluids.
 
@@ -980,16 +980,22 @@ The reason the BGK-BRT may be the most efficient is because the collision freque
 
 \section{Conclusions} \label{sec:numerical-study-conclusions}
 
-A numerical investigation into the accuracy, stability, and efficiency of LBM collision models when applied to non-Newtonian flow was presented.
+A numerical investigation into the accuracy, stability, and efficiency of LBM collision models and stability enhancements when applied to non-Newtonian flow was presented.
 The numerical investigation included testing the BGK and MRT collision operators, with and without entropic filtering, as applied to Bingham plastics and power-law fluids.
 Two different benchmark problems were chosen for the study: Poiseuille flow, and lid-driven square cavity flow.
-The results showed that for high yield stress fluids in Poiseuille-type flow, only the MRT collision operator did not suffer from nonphysical oscillations.
+The results showed that for higher yield stress fluids in Poiseuille-type flow, only the MRT collision operator was able use an accurate approximation to true Bingham plastic behavior and not suffer from nonphysical oscillations.
 The oscillations appeared to be due to high nonequilibrium values for the moment related to the square of the energy, $\epsilon$, and the energy flux moment in the direction of flow, $q_x$.
-If a collision scheme is to be developed for high yield stress, Poiseuille-type flow that is more accurate than the BGK with $m = 10^5$ and more computationally efficient than the MRT, then it should focus on dampening the nonequilibrium energy flux moment.
+If a collision scheme is to be developed for higher yield stress, Poiseuille-type flow that is (1) more accurate than the BGK collision operator with $m = 10^5$ and (2) more computationally efficient than the MRT collision operator, then it should focus on dampening the nonequilibrium $\epsilon$ moment and energy flux moment (in the direction of flow).
 
-Median filtering can be an effective technique for enhancing stability, especially for high Reynold's number flow. 
-However, if the filter is not carefully tuned by properly adjusting the threshold or number of standard deviations then the physical intregrity, and consquently accuracy, of the model can be adversely impacted.
-In general, the MRT collision operator is much more computationally expensive than its BGK counterpart and is some times even orders of magnitude slower.
+The results of the study suggest that entropic filtering can be an effective technique for enhancing stability in non-Newtonian flow, especially for high Reynold's number flows and flows that tend to produce vortices.
+However, if the filter is not carefully tuned by properly adjusting the threshold or number of standard deviations then the physical integrity, and consequently accuracy, of the model can be adversely impacted.
+Also, in general, regardless of how the filter is tuned, entropic filtering may not be effective for Bingham plastic, Poiseuille-type flow, and in some cases has the potential to adversely affect the accuracy of the simulation.
+
+For nearly all of the cases considered in the current study, the MRT collision operator was more accurate, but also more computationally expensive than its BGK counterpart, and is some times even orders of magnitude slower.
+
+In regards to future work, \cite{conrad2015accuracy} showed that non-Newtonian Lattice Boltzmann simulations are not second order accurate for every simulation Mach number, and showed that a greater accuracy may be achieved by properly tuning the simulation Mach number.
+\cite{conrad2015accuracy} predicted optimal simulation Mach numbers for various shear-thinning and shear-thickening fluids. 
+Possbile future work would include extending the numerical investigation to consider the effect of the simulation Mach number on the accuracy, stability, and efficiency of the various collision operators and stability enhancements in simulating non-Newtonian flow.
 
 % MG: should we mention: code is open source? input files used in this study are also freely available?
 
