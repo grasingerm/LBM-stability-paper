@@ -24,7 +24,6 @@ Shear-thickening fluids are also known as \emph{dilatants}, and a well-known exa
 
 Analytical solutions rarely exist for even the simplest non-Newtonian fluid flows because of the complexity that a nonlinear constitutive relationship entails.
 It is generally more practical to approximate the flow of non-Newtonian fluids using numerical methods~\cite{syrakos2014performance,owens2002computational,chai2011multiple}.
-
 The lattice Boltzmann method (LBM) is a numerical method for simulating fluid flow that has the advantage (among others) that computing the strain-rate is second-order accurate in space and local to each node~\cite{kruger2010second}.
 This means that although an iterative solution is still required to determine the local strain-rate and apparent viscosity, each iterative solution can be done in parallel, by a separate process, as they are independent of each other.
 Because hardware architectures have shifted from single, sequential processing systems to parallel processing systems, the local nature of the stress--strain-rate relationship in LBM gives it a distinct advantage for simulating non-Newtonian flow over some other numerical methods.
@@ -74,7 +73,7 @@ The goal of the present study is to numerically study the implications on accura
 Advantages, such as LBM's potential to scale well in parallel, can be much less realized if the collision operator is too computationally expensive, or if numerical instabilities ensue.
 A numerical study can help to determine approximate numerical values, domains, and boundary conditions in which one LBM scheme may be more advantageous than another so that LBM may be used in a computationally efficient and stable manner.
 In \Fref{sec:LBM}, an overview of the Lattice Boltzmann Method for simulating fluid flow is presented, along with the collision operators, stability enhancements, and constitutive relationships that were investigated.
-\Fref{sec:numerical-study} outlines the boundary conditions, material parameters, and LBM collision schemes for each simulation in the numerical study; and is followed by results and discussion.
+\Fref{sec:numerical-study} outlines the boundary conditions, material parameters, and LBM collision schemes for each simulation in the numerical study, and is followed by results and discussion.
 Finally, concluding remarks are given in \Fref{sec:numerical-study-conclusions}.
 
 %MG: is the beginning of this methods section too much fluff now? Would our audiance consider it fluff?
@@ -376,14 +375,14 @@ The present work uses a Picard-type algorithm to approximate a solution for $\do
 
 \label{sec:picard}
 \begin{enumerate}
-	\item Start with initial guess for the apparent viscosity, $\mu_k = \mu_0$.
-	      Set $\omega_k$ using \eqref{eq:colfreq-non-newtonian} (, or set $s_7 = s_8$ using \eqref{eq:mrt-s7})
-	\item \label{step:solve-for-flow} Solve for the strain-rate, $\dot{\gamma}_k$, using \eqref{eq:srtensor-bgk} (, or using \eqref{eq:srtensor-mrt}).
-	\item Update the apparent viscosity, $\mu_{k+1} = f(\dot{\gamma}_k)$.
-	\item Return to Step \ref{step:solve-for-flow} until convergence is met.
+  \item Start with initial guess for the apparent viscosity, $\mu_{app}^k = \mu_{app}^0$.
+	      Set $\omega^k$ using \eqref{eq:colfreq-non-newtonian} (or set $s_7^k = s_8^k$ using \eqref{eq:mrt-s7})
+	\item \label{step:solve-for-flow} Solve for the strain-rate, $\dot{\gamma}^k$, using \eqref{eq:srtensor-bgk} (or using \eqref{eq:srtensor-mrt}).
+  \item Update the apparent viscosity, $\mu_{app}^{k+1} = \mu_{app}(\dot{\gamma}^k)$.
+	\item Return to Step \ref{step:solve-for-flow} until the apparent viscosity estimate converges.
 \end{enumerate}
-\noindent where $f$ is form of the constitutive relationship that maps the local strain-rate to a local apparent visocisty.
-More detail on the functions that are used for $f$ is given in \Fref{sec:constit}.
+\noindent where $\mu_{app}(\dot{\gamma}^k)$ is form of the constitutive relationship that maps the local strain-rate to a local apparent visocisty.
+More detail on the functions that are used for $\mu_{app}(\dot{\gamma}^k)$ is given in \Fref{sec:constit}.
 
 It is clear that calculating the strain-rate tensor for the MRT collision operator is more computationally expensive than it is for the BGK collision operator.
 The increase in the overall computational expense for simulating non-Newtonian flow using the MRT collision operator is exacerbated by the fact that approximating the apparent viscosity requires iteration and therefore multiple calculations of the strain-rate tensor for each discrete moment in time and for each discrete location in the domain.
@@ -412,7 +411,7 @@ The larger the value of $m$, the closer the approximation is to the Bingham plas
 Alternatively, the constitutive relationship can be interpreted through the apparent viscosity.
 Noting that $\mu_{app} = \frac{\tau}{\dot{\gamma}}$ and rearranging \eqref{eq:papa} results in the following expression for the apparent viscosity:
 \begin{equation} \label{eq:bing-mu-app}
-  \mu_{app} = f_B(\dot{\gamma}) = \frac{\tau_y}{\dot{\gamma}} (1 - e^{-m |\dot{\gamma}|}) + \mu_p.
+  \mu_{app}(\dot{\gamma}) = \frac{\tau_y}{\dot{\gamma}} (1 - e^{-m |\dot{\gamma}|}) + \mu_p.
 \end{equation}
 
 \subsubsection{Power-law}
@@ -426,7 +425,7 @@ When $n = 1$, \eqref{eq:pl} results in a Newtonian constitutive relationship wit
 A flow consistency index of $n < 1$ results in shear-thinning behavior, whereas $n > 1$ results in shear-thickening.
 As with the Bingham plastic relationship, \eqref{eq:pl} can be modified to determine an apparent viscosity:
 \begin{equation} \label{eq:pl-mu-app}
-  \mu_{app} = f_{PL}(\dot{\gamma}) = k \dot{\gamma}^{n-1}.
+  \mu_{app}(\dot{\gamma}) = k \dot{\gamma}^{n-1}.
 \end{equation}
 
 \section{Numerical Study} \label{sec:numerical-study}
@@ -705,14 +704,14 @@ BGK-BRT & No & 0.50 & 0.0007 & 11.73 & 12.56 & 4450 \\
 
 Before closing the discussion on the Poiseuille flow numerical study, it is worthwhile to consider what precisely is common between the higher-yield stress fluids and the shear-thinning fluids, as they were the cases that exhibited numerical instabilities and were simulated with the least amount of accuracy for some of the collision schemes considered.
 One such commonality can be seen when considering the effect of the yield stress, $\tau_y$, and the effect of the flow behavior index, $n$, on the gradient of the theoretical flow velocity.
-Taking the partial with respect to $y$ of the analytical solution for the flow velocity of a Bingham plastic, Poiseuille flow (Equation \eqref{eq:analytical-bingham}) results in:
+Taking the partial derivative with respect to $y$ of the analytical solution for the flow velocity of a Bingham plastic, Poiseuille flow (Equation \eqref{eq:analytical-bingham}) results in:
 \begin{equation} \label{eq:gradu-bingham}
   \frac{\partial u_x}{\partial y} = \begin{cases}
     0, & 0 \leq |y| \leq y_{\tau}, \\
     \frac{1}{\mu_p} \left( \pgrad y + \tau_y \frac{y}{|y|} \right), & y_{\tau} < |y| \leq h,
   \end{cases}
 \end{equation}
-and taking the partial with respect to $y$ of the analytical solution for the flow velocity of a power-law fluid, Poiseuille flow (Equation \eqref{eq:analytical-power-law}) results in:
+and taking the partial derivative with respect to $y$ of the analytical solution for the flow velocity of a power-law fluid, Poiseuille flow (Equation \eqref{eq:analytical-power-law}) results in:
 \begin{equation} \label{eq:gradu-power-law}
   \frac{\partial u_x}{\partial y} = \left( -\frac{1}{k} \pgrad \right)^{1/n} \left( -y |y|^{\frac{1}{n} - 1} \right).
 \end{equation}
@@ -988,19 +987,9 @@ The results showed that for high yield stress fluids in Poiseuille-type flow, on
 The oscillations appeared to be due to high nonequilibrium values for the moment related to the square of the energy, $\epsilon$, and the energy flux moment in the direction of flow, $q_x$.
 If a collision scheme is to be developed for high yield stress, Poiseuille-type flow that is more accurate than the BGK with $m = 10^5$ and more computationally efficient than the MRT, then it should focus on dampening the nonequilibrium energy flux moment.
 
-Median filtering can be an effective technique for enhancing stability, especially for high Reynold's number flow; however, if the filter is not carefully tuned by properly adjusted the threshold, $\delta$, or number of standard deviations, $n_s$, then the physical intregrity, and consquently accuracy, of the model can be adversely impacted.
+Median filtering can be an effective technique for enhancing stability, especially for high Reynold's number flow. 
+However, if the filter is not carefully tuned by properly adjusting the threshold or number of standard deviations then the physical intregrity, and consquently accuracy, of the model can be adversely impacted.
 In general, the MRT collision operator is much more computationally expensive than its BGK counterpart and is some times even orders of magnitude slower.
-
-To summarize Bingham plastic, lid-driven cavity flow,
-    \begin{itemize}
-  \item for low Reynold's number flow the BGK collision operator with $m = 10^5$ provides an accurate solution with a short computation time,
-    \item for high Reynold's number flow the BGK collision operator requires entropic filtering to remain stable.
-    \end{itemize}
-To summarize power-law, lid-driven cavity flow,
-    \begin{itemize}
-      \item for shear-thinning fluids at high Reynold's numbers ($Re \ge 5000$) median filtering is necessary to produce a stable solution,
-  \item for shear-thickening, lid-driven cavity flow, there is much less concern for numerical instability.
-    \end{itemize}
 
 % MG: should we mention: code is open source? input files used in this study are also freely available?
 
