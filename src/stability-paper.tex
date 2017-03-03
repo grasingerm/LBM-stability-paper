@@ -434,9 +434,9 @@ All BGK-BRT collision schemes used $\omega \in [0.05, 1.995]$ as the bounds on t
 All simulations with artificial dissipation used the median filter with $\theta = 1.0 \times 10^{-6}$ and $n_{\sigma} = 2.7$ where $\theta$ is the threshold that $\Delta S(\pos, t)$ must exceed before dissipation is added \eqref{eq:ds-threshold} and $n_{\sigma}$ is the number of standard deviations greater than $\overline{\Delta S}$ that $\Delta S(\pos, t)$ must be before dissipation is added \eqref{eq:dissipation-criteria}.
 All numerical values given in this section are in lattice units unless otherwise stated.
 
-\subsection{Poiseuille Flow}
+\subsection{Bingham Plastic, Poiseuille Flow}
 
-Poiseuille flow is a useful benchmark because analytical solutions exist for both Bingham plastic and power-law fluids.
+Poiseuille flow is a useful benchmark because an analytical solution exists for both Bingham plastic flow.
 Poiseuille flow is created with a two-dimensional channel flow that is driven by a constant pressure gradient, $\pgrad$, through the domain.
 A schematic is shown in \Fref{fig:poise-schematic}.
 No-slip boundary conditions are enforced at the top and bottom boundaries with a wall velocity of zero, so that $\mvel \times \unorm = 0$ where $\unorm$ is the unit normal vector to the boundary. 
@@ -455,13 +455,11 @@ The size of the domain is $L = 32$  and $H = 64$.}
 Unless otherwise stated, all of the Poiseuille flow simulations were computed on a $32 \times 64$ lattice for 25000 time steps.
 The lattice size was chosen to be sufficiently fine for accuracy and the number of time steps were set high enough to ensure a steady-state would be reached.
 In reference to computational time, each of the simulations in this section were run on a single core of an Intel I7-860 Quad-Core 2.80GHz processor.
-For the MRT relaxation matrix the free parameters were set to $s_1 = s_2 = s_4 = s_6 = 1.1$, which follows the recommendation of~\cite{lallemand2000theory} for reasons of stability, and has been successfully used to simulate non-Newtonian flow in the past~\cite{fallah2012multiple,grasinger2015simulation}.
-
-\subsubsection{Bingham Plastic Fluids} \label{sec:poise-bing}
 
 The Bingham plastic simulations were carried out with a pressure gradient of $\pgrad = 1.0 \times 10^{-5}$, and a plastic viscosity of $\mu_p = 0.2$.
-The yield stress was varied between four different values $\tau_y = \begin{bmatrix}4.0,&8.0,&12.0,&16.0\end{bmatrix} \times 10^{-5}$, and four different LBM schemes were used: (1) BGK with $m = 10^5$, (2) BGK with $m = 10^8$, (3) BGK with $m = 10^8$ and the median filter, and (4) MRT with $m = 10^8$. 
+The yield stress was varied between four different values $\tau_y = \begin{bmatrix}4.0,&8.0,&12.0,&16.0\end{bmatrix} \times 10^{-5}$, and four different LBM schemes were used: (1) BGK with $m = 10^5$, (2) BGK with $m = 10^8$, (3) BGK with $m = 10^8$ and the median filter, and (4) MRT with $m = 10^8$.
 Recall that $m$ is the stress growth exponent for the Papanastasiou approximation, and the higher $m$ is the closer to the true Bingham plastic behavior.
+For the MRT relaxation matrix the free parameters were set to $s_1 = s_2 = s_4 = s_6 = 1.1$, which follows the recommendation of~\cite{lallemand2000theory} for reasons of stability, and has been successfully used to simulate non-Newtonian flow in the past~\cite{fallah2012multiple,grasinger2015simulation}. 
 The relative $L_2$ and relative $L_{\infty}$ errors with respect to the analytical solution were computed for each simulation.
 The analytical solution for Poiseuille flow of a Bingham plastic fluid is given by:
 \begin{equation} \label{eq:analytical-bingham}
@@ -471,7 +469,8 @@ u_x(y) = \begin{cases}
 \end{cases}
 \end{equation}
 \noindent where $y_{\tau} = -\tau_y / \pgrad$ is the vertical location at which the fluid yields.
-(Note that the analytical solution is based on the exact Bingham plastic model, and not the Papanastasiou approximation.)
+(Note that the analytical solution is based on the exact Bingham plastic model, and not the Papanastasiou approximation.
+The choice was made to compare with the analytical solution for a Bingham plastic, instead of an analytical solution or benchmark for the Papanastasiou constitutive approximation, because the Bingham plastic constitutive behavior is the behavior of interest. In addition, if the error was calculated with respect to the solution or approximation for the Papanastasiou constitutive approximation, then collision schemes with different stress growth exponents would have their error computed with respect to different solutions. Thus, it would be difficult to compare the relative errors between collision schemes. Lastly, note that although the errors computed with the respect to the Bingham plastic analytical solution do contain error in the constitutive relation, it can be seen from the accuracy of the MRT collision scheme, and others, that the constitutive relation error is likely negligible compared to other sources of error.)
 
 The relative $L_2$ error, relative $L_{\infty}$ error, and computation time for each simulation are presented in \Fref{tab:poise-bing}.
 The Reynold's number was computed by $Re = \frac{\rho U H}{\mu_p}$, where $U$ is the maximum velocity given by the analytical solution.
@@ -649,8 +648,8 @@ Lastly, simulations with the same collision schemes, Reynold's numbers and Bingh
 The plastic viscosity was held constant ($\mu_p = 0.2$.), while the yield stress and pressure gradient were varied in order to match the Reynold's numbers and Bingham numbers in \Fref{tab:poise-bing}.
 The relative $L_2$ error, relative $L_{\infty}$ error, and computation time for each simulation are presented in \Fref{tab:poise-bing-2}.
 
-As would be expected from doubling the number of lattice sites, the cost for each corresponding combination of collision scheme, $Re$, and $Bn$ increased by a factor of approximately 2-2.5.
-The 2-2.5 times increase in computing time resulted in the BGK collision schemes on the finer lattice being comparable in computational cost to the MRT collision scheme on the coarser lattice.
+As would be expected from doubling the number of lattice sites, the cost for each corresponding combination of collision scheme, $Re$, and $Bn$ increased by a factor of approximately 2--2.5.
+The 2--2.5 times increase in computing time resulted in the BGK collision schemes on the finer lattice being comparable in computational cost to the MRT collision scheme on the coarser lattice.
 In regards to error, for the larger Bingham number flows ($Bn = 4.04, 8.52$) both the $L_2$ and $L_\infty$ errors of the BGK collision schemes were reduced in general, sometimes by as much as a factor of 4.
 None of the relative $L_2$ errors exceeded 10\%, in contrast to the BGK simulations run on the coarser lattice.
 However, despite the increase in accuracy, it should be noted that for $Bn = 8.52$ all of the BGK collision schemes had $L_\infty$ errors that exceeded 10\%.
@@ -686,106 +685,6 @@ The MRT collision operator, even on the coarser lattice, was more accurate (for 
 		\label{tab:poise-bing-2}
 	\end{tabulary}
 \end{table}
-
-\subsubsection{Power-law Fluids} \label{sec:poise-powerlaw}
-
-The simulations of the Poiseuille flow with the power-law constitutive relationship were carried out with a pressure gradient of $\pgrad = 1.0 \times 10^{-5}$, and a flow consistency index of $k = 0.2$.
-The flow behavior index, $n$, was varied between the four different values (from shear-thinning to shear-thickening): $\begin{bmatrix}0.5,&0.75,&1.25,& 1.50\end{bmatrix}$, and four different LBM schemes were used: (1) BGK, (2) BGK with median filtering, (3) MRT, and (4) BGK-BRT, with $\omega$ bounded within $\begin{bmatrix}0.05,&1.995\end{bmatrix}$. 
-The relative $L_2$ and relative $L_{\infty}$ errors with respect to the analytical solution were computed for each simulation.
-The analytical solution for the velocity profile of Poiseuille flow with the power-law constitutive relationship is given by:
-\begin{equation} \label{eq:analytical-power-law}
-  u_x(y) = \frac{n}{n+1}\left(-\frac{1}{2k}\pgrad\right)^{1/n}\left[h^{\frac{n+1}{n}} - |y|^{\frac{n+1}{n}}\right].
-\end{equation}
-
-The relative $L_2$ error, relative $L_{\infty}$ error, and computation time for each simulation are presented in \Fref{tab:poise-power-law}.
-The Reynold's number was computed by $Re = \frac{\rho U^{2-n} H^n}{k}$.
-Although for $n = 0.5, 0.75, 1.25$ the MRT collision operator was more accurate and required more computation time than the BGK collision operator, for $n = 1.5$ the BGK operator with median filtering required the least computation time and was the most accurate with respect to the analytical solution.
-In fact, besides the case of $n = 0.5$ (i.e. relatively extreme shear-thinning) the BGK with median filtering was both computationally efficient and accurate.
-The BGK-BRT had a moderate improvement of accuracy and efficiency--with respect to the regular BGK collision scheme--for flow where the constitutive relationship was only somewhat nonlinear, i.e. for $n = 0.75, 1.25$.
-Note that none of the collision schemes were sufficiently accurate (error greater than 15\%) for the case of $n = 0.5$, and to improve this accuracy it would be necessary to use a different simulation Mach number, a finer grid, and/or a smaller pressure gradient.
-
-\begin{table}
-\centering
-\caption{Power-law Poiseuille flow}
-\vspace{0.5cm}
-\begin{tabulary}{\linewidth}{l l r r r r r}
-\pbox{20cm}{Collision \\ Operator} & \pbox{20cm}{Median \\ Filter} & $n$ & $Re$ & $L_2$ & $L_\infty$ & \pbox{20cm}{Time \\ (sec)} \\
-\hline \\
-BGK & No & 0.50 & 0.0007 & 28.1 & 30.4 & 5232 \\
-& & 0.75 & 0.9125 & 0.0328 & 0.0569 & 2399 \\
-& & 1.25 & 423.2 & 0.00510 & 0.00547 & 2311 \\
-& & 1.50 & 2213 & 1.00 & 1.00 & 3622 \\
-\\
-BGK & Yes & 0.50 & 0.0007 & 26.7 & 28.8 & 5347 \\
-& & 0.75 & 0.9125 & 0.0328 & 0.0569 & 2385 \\
-& & 1.25 & 423.2 & 0.00510 & 0.00547 & 2275 \\
-& & 1.50 & 2213 & 0.0570 & 0.0600 & 2357 \\
-\\
-MRT & No & 0.50 & 0.0007 & 0.140 & 0.176 & 4906 \\
-& & 0.75 & 0.9125 & 0.00450 & 0.00579 & 4880 \\
-& & 1.25 & 423.2 & 0.00506 & 0.00548 & 4863 \\
-& & 1.50 & 2213 & 1.00 & 1.00 & 15992 \\
-\\
-BGK-BRT & No & 0.50 & 0.0007 & 11.7 & 12.6 & 4450 \\
-& & 0.75 & 0.9125 & 0.0320 & 0.0475 & 1805 \\
-& & 1.25 & 423.2 & 0.00510 & 0.00547 & 1905 \\
-& & 1.50 & 2213 & 1.00 & 1.00 & 8194 \\
-\\
-\label{tab:poise-power-law}
-\end{tabulary}
-\end{table}
-
-In addition, simulations with the same collision schemes and Reynold's numbers were run in $128 \times 32$ lattices in order to investigate the effect of grid resolution.
-The flow consistency index was held constant ($k = 0.2$.), while the pressure gradient was varied in order to match the Reynold's numbers in \Fref{tab:poise-power-law}.
-The relative $L_2$ error, relative $L_{\infty}$ error, and computation time for each simulation are presented in \Fref{tab:poise-power-law-2}.
-
-\begin{table}
-	\centering
-	\caption{Power-law Poiseuille flow, $128 \times 32$ lattice}
-	\vspace{0.5cm}
-	\begin{tabulary}{\linewidth}{l l r r r r r}
-		\pbox{20cm}{Collision \\ Operator} & \pbox{20cm}{Median \\ Filter} & $n$ & $Re$ & $L_2$ & $L_\infty$ & \pbox{20cm}{Time \\ (sec)} \\
-		\hline \\
-		BGK & No & 0.50 & 0.0007 & 17.4 & 20.8 & 8477 \\
-		       & & 0.75 & 0.9125 & 0.0140 & 0.0288 & 4317 \\
-		       & & 1.25 & 423.2 & 0.479 & 0.502 & 4683 \\
-		       & & 1.50 & 2213 & 0.873 & 0.897 & 4457 \\
-		\\
-		BGK & Yes & 0.50 & 0.0007 & 17.6 & 21.0 & 8407 \\
-		        & & 0.75 & 0.9125 & 0.0140 & 0.0288 & 4738 \\
-		        & & 1.25 & 423.2 & 0.479 & 0.502 & 4714 \\
-		        & & 1.50 & 2213 & 0.874 & 0.898 & 4879 \\
-		\\
-		MRT & No & 0.50 & 0.0007 & 0.0675 & 0.0539 & 8338 \\
-		       & & 0.75 & 0.9125 & 0.00187 & 0.00145 & 9241 \\
-		       & & 1.25 & 423.2 & 0.479 & 0.502 & 10856 \\
-		       & & 1.50 & 2213 & 0.872 & 0.898 & 9965 \\
-		\\
-		BGK-BRT & No & 0.50 & 0.0007 & 16.8 & 18.4 & 8959 \\
-		           & & 0.75 & 0.9125 & 0.0129 & 0.0158 & 4516 \\
-		           & & 1.25 & 423.2 & 0.479 & 0.502 & 4308 \\
-		           & & 1.50 & 2213 & 0.873 & 0.897 & 8194 \\
-		\\
-		\label{tab:poise-power-law-2}
-	\end{tabulary}
-\end{table}
-
-Before closing the discussion on the Poiseuille flow numerical study, it is worthwhile to consider what precisely is common between the higher-yield stress fluids and the shear-thinning fluids, as they were the cases that exhibited numerical instabilities and were simulated with the least amount of accuracy for some of the collision schemes considered.
-One such commonality can be seen when considering the effect of the yield stress, $\tau_y$, and the effect of the flow behavior index, $n$, on the gradient of the theoretical flow velocity.
-Taking the partial derivative with respect to $y$ of the analytical solution for the flow velocity of a Bingham plastic, Poiseuille flow (Equation \eqref{eq:analytical-bingham}) results in:
-\begin{equation} \label{eq:gradu-bingham}
-  \frac{\partial u_x}{\partial y} = \begin{cases}
-    0, & 0 \leq |y| \leq y_{\tau}, \\
-    \frac{1}{\mu_p} \left( \pgrad y + \tau_y \frac{y}{|y|} \right), & y_{\tau} < |y| \leq h,
-  \end{cases}
-\end{equation}
-and taking the partial derivative with respect to $y$ of the analytical solution for the flow velocity of a power-law fluid, Poiseuille flow (Equation \eqref{eq:analytical-power-law}) results in:
-\begin{equation} \label{eq:gradu-power-law}
-  \frac{\partial u_x}{\partial y} = \left( -\frac{1}{2k} \pgrad \right)^{1/n} \left( -y |y|^{\frac{1}{n} - 1} \right).
-\end{equation}
-It can be seen from \eqref{eq:gradu-bingham} and \eqref{eq:gradu-power-law} that $\left| \frac{\partial u_x}{\partial y} \right|$ increases with the yield stress for Bingham plastics, and increases with $\frac{1}{n}$ for power-law fluids, which suggests that one of the challenges associated with the accuracy and stability of simulating higher yield-stress fluids and more extreme shear-thinning fluids (e.g. $n \le 0.5$) in Poiseuille-type flow is a result of having a larger magnitude of the gradient of macroscopic flow.
-This conclusion is consistent with the discussion in \Fref{sec:bgk} with regards to one of the drawbacks of the BGK collision operator, namely that a sharp spatial gradient in either $\rho$ or $\mvel$ can lead to nonphysical oscillations that can degrade the accuracy and stability of the solution.
-However, it does not explain why the MRT collision operator was unable to accurately simulate the case of a power-law fluid, Poiseuille flow, with $n = 0.5$.
 
 \subsection{Lid-driven Cavity Flow} % MG: would it be of any use to show streamline plots from some of these flows?
 
@@ -960,8 +859,6 @@ In summary, for the lid-driven cavity flow of a Bingham plastic fluid,
     \item and the MRT collision operator with $m = 10^8$ produces solutions with high accuracy and stability for all of the cases examined herein, but at an increased (approximately 5-10 times more) computing cost.
 \end{itemize} 
 
-
-
 \subsubsection{Power-law Fluids}
 
 For the power-law numerical tests the Reynold's number was varied with the following values: $\begin{bmatrix}100,&1000,&5000,&10000\end{bmatrix}$, and the flow behavior index, $n$, was varied with the following values: $\begin{bmatrix}0.5,&1.5\end{bmatrix}$ ($Re$ was calculated the same as in \Fref{sec:poise-powerlaw}).
@@ -1050,8 +947,6 @@ For the shear-thickening results, $n = 1.5$, there were no issues of instability
 What is interesting is that all of the collision schemes produce similar results for each of the cases, with the difference in the location of the main vortex being no greater than 1\% in either the $x$ or $y$ direction for any two collision schemes (with the exception of the high Reynold's number case, $Re = 10000$).
 The BGK-BRT consistently needed the least amount of computing time.
 The reason the BGK-BRT may be the most efficient is because the collision frequency, $\omega$, is bounded, and consequently $\mu_{app}$ is bounded, meaning the solution to the constitutive equation may be converging with less iterations than the other collision schemes.
-
-Lastly, it should be noted that for instances in which the BGK collision operator 
 
 \section{Conclusions} \label{sec:numerical-study-conclusions}
 
