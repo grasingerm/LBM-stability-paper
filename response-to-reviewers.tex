@@ -1,7 +1,15 @@
 \documentclass{article}
 
 \begin{document}
-	\section{Reviewer 1}
+	
+\section{Response to reviewers}
+
+Thank you very much for your assistance in reviewing this paper. We are sure that with your help, this has become a much better work. We hope that the attached edited copy of "Numerical Investigation of the Accuracy, Stability, and Efficiency of Lattice Boltzmann Methods in Simulating Non-Newtonian Flow" will answer any questions previously raised, and will be satisfactory for publication.
+
+The following is a list of all comments recieved, and how they have been addressed in the updated version:
+
+  
+  \subsection{Reviewer 1}
 	\begin{enumerate}
 		\item \emph{In Fig. 2, the scale of the figure should be modified in order to avoid readers’ misleading. If the authors calculate only one case with L = 32 and H = 64, the computational domain becomes vertically long.}
 		
@@ -26,7 +34,7 @@
 		\end{itemize}
 	\end{enumerate}
 
-	\section{Reviewer 2}
+	\subsection{Reviewer 2}
 	  The present work examines the single-relaxation-time (SRT) and the multiple-relaxation-time (MRT) lattice Boltzmann method (LBM) for Bingham plastic and power-law fluids. Constitutive relations in these fluids are typically stiff presenting substantial numerical challenges when the relations are incorporated into the LBM collision models. Entropic filtering as additional artificial dissipation and MRT collision are considered as the means to stabilize otherwise oscillatory or unstable SRT LBM. Optimal value for the median filtering was suggested and computational costs with these approaches are compared in detail. The conclusions are rather trivial; MRT is the most accurate and stable whereas its computational cost can be significantly large compared with SRT due to non-linear iteration. Filtering does stabilize SRT but the accuracy deteriorates particularly when the filter threshold is not optimally chosen. This work can be useful if readers are interested in choosing a suitable LB model for simulating non-Newtonian flows. However, it lacks novelty. Although MRT collision operator is shown to be the best choice, no detailed analysis on the values of optimum relaxation rates for various non-Newtonian flows.
 	As for Poiseulle Flow part, SRT simulations deviate from the analytical solution in the core region (Figs.3,4) due to the difference in the constitutive relations used in LBM and the analytical solution. Thus, the reported errors in Table 1 include both constitutive relation error and truncation error. This does not seem fair. It would be helpful if the analytical solution or a benchmark solution from NS equations of Papanastasiou approximation is directly compared with LBM results. The authors attributed the nonphysical oscillations of SRT simulations to sharp gradients in the velocity near the walls, which is then again a result of a sharp gradient in the viscosity. However, from Figs.3&4, it is difficult to observe any sign of sharp gradients in the velocity near the walls. In Fig.4 for higher m, the oscillations occur at the center of the computational domain and they are not symmetric.
 	

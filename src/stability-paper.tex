@@ -14,7 +14,7 @@ It was also shown that artificial dissipation can be an effective technique for 
 There are a number of fluids in science and engineering applications that can be classified as non-Newtonian, such as pastes, slurries, molten plastics, polymer solutions, dyes, varnishes, suspensions, and some biomedical liquids such as blood all behave in a non-Newtonian manner~\cite{bohme1987non}.
 Of all of the different non-Newtonian behaviors that exist, there are two models under which much of the behaviors may be idealized: yield stress fluids and power-law fluids.
 Yield stress fluids, also known as Bingham plastics, do not flow until a threshold value of stress, referred to as its yield stress, is exceeded.
-Yield stress flow has been found to be relevant in many applictions, such as flow of pastes, paints, muds, molten plastics and metals, and in some cases, blood~\cite{wang2011lattice}.
+Yield stress flow has been found to be relevant in many applications, such as flow of pastes, paints, muds, molten plastics and metals, and in some cases, blood~\cite{wang2011lattice}.
 
 Power-law behavior, is more commonly known as \emph{shear-thinning}, when the apparent viscosity decreases with increasing strain-rate, or \emph{shear-thickening}, when the apparent viscosity increases with increasing strain-rate.
 Shear-thinning fluids are also known as \emph{pseudoplastics}, and some examples include tomato concentrate, clay and water mixtures, and molten plastics~\cite{irgens2014rheology}.
@@ -167,7 +167,7 @@ w_i = \begin{cases}
 
 Due to its simplicity and computational efficiency, the most common collision operator is the Bhatnagar--Gross--Krook (BGK) operator.
 BGK consists of a single relaxation time and is a linear relaxation of particle distributions toward equilibrium.
-The BGK collison operator for the $i^{th}$ discrete velocity is expressed as:
+The BGK collision operator for the $i^{th}$ discrete velocity is expressed as:
 
 \begin{equation} \label{eq:bgk}
 \Omega_i(\pos, t) = -\omega (f_i(\pos, t) - f_i^{eq}(\pos, t)),
@@ -187,7 +187,7 @@ It is well known that when large nonequilibrium distributions exist in the LBM a
 To illustrate this, consider a flow in which there is a sharp spatial gradient in either $\rho$ or $\mvel$ at $\pos$.
 As $f_i^{eq}$ depends on both $\rho$ and $\mvel$ \eqref{eq:feq}, it may be the case that $|f_i^{eq}(\pos, t) - f_i^{eq}(\pos + \pvel_i \Delta t, t + \Delta t)| >> 0$, i.e. there may be a large difference in the quasiequilibrium for the $i^{th}$ discrete velocity at $(\pos, t)$ and $(\pos + \pvel_i \Delta t, t + \Delta t)$.
 In this case, if $f_i$ is ``near'' to quasiequilibrium at $\pos$ it will be ``far'' from quasiequilibrium after the streaming step when it moves to the node at $\pos + \pvel_i \Delta t$.
-Overrelaxation will occur if $\nu \rightarrow 0$ because consquently $\omega \rightarrow 2$ and \eqref{eq:bgk} results in $f_i(\pos + \pvel_i \Delta t,t + \Delta t)$ still being ``far'' from $f^{eq}_i(\pos + \pvel_i \Delta t,t + \Delta t)$ but on the ``other side''.
+Overrelaxation will occur if $\nu \rightarrow 0$ because consequently $\omega \rightarrow 2$ and \eqref{eq:bgk} results in $f_i(\pos + \pvel_i \Delta t,t + \Delta t)$ still being ``far'' from $f^{eq}_i(\pos + \pvel_i \Delta t,t + \Delta t)$ but on the ``other side''.
 Overrelaxation in subsequent time steps (along the streaming trajectory of $f_i$) could result in nonphysical oscillations.
 Considering the effect oscillations of particle distributions will have on macroscopic variables and, consequently, local quasiequilibriums, positive feedback loops can occur causing the system to diverge or ``pollute'' the system enough to make the results highly nonphysical~\cite{gorban2014enhancement}.
 
@@ -195,7 +195,7 @@ The challenge associated with high viscosity fluids is that particular distribut
 Concerns with sharp gradients, overrelaxation, and underrelaxation are particularly relevant in non-Newtonian flow because of the nonlinear constitutive relationship between shear stress and strain-rate.
 The nonlinear constitutive relationship can lead to sharp gradients in $\rho$ or $\mvel$, and depending on the form of the function $\mu_{app}(\dot{\gamma})$, the local collision frequency may result in overrelaxation in certain parts of the domain and extreme underrelaxation in others.
 
-Due to the instabilities associated with the collision frequency being too high (e.g. approaching 2) or too low (e.g. approaching 0), a natural, albiet nonphysical, approach to using the BGK collision operator for non-Newtonian flow is to simply put bounds on the values in which the collision frequency may attain (such as in~\citet{svec2011flow,svec2012free,gabbanelli2005lattice}).
+Due to the instabilities associated with the collision frequency being too high (e.g. approaching 2) or too low (e.g. approaching 0), a natural, albeit nonphysical, approach to using the BGK collision operator for non-Newtonian flow is to simply put bounds on the values in which the collision frequency may attain (such as in~\citet{svec2011flow,svec2012free,gabbanelli2005lattice}).
 This simple methodology for increasing stability will henceforth be referred to bounded-relaxation time BGK, or BGK-BRT.
 
 \subsubsection{Multiple-relaxation Time} \label{sec:mrt}
@@ -307,11 +307,11 @@ In the current work, the criteria that is used for determining whether dissipati
   \Delta S(\pos, t) > \overline{\Delta S} + n_\sigma \cdot \sigma_{\Delta S},
 \end{equation}
 
-\noindent where $\overline{\Delta S}$ and $\sigma_{\Delta S}$ are the mean and standard deviation of $\Delta S$, respectively--both are calculated using values over the domain for the current timestep--and $n_\sigma$ is the number of standard deviations greater than $\overline{\Delta S}$ that $\Delta S$ must be before dissipation is added.
+\noindent where $\overline{\Delta S}$ and $\sigma_{\Delta S}$ are the mean and standard deviation of $\Delta S$, respectively--both are calculated using values over the domain for the current time step--and $n_\sigma$ is the number of standard deviations greater than $\overline{\Delta S}$ that $\Delta S$ must be before dissipation is added.
 The number of standard deviations, $n_\sigma$, is chosen \textit{a priori}.
 The criteria described in \eqref{eq:dissipation-criteria} has the advantage that one does not need to determine \textit{a priori} what constitutes ``far'' from quasiequilibrium, but instead considers the maximum percentage of sites one would want artificial dissipation to be added to.
-A disadvantage of \eqref{eq:dissipation-criteria} is that if $\overline{\Delta S}$ and $n_\sigma$ are both small then it is possible for dissipation to be added when $\Delta S(\pos, t)$ is low and artifical dissipation is unnecessary.
-By requiring that both \eqref{eq:ds-threshold} and \eqref{eq:dissipation-criteria} be met before artifical dissipation is added, there is the potential for \eqref{eq:ds-threshold} and \eqref{eq:dissipation-criteria} to compensate for the each other's disadvantage.
+A disadvantage of \eqref{eq:dissipation-criteria} is that if $\overline{\Delta S}$ and $n_\sigma$ are both small then it is possible for dissipation to be added when $\Delta S(\pos, t)$ is low and artificial dissipation is unnecessary.
+By requiring that both \eqref{eq:ds-threshold} and \eqref{eq:dissipation-criteria} be met before artificial dissipation is added, there is the potential for \eqref{eq:ds-threshold} and \eqref{eq:dissipation-criteria} to compensate for the each other's disadvantage.
 
 Just as there are many ways to measure a lattice site's distance from quasiequilibrium and define criteria for artificial dissipation, there are also many different ways of deciding how much dissipation to add.
 One method of adding dissipation is the so-called Ehrenfests' regularization~\cite{brownlee2006stabilization}, and involves setting a lattice site that is chosen for artificial dissipation to its quasiequilibrium state.
@@ -330,7 +330,7 @@ Sites that meet the criteria are updated as follows:
 No slip, or zero velocity, which is commonly imposed at walls in a domain, is accomplished by simulating the particle distributions as "bouncing back" at the walls in the opposite direction from which they stream.
 For example, for a particle distribution streaming in the direction of a south wall, $f_2 = f_4$, $f_5 = f_7$, and $f_6 = f_8$.
 For velocity or pressure boundary conditions, the method proposed by~\citet{zou1997pressure} can be used.
-The particle distributions that are missing after the streaming step are solved for by assuming a bounceback of the nonequilibrium distribution in the direction normal to the boundary; e.g., for a south inlet or outlet, $f_2 - f_2^{eq} = f_4 - f_4^{eq}$.
+The particle distributions that are missing after the streaming step are solved for by assuming a bounce back of the nonequilibrium distribution in the direction normal to the boundary; e.g., for a south inlet or outlet, $f_2 - f_2^{eq} = f_4 - f_4^{eq}$.
 
 Incorporating external forces, such as gravity, pressure gradients, etc., is done by adding a source of particle distributions in the direction of the force.
 The increase in particle distributions leads to the desired macroscopic result, which is an increase in momentum.
@@ -345,7 +345,7 @@ f_i(\pos + \pvel_i \Delta t, t + \Delta t) = f_i(\pos, t) + \Omega_i(f) + \frac{
 \subsection{Strain-rate Tensor}
 
 In the present work, material behavior is simulated through the collision frequency, $\omega$, when using the BGK collision operator (\Fref{sec:bgk}), or the $s_7$ and $s_8$ relaxation rates when using the MRT collision operator (\Fref{sec:mrt}).
-Both the collision frequency and the $s_7$ and $s_8$ relaxation rates are dependent on the apparent visocity, $\mu_{app}$, through \eqref{eq:colfreq-non-newtonian} and \eqref{eq:mrt-s7}, respectively.
+Both the collision frequency and the $s_7$ and $s_8$ relaxation rates are dependent on the apparent viscosity, $\mu_{app}$, through \eqref{eq:colfreq-non-newtonian} and \eqref{eq:mrt-s7}, respectively.
 The apparent viscosity, in the context of non-Newtonian flow, is a function of the local strain-rate, $\dot{\gamma}$.
 The strain-rate is given by the second invariant of the strain-rate tensor, $\srtensor$, i.e.:
 \begin{equation} \label{eq:second-invariant}
@@ -452,7 +452,7 @@ The size of the domain is $L = 32$  and $H = 64$.}
     \label{fig:poise-schematic}
 \end{figure}
 
-Unless otherwise stated, all of the Poiseuille flow simulations were computed on a $32 \times 64$ lattice for 25000 timesteps.
+Unless otherwise stated, all of the Poiseuille flow simulations were computed on a $32 \times 64$ lattice for 25000 time steps.
 The lattice size was chosen to be sufficiently fine for accuracy and the number of time steps were set high enough to ensure a steady-state would be reached.
 In reference to computational time, each of the simulations in this section were run on a single core of an Intel I7-860 Quad-Core 2.80GHz processor.
 For the MRT relaxation matrix the free parameters were set to $s_1 = s_2 = s_4 = s_6 = 1.1$, which follows the recommendation of~\cite{lallemand2000theory} for reasons of stability, and has been successfully used to simulate non-Newtonian flow in the past~\cite{fallah2012multiple,grasinger2015simulation}.
@@ -510,7 +510,7 @@ MRT & No & $10^8$ & 4.0 & 6.05 & 0.68 & 0.0013 & 0.0013 & 5914 \\
 
 As has been reported previously, for the BGK collision operator, using a stress growth exponent of $m = 10^5$ is more accurate with respect to the analytical solution than using a stress growth exponent of $m = 10^8$~\cite{chen2014simulations}.
 A larger stress growth exponent results in a more accurate Papastasiou approximation of the true Bingham plastic constitutive model, however, it leads to more nonphysical oscillations that degrade the numerical solution for the BGK collision operator.
-Upon inspection of \Fref{tab:poise-bing}, it does not appear that entropic median filtering helped to mitigate errors that occured as a result of using $m = 10^8$ for Bingham plastic Poiseuille flow.
+Upon inspection of \Fref{tab:poise-bing}, it does not appear that entropic median filtering helped to mitigate errors that occurred as a result of using $m = 10^8$ for Bingham plastic Poiseuille flow.
 In fact, the median filter resulted in a less accurate solution in all cases other than the case with the lowest yield stress considered (i.e., the smoothest flow field), and rendered the solution altogether useless for the higher yield stress fluids (relative errors of approximately 25--75\%).
 
 In general, the BGK collision operator using a stress growth exponent of $m = 10^5$ had the lowest computational time.
@@ -551,7 +551,7 @@ The optimization problem was defined as follows:
 The bounds on $\theta$, namely $\theta \in \begin{bmatrix}10^{-10}, & 2\end{bmatrix}$ represent $\theta$ such that 100\% of lattice sites are filtered for every time step ($\theta = 10^{-10}$) and $\theta$ such that no lattice sites are filtered for any time step ($\theta = 2.0$).
 The optimization problem was solved for the cases of using median filtering and Ehrenfests' regularization using both Brent's method and the Golden Section search.
 For all four cases, the optimal solution was $\theta = 2.0$ and the cost function, $f(2.0)$, was equal to the relative $L_2$ error for the BGK collision operator, $m = 10^8$ and no entropic filtering.
-The results of the optimization show that entropic filtering, at best did not affect the accuracy of LBM, and often adversly affected the accuracy of LBM in approximating Bingham plastic Poiseuille flow, regardless of whether median filtering or Ehrenfests' regularization was used, and regardless of what the $\Delta S$ threshold, $\theta$, was set to.
+The results of the optimization show that entropic filtering, at best did not affect the accuracy of LBM, and often adversely affected the accuracy of LBM in approximating Bingham plastic Poiseuille flow, regardless of whether median filtering or Ehrenfests' regularization was used, and regardless of what the $\Delta S$ threshold, $\theta$, was set to.
 
 \newcommand{\figwid}{0.48\linewidth}
 
@@ -574,7 +574,7 @@ The results of the optimization show that entropic filtering, at best did not af
 On average, the LBM model using the MRT collision operator took 2.9 times more computing time than the BGK collision operator with $m = 10^5$.
 However, the increased computing time can be justified for the MRT collision operator because the MRT solution did not suffer from the same level of nonphysical oscillations as the BGK collision operator when using the more accurate approximation of the Bingham plastic model, i.e. when $m = 10^8$. 
 The MRT collision operator was therefore the most accurate solution for all cases.
-\Fref{fig:feq-vs-f_mrt} compares particle distribution, $f_i$, profiles to their respective quasiequilbirium profiles, $f_i^{eq}$ for the MRT model.
+\Fref{fig:feq-vs-f_mrt} compares particle distribution, $f_i$, profiles to their respective quasiequilibrium profiles, $f_i^{eq}$ for the MRT model.
 In contrast to the BGK with $m = 10^8$, there were no significant nonphysical oscillations in the quasiequilibrium distributions.
 
 \begin{figure}
@@ -697,8 +697,6 @@ In fact, besides the case of $n = 0.5$ (i.e. relatively extreme shear-thinning) 
 The BGK-BRT had a moderate improvement of accuracy and efficiency--with respect to the regular BGK collision scheme--for flow where the constitutive relationship was only somewhat nonlinear, i.e. for $n = 0.75, 1.25$.
 Note that none of the collision schemes were sufficiently accurate (error greater than 15\%) for the case of $n = 0.5$, and to improve this accuracy it would be necessary to use a different simulation Mach number, a finer grid, and/or a smaller pressure gradient.
 
-% MG: it might be better to normalize the time with respect to the fastest, BGK with no filtering
-
 \begin{table}
 \centering
 \caption{Power-law Poiseuille flow}
@@ -797,12 +795,12 @@ The example of lid-driven cavity flow utilized herein is presented schematically
 
 Unless specified otherwise, the lid-driven cavity simulations presented in the section were all simulated on a relatively coarse, $100 \times 100$ lattice, similar to the work presented in ~\cite{brownlee2008nonequilibrium}.
 A coarse lattice was chosen in order to highlight concerns with stability and accuracy.
-The simulations were run for either 50000 timesteps or until convergence was met.
+The simulations were run for either 50000 time steps or until convergence was met.
 Convergence was defined by:
 \begin{equation} \label{eq:convergence}
 \sum_{m=1}^{100} \sum_{i, j} \frac{|u_{i, j}^k - u_{i, j}^{k-m}|}{|u_{i, j}^{k-m}|} < 1.0 \times 10^{-7},
 \end{equation}
-\noindent where $i$ is the node index in the x-direction, $j$ is the node index in the y-direction, and $k$ is the current timestep.
+\noindent where $i$ is the node index in the x-direction, $j$ is the node index in the y-direction, and $k$ is the current time step.
 The lid velocity was prescribed as $u_o = 0.1$.
 For the MRT relaxation matrix, the free parameters were set to $s_1 = 1.1$, $s_2 = 1.0$, and $s_4 = s_6 = 1.2$, as these values have been successfully applied to simulating lid-driven cavity flow of non-Newtonian fluids in the past~\cite{chen2014simulations,li2014simulation}.
 All coordinate values presented in this section (used to describe the location of the center of vortices) are given normalized with respect to the length of the cavity side (i.e. as $(x / L, y / L)$).
@@ -1037,7 +1035,7 @@ $n$ & $Re$ & \pbox{20cm}{Collision \\ Operator} & \pbox{20cm}{Median \\ Filter} 
 \end{table}
 
 For the shear-thinning results, $n = 0.5$, at the lowest Reynold's number considered, $Re = 100$, all of the collision schemes produced results that agreed well with the literature value.
-However, the solutions became unstable at higher Reynold's numbers and entropic filtering was necessary to produce a stable soltuion when $Re \ge 1000$ for the BGK collision operator, and when $Re \ge 5000$ for the MRT collision operator.
+However, the solutions became unstable at higher Reynold's numbers and entropic filtering was necessary to produce a stable solution when $Re \ge 1000$ for the BGK collision operator, and when $Re \ge 5000$ for the MRT collision operator.
 Although there still appears to be a tradeoff between computational efficiency and accuracy in regards to the BGK with median filtering and MRT with median filtering, it does not seem to be nearly as significant as when simulating Bingham plastic lid-driven flow (e.g. neither collision scheme consistently agrees with the literature values and the MRT with median filtering is only 2-3 times slower than the BGK with median filtering).
 An example of this tradeoff is the shear-thinning results for $Re = 5000$: the location of the main vortex for the BGK with median filtering differed from the literature by more than 10\% in both the $x$ and $y$ directions, but the MRT with median filtering has approximately twice the computing cost.
 
@@ -1065,7 +1063,7 @@ For nearly all of the cases considered in the current study, the MRT collision o
 
 In regards to future work, \cite{conrad2015accuracy} showed that non-Newtonian Lattice Boltzmann simulations are not second order accurate for every simulation Mach number, and showed that a greater accuracy may be achieved by properly tuning the simulation Mach number.
 \cite{conrad2015accuracy} predicted optimal simulation Mach numbers for various shear-thinning and shear-thickening fluids. 
-Possbile future work would include extending the numerical investigation to consider the effect of the simulation Mach number on the accuracy, stability, and efficiency of the various collision operators and stability enhancements in simulating non-Newtonian flow.
+Possible future work would include extending the numerical investigation to consider the effect of the simulation Mach number on the accuracy, stability, and efficiency of the various collision operators and stability enhancements in simulating non-Newtonian flow.
 
 % MG: should we mention: code is open source? input files used in this study are also freely available?
 
