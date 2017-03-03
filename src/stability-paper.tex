@@ -645,9 +645,16 @@ Overall, the results presented suggest that if an LBM collision scheme is to be 
     \label{fig:qx-cumulative}
 \end{figure}
 
-Lastly, simulations with the same collision schemes, Reynold's numbers and Bingham numbers were run in $128 \times 32$ lattices in order to investigate the effect of grid resolution.
+Lastly, simulations with the same collision schemes, Reynold's numbers and Bingham numbers were run on $128 \times 32$ lattices in order to investigate the effect of grid resolution.
 The plastic viscosity was held constant ($\mu_p = 0.2$.), while the yield stress and pressure gradient were varied in order to match the Reynold's numbers and Bingham numbers in \Fref{tab:poise-bing}.
-The relative $L_2$ error, relative $L_{\infty}$ error, and computation time for each simulation are presented in \Fref{tab:poise-bing-2}. 
+The relative $L_2$ error, relative $L_{\infty}$ error, and computation time for each simulation are presented in \Fref{tab:poise-bing-2}.
+
+As would be expected from doubling the number of lattice sites, the cost for each corresponding combination of collision scheme, $Re$, and $Bn$ increased by a factor of approximately 2-2.5.
+The 2-2.5 times increase in computing time resulted in the BGK collision schemes on the finer lattice being comparable in computational cost to the MRT collision scheme on the coarser lattice.
+In regards to error, for the larger Bingham number flows ($Bn = 4.04, 8.52$) both the $L_2$ and $L_\infty$ errors of the BGK collision schemes were reduced in general, sometimes by as much as a factor of 4.
+None of the relative $L_2$ errors exceeded 10\%, in contrast to the BGK simulations run on the coarser lattice.
+However, despite the increase in accuracy, it should be noted that for $Bn = 8.52$ all of the BGK collision schemes had $L_\infty$ errors that exceeded 10\%.
+The MRT collision operator, even on the coarser lattice, was more accurate (for the case of $Bn = 8.52$) than all of the BGK collision schemes on the finer lattice.
 
 \begin{table}
 	\centering
@@ -687,7 +694,7 @@ The flow behavior index, $n$, was varied between the four different values (from
 The relative $L_2$ and relative $L_{\infty}$ errors with respect to the analytical solution were computed for each simulation.
 The analytical solution for the velocity profile of Poiseuille flow with the power-law constitutive relationship is given by:
 \begin{equation} \label{eq:analytical-power-law}
-  u_x(y) = \frac{n}{n+1}\left(-\frac{1}{k}\pgrad\right)^{1/n}\left[h^{\frac{n+1}{n}} - |y|^{\frac{n+1}{n}}\right].
+  u_x(y) = \frac{n}{n+1}\left(-\frac{1}{2k}\pgrad\right)^{1/n}\left[h^{\frac{n+1}{n}} - |y|^{\frac{n+1}{n}}\right].
 \end{equation}
 
 The relative $L_2$ error, relative $L_{\infty}$ error, and computation time for each simulation are presented in \Fref{tab:poise-power-law}.
@@ -774,7 +781,7 @@ Taking the partial derivative with respect to $y$ of the analytical solution for
 \end{equation}
 and taking the partial derivative with respect to $y$ of the analytical solution for the flow velocity of a power-law fluid, Poiseuille flow (Equation \eqref{eq:analytical-power-law}) results in:
 \begin{equation} \label{eq:gradu-power-law}
-  \frac{\partial u_x}{\partial y} = \left( -\frac{1}{k} \pgrad \right)^{1/n} \left( -y |y|^{\frac{1}{n} - 1} \right).
+  \frac{\partial u_x}{\partial y} = \left( -\frac{1}{2k} \pgrad \right)^{1/n} \left( -y |y|^{\frac{1}{n} - 1} \right).
 \end{equation}
 It can be seen from \eqref{eq:gradu-bingham} and \eqref{eq:gradu-power-law} that $\left| \frac{\partial u_x}{\partial y} \right|$ increases with the yield stress for Bingham plastics, and increases with $\frac{1}{n}$ for power-law fluids, which suggests that one of the challenges associated with the accuracy and stability of simulating higher yield-stress fluids and more extreme shear-thinning fluids (e.g. $n \le 0.5$) in Poiseuille-type flow is a result of having a larger magnitude of the gradient of macroscopic flow.
 This conclusion is consistent with the discussion in \Fref{sec:bgk} with regards to one of the drawbacks of the BGK collision operator, namely that a sharp spatial gradient in either $\rho$ or $\mvel$ can lead to nonphysical oscillations that can degrade the accuracy and stability of the solution.
@@ -1064,6 +1071,3 @@ For nearly all of the cases considered in the current study, the MRT collision o
 In regards to future work, \cite{conrad2015accuracy} showed that non-Newtonian Lattice Boltzmann simulations are not second order accurate for every simulation Mach number, and showed that a greater accuracy may be achieved by properly tuning the simulation Mach number.
 \cite{conrad2015accuracy} predicted optimal simulation Mach numbers for various shear-thinning and shear-thickening fluids. 
 Possible future work would include extending the numerical investigation to consider the effect of the simulation Mach number on the accuracy, stability, and efficiency of the various collision operators and stability enhancements in simulating non-Newtonian flow.
-
-% MG: should we mention: code is open source? input files used in this study are also freely available?
-
