@@ -1,0 +1,34 @@
+\documentclass{article}
+
+\begin{document}
+	\section{Reviewer 1}
+	\begin{enumerate}
+		\item \emph{In Fig. 2, the scale of the figure should be modified in order to avoid readers’ misleading. If the authors calculate only one case with L = 32 and H = 64, the computational domain becomes vertically long.}
+		
+		The figure has been updated to reflect the relative scale between $L$ and $H$.
+		
+		\item \emph{In Table 2, all the results of the error norms, $L_{2}$ and $L_{\infty}$, for $n = 1.25$ are the same values in spite of different LBM schemes. The values should be changed to correct ones.}
+		
+		The results are actually the same for all of the BGK variants.
+		This is because for $n = 1.25$ the nonequilibrium entropy threshold for median filtering was not exceeded, and hence it was effectively the same as the unfiltered BGK scheme.
+		Similarly, the relaxation time was within the bounds for the BGK-BRT scheme, which again resulted in the scheme to being effectively the same as the BGK collision scheme without bounds.
+		The error norms for the MRT collision scheme was different, but the difference could not be seen in the precision of the results presented in the previous draft.
+		The $n = 1.25$ error norms have been updated with higher precision so as to show the difference.
+		
+		\item \emph{The authors carried out the simulations with fixed lattice resolution. However, the convergence rate should be examined by calculating the benchmark problem (e.g., Poiseuille flow) with different lattice resolutions. 
+		What order is the accuracy of the schemes used in the present study?}
+	
+		Considerations regarding grid resolution were added in the following locations:
+		\begin{itemize}
+			\item Table 2 at the end of Section 3.1.1 and the last paragraph of Section 3.1.1 address the significance of grid resolution for Bingham plastic Poiseuille flow.
+			\item Table 4 at the end of Section 3.1.2 and the last paragraph of Section 3.1.2 address the significance of grid resolution for Power-law Poiseuille flow. 
+			\item The third to last paragraph of Section 3.2.1 addresses the significance of grid resolution for the Bingham plastic lid-driven cavity flow.
+		\end{itemize}
+	\end{enumerate}
+
+	\section{Reviewer 2}
+	  The present work examines the single-relaxation-time (SRT) and the multiple-relaxation-time (MRT) lattice Boltzmann method (LBM) for Bingham plastic and power-law fluids. Constitutive relations in these fluids are typically stiff presenting substantial numerical challenges when the relations are incorporated into the LBM collision models. Entropic filtering as additional artificial dissipation and MRT collision are considered as the means to stabilize otherwise oscillatory or unstable SRT LBM. Optimal value for the median filtering was suggested and computational costs with these approaches are compared in detail. The conclusions are rather trivial; MRT is the most accurate and stable whereas its computational cost can be significantly large compared with SRT due to non-linear iteration. Filtering does stabilize SRT but the accuracy deteriorates particularly when the filter threshold is not optimally chosen. This work can be useful if readers are interested in choosing a suitable LB model for simulating non-Newtonian flows. However, it lacks novelty. Although MRT collision operator is shown to be the best choice, no detailed analysis on the values of optimum relaxation rates for various non-Newtonian flows.
+	As for Poiseulle Flow part, SRT simulations deviate from the analytical solution in the core region (Figs.3,4) due to the difference in the constitutive relations used in LBM and the analytical solution. Thus, the reported errors in Table 1 include both constitutive relation error and truncation error. This does not seem fair. It would be helpful if the analytical solution or a benchmark solution from NS equations of Papanastasiou approximation is directly compared with LBM results. The authors attributed the nonphysical oscillations of SRT simulations to sharp gradients in the velocity near the walls, which is then again a result of a sharp gradient in the viscosity. However, from Figs.3&4, it is difficult to observe any sign of sharp gradients in the velocity near the walls. In Fig.4 for higher m, the oscillations occur at the center of the computational domain and they are not symmetric.
+	
+	Grid convergence and its effect on the computation time would strengthen the manuscript. It is possible that MRT might become faster as the grid resolution improves. A minor comment is that as the streamwise BC is periodic in Sec.3.1, one might not need L=32 grid. One or two grid points would be enough.
+\end{document}

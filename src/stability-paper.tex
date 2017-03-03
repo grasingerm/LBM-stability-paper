@@ -645,6 +645,41 @@ Overall, the results presented suggest that if an LBM collision scheme is to be 
     \label{fig:qx-cumulative}
 \end{figure}
 
+Lastly, simulations with the same collision schemes, Reynold's numbers and Bingham numbers were run in $128 \times 32$ lattices in order to investigate the effect of grid resolution.
+The plastic viscosity was held constant ($\mu_p = 0.2$.), while the yield stress and pressure gradient were varied in order to match the Reynold's numbers and Bingham numbers in \Fref{tab:poise-bing}.
+The relative $L_2$ error, relative $L_{\infty}$ error, and computation time for each simulation are presented in \Fref{tab:poise-bing-2}. 
+
+\begin{table}
+	\centering
+	\caption{Bingham plastic Poiseuille flow, $128 \times 32$ lattice}
+	\vspace{0.5cm}
+	\begin{tabulary}{\linewidth}{l l r r r r r r r r}
+		\pbox{20cm}{Collision \\ Operator} & \pbox{20cm}{Median \\ Filter} & $m$ & \pbox{20cm}{$\tau_y$ \\ $(\times 10^{-5})$} & $Re$ & $Bn$ & $L_2$ & $L_\infty$ & \pbox{20cm}{Time \\ (sec)} \\
+		\hline \\
+		BGK & No & $10^5$ & 1.0 & 6.05 & 0.68 & 0.0419 & 0.0450 & 4951 \\
+		              & & & 2.0 & 4.42 & 1.85 & 0.0300 & 0.0370 & 5209 \\
+	                  & & & 3.0 & 3.04 & 4.04 & 0.0206 & 0.0260 & 5296 \\
+		              & & & 4.0 & 1.92 & 8.52 & 0.0649 & 0.1016 & 5304 \\
+		\\
+		BGK & No & $10^8$ & 1.0 & 6.05 & 0.68 & 0.0426 & 0.0470 & 6484 \\
+		              & & & 2.0 & 4.42 & 1.85 & 0.0306 & 0.0394 & 7111 \\
+		              & & & 3.0 & 3.04 & 4.04 & 0.0230 & 0.0438 & 7595 \\
+		              & & & 4.0 & 1.92 & 8.52 & 0.0963 & 0.1659 & 7791 \\
+		\\
+		BGK & Yes & $10^8$ & 1.0 & 6.05 & 0.68 & 0.0427 & 0.0468 & 5576 \\
+		               & & & 2.0 & 4.42 & 1.85 & 0.0309 & 0.0397 & 7512 \\
+		               & & & 3.0 & 3.04 & 4.04 & 0.0236 & 0.0443 & 7856 \\
+		               & & & 4.0 & 1.92 & 8.52 & 0.0934 & 0.1624 & 7848 \\
+		\\
+		MRT & No & $10^8$ & 1.0 & 6.05 & 0.68 & 0.0452 & 0.0484 & 13837 \\
+		              & & & 2.0 & 4.42 & 1.85 & 0.0404 & 0.0435 & 16515 \\
+                      & & & 3.0 & 3.04 & 4.04 & 0.0316 & 0.0338 & 17142 \\
+                      & & & 4.0 & 1.92 & 8.52 & 0.0200 & 0.0210 & 17853 \\
+		\\
+		\label{tab:poise-bing-2}
+	\end{tabulary}
+\end{table}
+
 \subsubsection{Power-law Fluids} \label{sec:poise-powerlaw}
 
 The simulations of the Poiseuille flow with the power-law constitutive relationship were carried out with a pressure gradient of $\pgrad = 1.0 \times 10^{-5}$, and a flow consistency index of $k = 0.2$.
@@ -671,28 +706,63 @@ Note that none of the collision schemes were sufficiently accurate (error greate
 \begin{tabulary}{\linewidth}{l l r r r r r}
 \pbox{20cm}{Collision \\ Operator} & \pbox{20cm}{Median \\ Filter} & $n$ & $Re$ & $L_2$ & $L_\infty$ & \pbox{20cm}{Time \\ (sec)} \\
 \hline \\
-BGK & No & 0.50 & 0.0007 & 28.06 & 30.37 & 5232 \\
+BGK & No & 0.50 & 0.0007 & 28.1 & 30.4 & 5232 \\
 & & 0.75 & 0.9125 & 0.0328 & 0.0569 & 2399 \\
-& & 1.25 & 423.2 & 0.0051 & 0.0055 & 2311 \\
-& & 1.50 & 2213 & 1.0 & 1.0 & 3622 \\
+& & 1.25 & 423.2 & 0.00510 & 0.00547 & 2311 \\
+& & 1.50 & 2213 & 1.00 & 1.00 & 3622 \\
 \\
-BGK & Yes & 0.50 & 0.0007 & 26.72 & 28.78 & 5347 \\
+BGK & Yes & 0.50 & 0.0007 & 26.7 & 28.8 & 5347 \\
 & & 0.75 & 0.9125 & 0.0328 & 0.0569 & 2385 \\
-& & 1.25 & 423.2 & 0.0051 & 0.0055 & 2275 \\
+& & 1.25 & 423.2 & 0.00510 & 0.00547 & 2275 \\
 & & 1.50 & 2213 & 0.0570 & 0.0600 & 2357 \\
 \\
-MRT & No & 0.50 & 0.0007 & 0.1758 & 0.1401 & 4906 \\
-& & 0.75 & 0.9125 & 0.0058 & 0.0045 & 4880 \\
-& & 1.25 & 423.2 & 0.0051 & 0.0055 & 4863 \\
-& & 1.50 & 2213 & 1.0 & 1.0 & 15992 \\
+MRT & No & 0.50 & 0.0007 & 0.140 & 0.176 & 4906 \\
+& & 0.75 & 0.9125 & 0.00450 & 0.00579 & 4880 \\
+& & 1.25 & 423.2 & 0.00506 & 0.00548 & 4863 \\
+& & 1.50 & 2213 & 1.00 & 1.00 & 15992 \\
 \\
-BGK-BRT & No & 0.50 & 0.0007 & 11.73 & 12.56 & 4450 \\
+BGK-BRT & No & 0.50 & 0.0007 & 11.7 & 12.6 & 4450 \\
 & & 0.75 & 0.9125 & 0.0320 & 0.0475 & 1805 \\
-& & 1.25 & 423.2 & 0.0051 & 0.0055 & 1905 \\
-& & 1.50 & 2213 & 1.0 & 1.0 & 8194 \\
+& & 1.25 & 423.2 & 0.00510 & 0.00547 & 1905 \\
+& & 1.50 & 2213 & 1.00 & 1.00 & 8194 \\
 \\
 \label{tab:poise-power-law}
 \end{tabulary}
+\end{table}
+
+In addition, simulations with the same collision schemes and Reynold's numbers were run in $128 \times 32$ lattices in order to investigate the effect of grid resolution.
+The flow consistency index was held constant ($k = 0.2$.), while the pressure gradient was varied in order to match the Reynold's numbers in \Fref{tab:poise-power-law}.
+The relative $L_2$ error, relative $L_{\infty}$ error, and computation time for each simulation are presented in \Fref{tab:poise-power-law-2}.
+
+\begin{table}
+	\centering
+	\caption{Power-law Poiseuille flow, $128 \times 32$ lattice}
+	\vspace{0.5cm}
+	\begin{tabulary}{\linewidth}{l l r r r r r}
+		\pbox{20cm}{Collision \\ Operator} & \pbox{20cm}{Median \\ Filter} & $n$ & $Re$ & $L_2$ & $L_\infty$ & \pbox{20cm}{Time \\ (sec)} \\
+		\hline \\
+		BGK & No & 0.50 & 0.0007 & 17.4 & 20.8 & 8477 \\
+		       & & 0.75 & 0.9125 & 0.0140 & 0.0288 & 4317 \\
+		       & & 1.25 & 423.2 & 0.479 & 0.502 & 4683 \\
+		       & & 1.50 & 2213 & 0.873 & 0.897 & 4457 \\
+		\\
+		BGK & Yes & 0.50 & 0.0007 & 17.6 & 21.0 & 8407 \\
+		        & & 0.75 & 0.9125 & 0.0140 & 0.0288 & 4738 \\
+		        & & 1.25 & 423.2 & 0.479 & 0.502 & 4714 \\
+		        & & 1.50 & 2213 & 0.874 & 0.898 & 4879 \\
+		\\
+		MRT & No & 0.50 & 0.0007 & 0.0675 & 0.0539 & 8338 \\
+		       & & 0.75 & 0.9125 & 0.00187 & 0.00145 & 9241 \\
+		       & & 1.25 & 423.2 & 0.479 & 0.502 & 10856 \\
+		       & & 1.50 & 2213 & 0.872 & 0.898 & 9965 \\
+		\\
+		BGK-BRT & No & 0.50 & 0.0007 & 16.8 & 18.4 & 8959 \\
+		           & & 0.75 & 0.9125 & 0.0129 & 0.0158 & 4516 \\
+		           & & 1.25 & 423.2 & 0.479 & 0.502 & 4308 \\
+		           & & 1.50 & 2213 & 0.873 & 0.897 & 8194 \\
+		\\
+		\label{tab:poise-power-law-2}
+	\end{tabulary}
 \end{table}
 
 Before closing the discussion on the Poiseuille flow numerical study, it is worthwhile to consider what precisely is common between the higher-yield stress fluids and the shear-thinning fluids, as they were the cases that exhibited numerical instabilities and were simulated with the least amount of accuracy for some of the collision schemes considered.
@@ -725,7 +795,7 @@ The example of lid-driven cavity flow utilized herein is presented schematically
 \label{fig:lid-driven}
 \end{figure}
 
-The lid-driven cavity simulations presented in the section were all simulated on a relatively coarse, $100 \times 100$ lattice, similar to the work presented in ~\cite{brownlee2008nonequilibrium}.
+Unless specified otherwise, the lid-driven cavity simulations presented in the section were all simulated on a relatively coarse, $100 \times 100$ lattice, similar to the work presented in ~\cite{brownlee2008nonequilibrium}.
 A coarse lattice was chosen in order to highlight concerns with stability and accuracy.
 The simulations were run for either 50000 timesteps or until convergence was met.
 Convergence was defined by:
@@ -740,7 +810,7 @@ Note that all results presented as ``-'' indicate that the tests were numericall
 
 \subsubsection{Bingham Plastic Fluids}
 
-For the Bingham plastic numerical tests the Reynold's number was varied with the following values:$\begin{bmatrix}100,&1000,&5000,&10000\end{bmatrix}$, and the Bingham number was varied with the following values: $\begin{bmatrix}1,&10,&100\end{bmatrix}$ ($Bn$ and $Re$ were calculated the same as in \Fref{sec:poise-bing}).
+For the Bingham plastic numerical tests the Reynold's number was varied with the following values: $\begin{bmatrix}100,&1000,&5000,&10000\end{bmatrix}$, and the Bingham number was varied with the following values: $\begin{bmatrix}1,&10,&100\end{bmatrix}$ ($Bn$ and $Re$ were calculated the same as in \Fref{sec:poise-bing}).
 Six collision schemes were tested: (1) BGK with $m = 10^5$, (2) BGK with $m = 10^8$, (3) BGK-BRT with $m = 10^8$, (4) BGK with $m = 10^8$ and median filtering, (5) MRT with $m = 10^8$ and (6) MRT with $m = 10^8$ and median filtering.
 Tables \ref{tab:lid-bing1}--\ref{tab:lid-bing100} compare the center location of the main vortex to literature values taken from~\citet{syrakos2014performance}.
 The main vortex location is determined by calculating the stream function using Simpson's rule and finding where it attains a maximum.
@@ -865,15 +935,18 @@ $Bn$ & $Re$ & \pbox{20cm}{Collision \\ Operator} & \pbox{20cm}{Median \\ Filter}
 
 Just as before with the Bingham plastic Poiseuille flow, if using the BGK collision operator and entropic filtering is not available, a stress growth exponent of $m = 10^5$ yields faster and more accurate results than using a larger stress growth exponent.
 A smaller stress growth exponent is also more effective at producing accurate results in the BGK collision scheme than placing bounds on the relaxation time (i.e. BGK-BRT).
-However, although the BGK with $m = 10^5$ was the fastest model in all cases, it was also similar to the other two BGK models without median filtering in that it was unstable for $Re \ge 5000$.
+However, although the BGK with $m = 10^5$ was the fastest model in all cases, it was also unstable for $Re \ge 5000$.
+The collision schemes that were unstable for $Re \ge 5000$ (BGK with $m = 10^5$, BGK with $m = 10^8$, and BGK-BRT with $m = 10^8$) were run with a finer $200 \times 200$ lattice to see if increased lattice resolution could increase stability without causing a significant increase computational efficiency.
+With the finer lattice, the BGK models without median filtering were numerically unstable and took 85\% to 308\% of the computational time of the corresponding $100 \times 100$ lattice MRT model.
+BGK tests conducted on a $300 \times 300$ lattice with $m = 10^8$ (without entropic filtering) for Bingham numbers of $\begin{bmatrix}1,&10\end{bmatrix}$ and Reynold’s numbers of $\begin{bmatrix}5000,&10000\end{bmatrix}$ also yielded unstable results.
 
 For flow with $Re \ge 5000$, the BGK with $m = 10^8$ and median filtering produced numerically stable results.
 However, in general, the BGK with $m = 10^8$ and median filtering was consistently different from literature values. 
 The apparent inaccuracy with regards to BGK with $m = 10^8$ and median filtering is probably due to how the numerical stability is enhanced through artificial, nonphysical dissipation.
-In contrast to the nonphysical nature in which median filtering enhances stability, the stability enhancement used by MRT does not directly affect the macroscopic hydrodynamics of interest, so it again provides a stable, and in most of the cases examined herein, the most accurate solution. % MG: verify this sentence is correct
+In contrast to the nonphysical nature in which median filtering enhances stability, the stability enhancement used by MRT does not directly affect the macroscopic hydrodynamics of interest, so it again provides a stable, and in most of the cases examined herein, the most accurate solution.
 The apparent superiority in terms of stability and accuracy of the MRT collision operator still comes at a price though.
 The MRT collision operator was, in general, 5-10 times slower than any of the BGK collision schemes.
-The extreme increase in computational expense is probably not due to the collision process itself (i.e. \eqref{eq:mrt-colop}) but instead due to calculating the strain-rate \eqref{eq:srtensor-mrt} for each iteration of the solution for the apparent viscosity, $\mu_{app}$.
+The increase in computational expense is probably not due to the collision process itself (i.e. \eqref{eq:mrt-colop}) but instead due to calculating the strain-rate \eqref{eq:srtensor-mrt} for each iteration of the solution for the apparent viscosity, $\mu_{app}$.
 
 In summary, for the lid-driven cavity flow of a Bingham plastic fluid, 
 \begin{itemize}
@@ -881,6 +954,8 @@ In summary, for the lid-driven cavity flow of a Bingham plastic fluid,
     \item for high Reynold's number flow the BGK collision operator requires entropic filtering to remain stable,
     \item and the MRT collision operator with $m = 10^8$ produces solutions with high accuracy and stability for all of the cases examined herein, but at an increased (approximately 5-10 times more) computing cost.
 \end{itemize} 
+
+
 
 \subsubsection{Power-law Fluids}
 
@@ -970,6 +1045,8 @@ For the shear-thickening results, $n = 1.5$, there were no issues of instability
 What is interesting is that all of the collision schemes produce similar results for each of the cases, with the difference in the location of the main vortex being no greater than 1\% in either the $x$ or $y$ direction for any two collision schemes (with the exception of the high Reynold's number case, $Re = 10000$).
 The BGK-BRT consistently needed the least amount of computing time.
 The reason the BGK-BRT may be the most efficient is because the collision frequency, $\omega$, is bounded, and consequently $\mu_{app}$ is bounded, meaning the solution to the constitutive equation may be converging with less iterations than the other collision schemes.
+
+Lastly, it should be noted that for instances in which the BGK collision operator 
 
 \section{Conclusions} \label{sec:numerical-study-conclusions}
 
