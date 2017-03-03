@@ -434,7 +434,7 @@ All BGK-BRT collision schemes used $\omega \in [0.05, 1.995]$ as the bounds on t
 All simulations with artificial dissipation used the median filter with $\theta = 1.0 \times 10^{-6}$ and $n_{\sigma} = 2.7$ where $\theta$ is the threshold that $\Delta S(\pos, t)$ must exceed before dissipation is added \eqref{eq:ds-threshold} and $n_{\sigma}$ is the number of standard deviations greater than $\overline{\Delta S}$ that $\Delta S(\pos, t)$ must be before dissipation is added \eqref{eq:dissipation-criteria}.
 All numerical values given in this section are in lattice units unless otherwise stated.
 
-\subsection{Bingham Plastic, Poiseuille Flow}
+\subsection{Bingham Plastic, Poiseuille Flow} \label{sec:poise-bing}
 
 Poiseuille flow is a useful benchmark because an analytical solution exists for both Bingham plastic flow.
 Poiseuille flow is created with a two-dimensional channel flow that is driven by a constant pressure gradient, $\pgrad$, through the domain.
@@ -457,9 +457,11 @@ The lattice size was chosen to be sufficiently fine for accuracy and the number 
 In reference to computational time, each of the simulations in this section were run on a single core of an Intel I7-860 Quad-Core 2.80GHz processor.
 
 The Bingham plastic simulations were carried out with a pressure gradient of $\pgrad = 1.0 \times 10^{-5}$, and a plastic viscosity of $\mu_p = 0.2$.
-The yield stress was varied between four different values $\tau_y = \begin{bmatrix}4.0,&8.0,&12.0,&16.0\end{bmatrix} \times 10^{-5}$, and four different LBM schemes were used: (1) BGK with $m = 10^5$, (2) BGK with $m = 10^8$, (3) BGK with $m = 10^8$ and the median filter, and (4) MRT with $m = 10^8$.
-Recall that $m$ is the stress growth exponent for the Papanastasiou approximation, and the higher $m$ is the closer to the true Bingham plastic behavior.
-For the MRT relaxation matrix the free parameters were set to $s_1 = s_2 = s_4 = s_6 = 1.1$, which follows the recommendation of~\cite{lallemand2000theory} for reasons of stability, and has been successfully used to simulate non-Newtonian flow in the past~\cite{fallah2012multiple,grasinger2015simulation}. 
+The yield stress was varied between four different values $\tau_y = \begin{bmatrix}4.0,&8.0,&12.0,&16.0\end{bmatrix} \times 10^{-5}$, and four different LBM schemes were used: (1) BGK with $m = 10^5$, (2) BGK with $m = 10^8$, (3) BGK with $m = 10^8$ and the median filter, (4) MRT-1 with $m = 10^8$, and (5) MRT-2 with $m = 10^8$.
+The MRT-1 and MRT-2 schemes differ in their choice of free parameters for the relaxation matrix.
+For the MRT-1 relaxation matrix, the free parameters were set to $s_1 = s_2 = s_4 = s_6 = 1.1$, which follows the recommendation of~\cite{lallemand2000theory} for reasons of stability, and has been successfully used to simulate non-Newtonian flow in the past~\cite{fallah2012multiple,grasinger2015simulation}. 
+For the MRT-2 relaxation matrix, the free parameters were set to $s_1 = 1.1$, $s_2 = 1.0$, and $s_4 = s_6 = 1.2$, as these values have been successfully applied to simulating lid-driven cavity flow of non-Newtonian fluids in the past~\cite{chen2014simulations,li2014simulation}.
+Additionally, in regards to the LBM schemes, recall that $m$ is the stress growth exponent for the Papanastasiou approximation, and the higher $m$ is the closer to the true Bingham plastic behavior.
 The relative $L_2$ and relative $L_{\infty}$ errors with respect to the analytical solution were computed for each simulation.
 The analytical solution for Poiseuille flow of a Bingham plastic fluid is given by:
 \begin{equation} \label{eq:analytical-bingham}
@@ -498,10 +500,15 @@ BGK & Yes & $10^8$ & 4.0 & 6.05 & 0.68 & 0.0100 & 0.0273 & 2903 \\
 & & & 12.0 & 3.04 & 4.04 & 0.2439 & 0.3832 & 4800 \\
 & & & 16.0 & 1.92 & 8.52 & 0.7533 & 1.0718 & 3507 \\
 \\
-MRT & No & $10^8$ & 4.0 & 6.05 & 0.68 & 0.0013 & 0.0013 & 5914 \\
+MRT-1 & No & $10^8$ & 4.0 & 6.05 & 0.68 & 0.0013 & 0.0013 & 5914 \\
 & & & 8.0 & 4.42 & 1.85 & 0.0018 & 0.0018 & 7908 \\
 & & & 12.0 & 3.04 & 4.04 & 0.0026 & 0.0026 & 7160 \\
 & & & 16.0 & 1.92 & 8.52 & 0.0041 & 0.0041 & 5559 \\
+\\
+MRT-2 & No & $10^8$ & 4.0 & 6.05 & 0.68 & 0.0012 & 0.0012 & 5284 \\
+& & & 8.0 & 4.42 & 1.85 & 0.0017 & 0.0017 & 5290 \\
+& & & 12.0 & 3.04 & 4.04 & 0.0024 & 0.0024 & 5244 \\
+& & & 16.0 & 1.92 & 8.52 & 0.0038 & 0.0038 & 4532 \\
 \\
 \label{tab:poise-bing}
 \end{tabulary}
@@ -518,7 +525,8 @@ The BGK collision operator using a stress growth exponent of $m = 10^5$ experien
 
 The LBM approximations of the velocity profile across the channel (more specifically, $u_x(\pos_j, 25000)$ where $\pos_j = \begin{Bmatrix}16 & y_j\end{Bmatrix}^T$ for $j = 1, 2, ..., 64$, i.e. $\pos_j$ is taken at 16 nodes in from the left in the x-direction and for the full height of the channel in the y-direction) for the BGK collision operator using $m = 10^5$ and $m = 10^8$ are plotted with the analytical solution \eqref{eq:bingham} in \Fref{fig:bing-analyt-bgk-5} and \Fref{fig:bing-analyt-bgk-8}, respectively.
 Due to the smoothness of the LBM approximation in \Fref{fig:bing-analyt-bgk-5}, one can conclude that the error for the BGK model with $m = 10^5$ is not due to nonphysical oscillations, but instead the inaccuracy of the Papastasiou approximation with a lower stress growth exponent.
-In contrast, the LBM approximation in \Fref{fig:bing-analyt-bgk-8} is not smooth, which suggests that the error for the BGK model with $m = 10^8$ is due to nonphysical oscillations.
+In contrast, the LBM approximation in \Fref{fig:bing-analyt-bgk-8} is not smooth, which suggests that the error for the BGK model with $m = 10^8$ is due to nonphysical oscillations. (Note: the velocity for the BGK model with $m = 10^8$ may appear asymmetric, but that is because the flow does not reach a steady-state and \Fref{fig:bing-analyt-bgk-8} is merely a snapshot in time.
+The oscillations in the velocity tend to move back and forth across the channel in subsequent time steps such that, on average (in time), the oscillations are indeed symmetric.)
 
 \begin{figure}
 \centering
@@ -570,10 +578,10 @@ The results of the optimization show that entropic filtering, at best did not af
 \label{fig:feq-vs-f_bgk}
 \end{figure}
 
-On average, the LBM model using the MRT collision operator took 2.9 times more computing time than the BGK collision operator with $m = 10^5$.
-However, the increased computing time can be justified for the MRT collision operator because the MRT solution did not suffer from the same level of nonphysical oscillations as the BGK collision operator when using the more accurate approximation of the Bingham plastic model, i.e. when $m = 10^8$. 
-The MRT collision operator was therefore the most accurate solution for all cases.
-\Fref{fig:feq-vs-f_mrt} compares particle distribution, $f_i$, profiles to their respective quasiequilibrium profiles, $f_i^{eq}$ for the MRT model.
+On average, the LBM model using the MRT-1 collision operator took 2.9 times more computing time than the BGK collision operator with $m = 10^5$; and the model using MRT-2 took 2.1 times more computing time than the BGK collision operator with $m = 10^5$.
+However, the increased computing time can be justified for the MRT collision operator because the MRT solutions did not suffer from the same level of nonphysical oscillations as the BGK collision operator when using the more accurate approximation of the Bingham plastic model, i.e. when $m = 10^8$. 
+The MRT collision schemes were therefore the most accurate solutions for all cases; and because the difference in accuracy between the MRT-1 and MRT-2 collision schemes was negligible, the remainder of the discussion in this section will focus on comparing the BGK collision schemes and the MRT-1 collision scheme.
+\Fref{fig:feq-vs-f_mrt} compares particle distribution, $f_i$, profiles to their respective quasiequilibrium profiles, $f_i^{eq}$ for the MRT-1 model.
 In contrast to the BGK with $m = 10^8$, there were no significant nonphysical oscillations in the quasiequilibrium distributions.
 
 \begin{figure}
@@ -583,7 +591,7 @@ In contrast to the BGK with $m = 10^8$, there were no significant nonphysical os
         &
         \includegraphics[width=\figwid]{figs/poise-bingham/mrt/feq-vs-f_8.png}
     \end{tabulary}
-    \caption{Particle distributions in the 5 direction (left) and 8 direction (right) compared to their respective quasiequilibriums for the MRT with $m = 10^8$.}
+    \caption{Particle distributions in the 5 direction (left) and 8 direction (right) compared to their respective quasiequilibriums for the MRT-1 with $m = 10^8$.}
     \label{fig:feq-vs-f_mrt}
 \end{figure}
 
@@ -593,7 +601,7 @@ Another important question to ask is, if the strength of the MRT collision opera
 \frac{||\boldsymbol{\epsilon} - \boldsymbol{\epsilon}^{eq}||_2}{||\boldsymbol{\epsilon}^{eq}||_2}
 \end{equation}
 \noindent where $||.||_2$ is the Euclidean norm, $\epsilon_j = 4f_0(\pos_j) - 2f_1(\pos_j) - 2f_2(\pos_j) - 2f_3(\pos_j) - 2f_4(\pos_j) + f_5(\pos_j) + f_6(\pos_j) + f_7(\pos_j) + f_8(\pos_j)$ is related to the square of the energy, and $\pos_j = \begin{Bmatrix}16 & y_j\end{Bmatrix}^T$ for $j = 1, 2, ..., 64$, i.e. $\pos_j$ is taken at 16 nodes in from the left in the x-direction and for the full height of the channel in the y-direction.
-The values measured for the BGK with $m = 10^8$, with and without median filtering, were significantly higher than for either the MRT or BGK with $m = 10^5$ collision schemes, which suggests that the nonphysical oscillations the BGK with $m = 10^8$ displayed was in part due to the $\epsilon$ moment.
+The values measured for the BGK with $m = 10^8$, with and without median filtering, were significantly higher than for either the MRT-1 or BGK with $m = 10^5$ collision schemes, which suggests that the nonphysical oscillations the BGK with $m = 10^8$ displayed was in part due to the $\epsilon$ moment.
 
 \begin{figure}
 	\centering
@@ -609,7 +617,7 @@ The values measured for the BGK with $m = 10^8$, with and without median filteri
 \noindent where $q_{x_j} = - 2f_1(\pos_j) + 2f_3(\pos_j) + f_5(\pos_j) - f_6(\pos_j) - f_7(\pos_j) + f_8(\pos_j)$ and $\pos_j$ were taken across the height of the channel in the same manner as with the $\epsilon$ moment.
 The values measured for the BGK with $m = 10^8$ and median filtered were consistently greater than any other collision scheme.
 The relative $L_2$ norm of the $\mathbf{q_x}^{neq}$ for the BGK collision operator with $m = 10^8$ and median filtering solution spent most of the simulation between approximately 50\% and 100\%, suggesting that the $q_x$ moment was likely the cause of the nonphysical oscillations and error in the solution.
-As expected (if the dominant source of error in the LBM approximation for Bingham plastic Poiseuille flow is indeed due to the $q_x$ moment), the $\mathbf{q_x^{neq}}$ relative $L_2$ norm for the BGK with $m = 10^8$ was slightly greater than the BGK with $m = 10^5$, and the $\mathbf{q_x^{neq}}$ relative $L_2$ norm was negligible for the MRT collision scheme.
+As expected (if the dominant source of error in the LBM approximation for Bingham plastic Poiseuille flow is indeed due to the $q_x$ moment), the $\mathbf{q_x^{neq}}$ relative $L_2$ norm for the BGK with $m = 10^8$ was slightly greater than the BGK with $m = 10^5$, and the $\mathbf{q_x^{neq}}$ relative $L_2$ norm was negligible for the MRT-1 collision scheme.
 
 \begin{figure}
 	\centering
@@ -649,11 +657,13 @@ The plastic viscosity was held constant ($\mu_p = 0.2$.), while the yield stress
 The relative $L_2$ error, relative $L_{\infty}$ error, and computation time for each simulation are presented in \Fref{tab:poise-bing-2}.
 
 As would be expected from doubling the number of lattice sites, the cost for each corresponding combination of collision scheme, $Re$, and $Bn$ increased by a factor of approximately 2--2.5.
-The 2--2.5 times increase in computing time resulted in the BGK collision schemes on the finer lattice being comparable in computational cost to the MRT collision scheme on the coarser lattice.
+The 2--2.5 times increase in computing time resulted in the BGK collision schemes on the finer lattice being comparable in computational cost to the MRT collision schemes on the coarser lattice.
 In regards to error, for the larger Bingham number flows ($Bn = 4.04, 8.52$) both the $L_2$ and $L_\infty$ errors of the BGK collision schemes were reduced in general, sometimes by as much as a factor of 4.
 None of the relative $L_2$ errors exceeded 10\%, in contrast to the BGK simulations run on the coarser lattice.
 However, despite the increase in accuracy, it should be noted that for $Bn = 8.52$ all of the BGK collision schemes had $L_\infty$ errors that exceeded 10\%.
-The MRT collision operator, even on the coarser lattice, was more accurate (for the case of $Bn = 8.52$) than all of the BGK collision schemes on the finer lattice.
+The MRT collision schemes, even on the coarser lattice, were more accurate (for the case of $Bn = 8.52$) than all of the BGK collision schemes on the finer lattice.
+Again, the difference in the accuracies between the MRT-1 and MRT-2 collision schemes appears to be negligible.
+The difference in computational cost is also low, though the MRT-2 collision scheme took 4\% less computing time on average.
 
 \begin{table}
 	\centering
@@ -677,10 +687,15 @@ The MRT collision operator, even on the coarser lattice, was more accurate (for 
 		               & & & 3.0 & 3.04 & 4.04 & 0.0236 & 0.0443 & 7856 \\
 		               & & & 4.0 & 1.92 & 8.52 & 0.0934 & 0.1624 & 7848 \\
 		\\
-		MRT & No & $10^8$ & 1.0 & 6.05 & 0.68 & 0.0452 & 0.0484 & 13837 \\
+		MRT-1 & No & $10^8$ & 1.0 & 6.05 & 0.68 & 0.0452 & 0.0484 & 13837 \\
 		              & & & 2.0 & 4.42 & 1.85 & 0.0404 & 0.0435 & 16515 \\
                       & & & 3.0 & 3.04 & 4.04 & 0.0316 & 0.0338 & 17142 \\
-                      & & & 4.0 & 1.92 & 8.52 & 0.0200 & 0.0210 & 17853 \\
+                      & & & 4.0 & 1.92 & 8.52 & 0.0197 & 0.0210 & 17853 \\
+		\\
+		MRT-2 & No & $10^8$ & 1.0 & 6.05 & 0.68 & 0.0453 & 0.0485 & 14030 \\
+		& & & 2.0 & 4.42 & 1.85 & 0.0404 & 0.0435 & 15290 \\
+		& & & 3.0 & 3.04 & 4.04 & 0.0316 & 0.0338 & 16328 \\
+		& & & 4.0 & 1.92 & 8.52 & 0.0198 & 0.0210 & 16816 \\
 		\\
 		\label{tab:poise-bing-2}
 	\end{tabulary}
@@ -708,7 +723,6 @@ Convergence was defined by:
 \end{equation}
 \noindent where $i$ is the node index in the x-direction, $j$ is the node index in the y-direction, and $k$ is the current time step.
 The lid velocity was prescribed as $u_o = 0.1$.
-For the MRT relaxation matrix, the free parameters were set to $s_1 = 1.1$, $s_2 = 1.0$, and $s_4 = s_6 = 1.2$, as these values have been successfully applied to simulating lid-driven cavity flow of non-Newtonian fluids in the past~\cite{chen2014simulations,li2014simulation}.
 All coordinate values presented in this section (used to describe the location of the center of vortices) are given normalized with respect to the length of the cavity side (i.e. as $(x / L, y / L)$).
 Note that all results presented as ``-'' indicate that the tests were numerically unstable to the extent that the degrees of freedom all over the domain were diverging toward $-\infty$ or $\infty$.
 
@@ -716,6 +730,7 @@ Note that all results presented as ``-'' indicate that the tests were numericall
 
 For the Bingham plastic numerical tests the Reynold's number was varied with the following values: $\begin{bmatrix}100,&1000,&5000,&10000\end{bmatrix}$, and the Bingham number was varied with the following values: $\begin{bmatrix}1,&10,&100\end{bmatrix}$ ($Bn$ and $Re$ were calculated the same as in \Fref{sec:poise-bing}).
 Six collision schemes were tested: (1) BGK with $m = 10^5$, (2) BGK with $m = 10^8$, (3) BGK-BRT with $m = 10^8$, (4) BGK with $m = 10^8$ and median filtering, (5) MRT with $m = 10^8$ and (6) MRT with $m = 10^8$ and median filtering.
+For the MRT relaxation matrix, the free parameters were set to $s_1 = 1.1$, $s_2 = 1.0$, and $s_4 = s_6 = 1.2$ (same as MRT-2 in \Fref{sec:poise-bing}).
 Tables \ref{tab:lid-bing1}--\ref{tab:lid-bing100} compare the center location of the main vortex to literature values taken from~\citet{syrakos2014performance}.
 The main vortex location is determined by calculating the stream function using Simpson's rule and finding where it attains a maximum.
 
@@ -856,12 +871,13 @@ In summary, for the lid-driven cavity flow of a Bingham plastic fluid,
 \begin{itemize}
     \item for low Reynold's number flow the BGK collision operator with $m = 10^5$ provides an accurate solution with a relatively small amount of computing time,
     \item for high Reynold's number flow the BGK collision operator requires entropic filtering to remain stable,
-    \item and the MRT collision operator with $m = 10^8$ produces solutions with high accuracy and stability for all of the cases examined herein, but at an increased (approximately 5-10 times more) computing cost.
+    \item and the MRT collision operator with $m = 10^8$ produces solutions with high accuracy and stability for all of the cases examined herein, but at an increased (approximately 5--10 times more) computing cost.
 \end{itemize} 
 
 \subsubsection{Power-law Fluids}
 
-For the power-law numerical tests the Reynold's number was varied with the following values: $\begin{bmatrix}100,&1000,&5000,&10000\end{bmatrix}$, and the flow behavior index, $n$, was varied with the following values: $\begin{bmatrix}0.5,&1.5\end{bmatrix}$ ($Re$ was calculated the same as in \Fref{sec:poise-powerlaw}).
+For the power-law numerical tests the Reynold's number was varied with the following values: $\begin{bmatrix}100,&1000,&5000,&10000\end{bmatrix}$, and the flow behavior index, $n$, was varied with the following values: $\begin{bmatrix}0.5,&1.5\end{bmatrix}$.
+The Reynold's number was calculated as $\rho \frac{U^{2-n} H^n}{k}$.
 Five collision schemes were tested: (1) BGK, (2) BGK-BRT, (3) BGK with median filtering, (4) MRT and (5) MRT with median filtering.
 \Fref{tab:lid-powerlaw05} and \Fref{tab:lid-powerlaw15} compare the center location of the main vortex to literature values taken from~\citet{li2014simulation}.
 
