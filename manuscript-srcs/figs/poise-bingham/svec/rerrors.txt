@@ -1,0 +1,2 @@
+Relative L2 error   = 30.92659392069814
+Relative LInf error = 27.747832171345763

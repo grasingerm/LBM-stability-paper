@@ -1,0 +1,25 @@
+\begin{algorithm}
+\caption{Free-Surface Flow using the Lattice Boltzmann Method} \label{algo:free-surface-complete}
+\begin{algorithmic}[1]
+  \Procedure{FreeSurfaceLBM}{$\rho_0$, $u_0$, $M_0$, $t_{max}$} \Comment{$\rho_0$, $u_0$, $M_0$ specify initial conditions}
+\Statex \Comment{Initialize data structures}
+\State Initialize $\rho(\pos, 0)$ and $\mathbf{u}(\pos, 0)$ to initial conditions
+%\Statex \Comment{Quasiequilibrium is defined in \Fref{eq:
+\State Initialize $f$ to quasiequilibrium, $f_i(\pos, 0) = f_i^{eq}(\rho(\pos, 0), \mathbf{u}(\pos, 0))$ (\Fref{eq:feq})
+
+\Statex \Comment{Main loop}
+\For{$t = 0:\Delta t:t_{max}$}
+\State Mass transfer, $M(\pos, t + \Delta t) = M(\pos, t) + \sum_i \Delta M_i(\pos, t)$, (\Fref{sec:mass-transfer})
+  \Statex \Comment{$\pvel_i$ depends on lattice}
+  \State Stream particle distributions, $f_i(\pos + \pvel_i \Delta t, t + \Delta t) = f_i(\pos, t)$ 
+  \State Reconstruct particle distributions (\Fref{sec:bc-at-fs})
+  \State Particle collisions (\Fref{sec:colop})
+  \State Enforce boundary conditions (\Fref{sec:bcs})
+  \State Calculate macroscopic variables (\Fref{eq:rho}, \Fref{eq:mom}, \Fref{eq:pres})
+  \State Update cell states (\Fref{algo:update-cell-states})
+\EndFor
+\Statex
+\State Post-process
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}

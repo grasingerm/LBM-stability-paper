@@ -1,0 +1,82 @@
+\documentclass{article}
+
+\begin{document}
+	
+	\pagenumbering{gobble}
+	
+\section*{Response to reviewers}
+
+Thank you very much for your assistance in reviewing this paper. We are sure that with your help, this has become a much better work. We hope that the attached edited copy of ``Numerical Investigation of the Accuracy, Stability, and Efficiency of Lattice Boltzmann Methods in Simulating Non-Newtonian Flow'' will answer any questions previously raised, and will be satisfactory for publication.
+
+The following is a list of all comments received, and how they have been addressed in the updated version:
+
+  \subsection*{Reviewer 1}
+	\begin{enumerate}
+		\item \emph{In Fig. 2, the scale of the figure should be modified in order to avoid readers’ misleading. If the authors calculate only one case with L = 32 and H = 64, the computational domain becomes vertically long.}
+		
+		Thank you. This is an excellent point. The figure has been updated to reflect the relative scale between $L$ and $H$.
+		
+		\item \emph{In Table 2, all the results of the error norms, $L_{2}$ and $L_{\infty}$, for $n = 1.25$ are the same values in spite of different LBM schemes. The values should be changed to correct ones.}
+		
+		%The results are actually the same for all of the BGK variants.
+		%This is because for $n = 1.25$ the nonequilibrium entropy threshold for median filtering was not exceeded, and hence it was effectively the same as the unfiltered BGK scheme.
+		%Similarly, the relaxation time was within the bounds for the BGK-BRT scheme, which again resulted in the scheme to being effectively the same as the BGK collision scheme without bounds.
+		%The error norms for the MRT collision scheme was different, but the difference could not be seen in the precision of the results presented in the previous draft.
+		%The $n = 1.25$ error norms have been updated with higher precision so as to show the difference.
+		
+		The Table referenced in the above comment (previously Table 2), along with the power-law Poiseuille flow section, have been removed. We decided to remove the power-law Poiseuille flow section because we do not believe it added much value to the manuscript, and because we wanted to address grid resolution effects without lengthening the manuscript.
+		
+		\item \emph{The authors carried out the simulations with fixed lattice resolution. However, the convergence rate should be examined by calculating the benchmark problem (e.g., Poiseuille flow) with different lattice resolutions. 
+		What order is the accuracy of the schemes used in the present study?}
+	
+		Considerations regarding grid resolution were added in the following locations:
+		\begin{itemize}
+			\item Table 2 at the end of Section 3.1 and the last paragraph of Section 3.1 address the significance of grid resolution for Bingham plastic Poiseuille flow.
+			\item The end of the third to last paragraph of Section 3.2.1 addresses the significance of grid resolution for the Bingham plastic lid-driven cavity flow.
+		\end{itemize}
+	
+		\item \emph{Several grammatical errors occur in the text. The authors should be checked again throughout the manuscript.}
+		
+		The manuscript was checked carefully for spelling and grammatical errors. We appreciate you pointing this out and we hope that no more grammatical errors persist.
+	
+	\end{enumerate}
+
+	\subsection*{Reviewer 2}
+	
+	\begin{itemize}
+		
+	\item \emph{Although MRT collision operator is shown to be the best choice, no detailed analysis on the values of optimum relaxation rates for various non-Newtonian flows.}
+	
+	Thank you for the suggestion. Another collision scheme was added to the Bingham plastic Poiseuille flow study so that the choices for the free relaxation parameters of $s_1 = s_2 = s_4 = s_6 = 1.1$ and $s_1 = 1.1, s_2 = 1.0, s_4 = s_6 = 1.2$ could be compared. The error and computational cost for each choice of relaxation parameters are shown in Table 1 and Table 2, and the two collision schemes are compared in the discussions that follow each table.
+		
+	\item \emph{As for Poiseuille Flow part, SRT simulations deviate from the analytical solution in the core region (Figs.3,4) due to the difference in the constitutive relations used in LBM and the analytical solution. Thus, the reported errors in Table 1 include both constitutive relation error and truncation error. This does not seem fair. It would be helpful if the analytical solution or a benchmark solution from NS equations of Papanastasiou approximation is directly compared with LBM results.}
+	
+	This is a good point, and should be both addressed and justified in the manuscript. We chose to compare with the analytical solution for a Bingham plastic, instead of a solution or approximation for the Papanastasiou constitutive approximation, because the Bingham plastic constitutive behavior is the behavior of interest. In addition, if the error was calculated with respect to the solution or approximation for the Papanastasiou constitutive approximation, then collision schemes with different stress growth exponents would have their error computed with respect to different solutions. Thus, it would be difficult to compare the relative errors between collision schemes. Lastly, note that although the errors computed with the respect to the Bingham plastic analytical solution do contain both constitutive relation error and truncation error, it can be seen from the accuracy of the MRT results that the constitutive relation error is likely negligible compared to truncation error and error due to nonphysical oscillations.
+	
+	The comment below equation 28 (page 17) has been expanded to include the above reasoning.
+	
+	\item \emph{The authors attributed the nonphysical oscillations of SRT simulations to sharp gradients in the velocity near the walls, which is then again a result of a sharp gradient in the viscosity. However, from Figs.3\&4, it is difficult to observe any sign of sharp gradients in the velocity near the walls. In Fig.4 for higher m, the oscillations occur at the center of the computational domain and they are not symmetric.}
+	
+	We believe that the oscillations are more pronounced at the center because the velocity is prescribed at the wall, but as particle distributions advect from the wall toward the center overrelaxation can occur. It would be interesting to explore the exact cause of the oscillations more in future work.
+	
+	The oscillations are not symmetric because Fig. 4 is merely a snapshot in time. They tend to move back and forth across the channel in subsequent time steps such that, on average (in time), the oscillations are symmetric. A sentence has been added to the end of the first paragraph of page 19 in order to clarify the apparent asymmetry.
+	
+	\item \emph{Grid convergence and its effect on the computation time would strengthen the manuscript. It is possible that MRT might become faster as the grid resolution improves.}
+	
+	As mentioned in the responses to Reviewer 1, considerations regarding grid resolution were added in the following locations:
+	\begin{itemize}
+		\item Table 2 at the end of Section 3.1.1 and the last paragraph of Section 3.1.1 address the significance of grid resolution for Bingham plastic Poiseuille flow.
+		\item The end of the third to last paragraph of Section 3.2.1 addresses the significance of grid resolution for the Bingham plastic lid-driven cavity flow.
+	\end{itemize}
+	
+	\end{itemize}
+
+Thank you again for your help. Please let us know of any further improvements that can be made to this paper.
+
+\vspace{1in}
+\noindent Sincerely, \\
+\indent John C. Brigham \vspace{0.1in}\\
+\indent Associate Professor \\
+\indent School of Engineering and Computing Sciences
+	
+\end{document}

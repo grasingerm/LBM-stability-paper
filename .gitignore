@@ -1,3 +1,6 @@
+*.zip
+*.tar.gz
+
 ## No need to track main built pdf
 *.pdf
 *.tar

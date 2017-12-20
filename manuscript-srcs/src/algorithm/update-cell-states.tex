@@ -1,0 +1,140 @@
+\begin{algorithm} \small
+\caption{Update Cell States and Mass Redistribution} \label{algo:update-cell-states}
+\begin{algorithmic}[1]
+\Procedure{UpdateStates}{}
+
+\Statex
+\State Initialize (empty) data structure, $\iset_f$ \Comment{$\iset$ cells to be transitioned to $\fset$}
+\State Initialize (empty) data structure, $\iset_g$ \Comment{$\iset$ cells to be transitioned to $\gset$}
+\State Initialize variable that represents global excess mass, $M_{gex} = 0$
+
+\Statex
+\ForAll{cells $\pos \in \iset$} \Comment{Mark interface cells to transition}
+  \If{$M(\pos, t) < -\delta_{trans}$}
+    \State Add $\pos$ to $\iset_f$
+  \ElsIf{$M(\pos, t) > \rho(\pos, t) + \delta_{trans}$}
+    \State Add $\pos$ to $\iset_g$
+  \EndIf
+\EndFor
+
+\Statex
+\ForAll{cells $\pos \in \iset_f$}
+\Statex \Comment{Prepare neighborhoods of $\iset$ cells that are to be transitioned to $\fset$ cells}
+  \State Calculate the average density, $\rho_{avg}$, of the neighborhood
+  \State Calculate the average velocity, $\mathbf{u}_{avg}$, of the neighborhood
+  \ForAll{cells $\pos_n$ in the neighborhood of $\pos$}
+    \If{$\pos_n \in \gset$}
+      \State Transition $\pos_n$ from a $\gset$ state to $\iset$ state
+      \State $f_i(\pos_n, t) = f_i^{eq}(\rho_{avg}, \mathbf{u}_{avg})$
+    \ElsIf{$\pos_n \in \iset_g$}
+      \State Remove $\pos_n$ from $\iset_g$ \Comment{Ensure interface is continuous}
+    \EndIf
+  \EndFor
+\EndFor
+
+\Statex
+\ForAll{cells $\pos \in \iset_g$}
+\Statex \Comment{Prepare neighborhoods of $\iset$ cells that are to be transitioned to $\gset$ cells}
+  \ForAll{cells $\pos_n$ in the neighborhood of $\pos$}
+    \If{$\pos_n \in \fset$}
+      \State Transition $\pos_n$ from a $\fset$ state to $\iset$ state
+    \EndIf
+  \EndFor
+\EndFor
+
+\algstore{ucsalg1}
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm} \small
+\begin{algorithmic}[1]
+\algrestore{ucsalg1}
+\ForAll{cells $\pos \in \iset_f$} 
+\Statex \Comment{Transition from $\iset$ to $\fset$ and redistribute excess mass}
+  \State Let $M_{ex} = M(\pos, t) - \rho(\pos, t)$
+  \State Approximate the unit normal from the interface toward empty space,
+  \Statex \indent \hspace{1.0in} $\mathbf{n} = \frac{1}{2} \begin{Bmatrix}
+\epsilon_{i-1, j} - \epsilon_{i+1, j} \\
+\epsilon_{i, j-1} - \epsilon_{i, j+1}
+\end{Bmatrix}$ \Comment{Central difference of fluid fraction}
+  \State Initialize $v_{sum} = 0$
+  \State Initialize (empty) data structure, $\iset_r$
+  \ForAll{cells $\pos_n$ in the neighborhood of $\pos$}
+    \If{$\pos_n \in \iset$}
+      \State Add $\pos_n$ to $\iset_r$
+      \State Let $v_i = \begin{cases}
+					\mathbf{n} \cdot \pvel_i, & \mathbf{n} \cdot \pvel_i > 0 \\
+					0, & \text{otherwise}
+				\end{cases}$
+      \State $v_{sum} = v_{sum} + v_i$
+    \EndIf
+  \EndFor
+  \If{$v_{sum} > 0$}
+    \ForAll{cells $\pos_j \in \iset_r$}
+    \State $M(\pos_j, t) = M(\pos_j, t) + M_{ex} \frac{v_i}{v_{sum}}$ \label{line:redist-dop-f}
+    \EndFor
+  \ElsIf{$v_{sum} = 0$ and $\iset_r \neq \emptyset$}
+    \State Let $n_r$ be the number of cells in $\iset_r$
+    \ForAll{cells $\pos_j \in \iset_r$}
+    \State $M(\pos_j, t) = M(\pos_j, t) + \frac{M_{ex}}{n_r}$ \label{line:redist-neighbors-f}
+    \EndFor
+  \Else
+    \State $M_{gex} = M_{gex} + M_{ex}$
+  \EndIf
+  \State Transition $\pos$ from an $\iset$ state to $\fset$ state
+  \State Set $M(\pos, t) = \rho(\pos, t)$
+\EndFor
+
+\algstore{ucsalg2}
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm} \small
+\begin{algorithmic}[1]
+\algrestore{ucsalg2}
+\ForAll{cells $\pos \in \iset_g$}
+\Statex \Comment{Transition from $\iset$ to $\gset$ and redistribute excess mass}
+  \State Let $M_{ex} = M(\pos, t)$
+  \State Approximate the unit normal from the interface toward empty space, 
+  \Statex \indent \hspace{1.0in} $\mathbf{n} = \frac{1}{2} \begin{Bmatrix}
+\epsilon_{i-1, j} - \epsilon_{i+1, j} \\
+\epsilon_{i, j-1} - \epsilon_{i, j+1}
+\end{Bmatrix}$ \Comment{Central difference of fluid fraction}
+  \State Initialize $v_{sum} = 0$
+  \State Initialize (empty) data structure, $\iset_r$
+  \ForAll{cells $\pos_n$ in the neighborhood of $\pos$}
+    \If{$\pos_n \in \iset$}
+      \State Add $\pos_n$ to $\iset_r$
+      \State Let $v_i = \begin{cases}
+					-\mathbf{n} \cdot \pvel_i, & \mathbf{n} \cdot \pvel_i < 0 \\
+					0, & \text{otherwise}
+				\end{cases}$
+      \State $v_{sum} = v_{sum} + v_i$
+    \EndIf
+  \EndFor
+  \If{$v_{sum} > 0$}
+    \ForAll{cells $\pos_j \in \iset_r$}
+      \State $M(\pos_j, t) = M(\pos_j, t) + M_{ex} \frac{v_i}{v_{sum}}$ \label{line:redist-dop-g}
+    \EndFor
+  \ElsIf{$v_{sum} = 0$ and $\iset_r \neq \emptyset$}
+    \State Let $n_r$ be the number of cells in $\iset_r$
+    \ForAll{cells $\pos_j \in \iset_r$}
+      \State $M(\pos_j, t) = M(\pos_j, t) + \frac{M_{ex}}{n_r}$ \label{line:redist-neighbors-g}
+    \EndFor
+  \Else
+    \State $M_{gex} = M_{gex} + M_{ex}$
+  \EndIf
+  \State Transition $\pos$ from an $\iset$ state to $\gset$ state
+  \State Set $M(\pos, t) = 0$
+\EndFor
+
+\Statex
+\State Let $n_i$ be the number of cells in $\iset$
+\ForAll{cells $\pos \in \iset$}
+\Statex \Comment{Redistribute remaining excess mass evenly among interface cells}
+  \State $M(\pos, t) = M(\pos, t) + \frac{M_{gex}}{n_i}$ \label{line:final-redist}
+\EndFor
+
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
