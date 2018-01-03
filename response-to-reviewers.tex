@@ -12,7 +12,21 @@ The following is a list of all comments received, and how they have been address
 
   \subsection*{Reviewer 1}
 	\begin{enumerate}
-		\item first
+		\item \emph{The authors may test other non-Newtonian fluids more than the present Bingham plastics and power-law fluids.}
+		
+		Thank you for your comment.
+		More complex non-Newtonian behavior would indeed to be interesting to investigate.
+		However, as some non-Newtonian constitutive models combine and/or modify Bingham plastic and power-law behavior (e.g. Herschel–Bulkley fluids) these two non-Newtonian fluids were seen as representing the building blocks, in a sense, of more complex non-Newtonian behavior.
+		While investigating more non-Newtonian fluids presents interesting future work, we believe that, in the interest of brevity, the current work should remain focused on Bingham plastics and power-law fluids.
+		
+		\item \emph{How about the non-Newtonian flow in complex geometries,such as the porous media? It is more strict for the stability requirement.}
+		
+		Thank you for the suggestion.
+		Similarly, although the authors agree that such an investigation would be interesting, in the interest of brevity we have chosen not to expand the current investigation beyond Poiseuille flow and lid-driven cavity flow.
+		
+		\item \emph{An outlook for further models to improve the simulation stability of LBM.}
+		
+		The discussion of future work at the end of the paper has been expanded to discuss more possible LBM models and stabilization techniques.
 	
 	\end{enumerate}
 
@@ -50,6 +64,10 @@ The following is a list of all comments received, and how they have been address
 		Navier-Stokes. This could be mentioned in the context with Chapman-Enskog
 		expansion (p. 8)}
 	
+	In the second to last paragraph of page 6, it is mentioned that in the limit of small Mach number and small Knudsen number that the LBE recovers the Navier-Stokes equations.
+	Also, the last paragraph of Section 3.1 discusses some of the nuances of the simulation Mach number in the context of simulating non-Newtonian fluids.
+	In particular, it mentions that, although reducing the Mach number should increase the accuracy of the LBE with respect to the Navier-Stokes equations, it can introduce error in the constitutive relation.
+	
 	\item \emph{Page 10: ``A model that has more physical justification but produces unstable and
 		nonsensical results is much less useful than a model with some minor artificial
 		features yet produces more stable results.'' The reviewer does not agree with this
@@ -80,25 +98,42 @@ The following is a list of all comments received, and how they have been address
 	\item \emph{Page 22: Why don’t you compare the MRT calculations to the BGK,
 		$m=10^8$, cases, since $m=10^8$ was used for MRT as well?}
 	
+	This is a good point.
+	The discussed has been expanded to compare the MRT calculations to the BGK, $m = 10^8$ cases.
+	
 	\item \emph{Page 23, 24: You draw some conclusions between the ``ghost'' modes ($\epsilon$ and $q$) and
 		nonphysical oscillations. For example you state (page 23): ``that the nonphysical
 		oscillations the BGK with $m = 10^8$ displayed was in part due to the $\epsilon$ moment''.
 		To the reviewer there is no direct proof visible for these conclusions. It might also be
 		the other way around; oscillations in the distributions cause the oscillations in the
 		moments. Please explain this in more detail.}
+		
+	The authors agree with the reviewer.
+	The evidence is inconclusive and as such one can only make loose inferences on the actual cause of oscillations.
+	The language in the discussion in pages 23-29 has been altered to reflect the fact that the results do not offer direct proof.
+	In addition, parts of the discussion has been expanded to better motivate and explain why the authors believe the nonequilibrium $\epsilon$ and $q_x$ moments may be the primary source of oscillations.
 	
 	\item \emph{Page 23, 24: Did you investigate if there are oscillations in the moment e, related to
 		the bulk viscosity? It is well known that a high bulk viscosity is stabilizing and thus
 		producing some of the superior MRT stability properties.}
 	
+	The nonequilibrium $e$ moment was indeed calculated and investigated.
+	It has been added to the discussion of the nonequilibrium moments.
+	
 	\item \emph{Page 25: ``...ghost mode associated with the q x moment dominates and is the
 		primary source of oscillations.'' Again, this is not obvious for the reviewer, please
 		prove this conclusion.}
+	
+	Again, the authors agree that direct proof cannot be found in the results.
+	The language has been changed to reflect this.
+	In addition, parts of the discussion has been expanded to better motivate and explain why the authors believe the nonequilibrium $\epsilon$ and $q_x$ moments may be the primary source of oscillations.
 	
 	\item \emph{Page 25: ``Overall, the results presented suggest that if an LBM collision scheme is to
 		be developed ... , it should focus on a means of dampening the nonequilibrium
 		energy flux moments, namely q x and q y''. Did you consider the two relaxation times
 		model (TRT) of Ginzburg et al.?}
+	
+	The two relaxation time model was not investigating. However, the discussion of possible future work has been expanded to included the TRT.
 	
 	\item \emph{Page 25/27: Is the lattice number (128x32) correct? Since you reduced the number
 		of nodes along the channel height from 64 to 32? What was the Mach number for
@@ -114,9 +149,15 @@ The following is a list of all comments received, and how they have been address
 	\item \emph{Page 27: Lid driven cavity: Please explain the setup of the simulation in more detail:
 		e.g. boundary conditions, lattice Mach number, ...}
 	
+	The setup of the simulations is given in more detail.
+	
 	\item \emph{Page 30: Some exemplary figures of the flow pattern in the cavity, e.g. streamlines or
 		contour plots, would give more insight, especially about smoothness or oscillations in
 		the solution}
+	
+	Streamlines comparing the flow patterns of the various collision schemes for some of the more interesting non-Newtonian fluids and Reynolds numbers are now provided and accompanied by discussions of the results.
+	Thank you for the suggestion.
+	This should give a clearer picture of the similarities and differences between the solutions of the various collision schemes.
 	
 	\item The typos that you mentioned in your review have also been corrected.
 	

@@ -505,29 +505,29 @@ Because the accuracy of LBM in recovering the Navier-Stokes equations depends on
 \pbox{20cm}{Collision \\ Operator} & \pbox{20cm}{Median \\ Filter} & $m$ & \pbox{20cm}{$\tau_y$ \\ $(\times 10^{-5})$} & $Ma$ & $Re$ & $Bn$ & $L_2$ & $L_\infty$ & \pbox{20cm}{Time \\ (sec)} \\
 \hline \\
 BGK & No & $10^5$ & 4.0 & 0.033 & 6.05 & 0.68 & 0.0062 & 0.0153 & 1857 \\
-& & & 8.0 & 4.42 & 1.85 & 0.024 & 0.0204 & 0.0411 & 2329 \\
-& & & 12.0 & 3.04 & 4.04 & 0.016 & 0.0503 & 0.0891 & 3345 \\
-& & & 16.0 & 1.92 & 8.52 & 0.010 & 0.1161 & 0.1879 & 2029 \\
+& & & 8.0 & & 0.024 4.42 & 1.85 & 0.0204 & 0.0411 & 2329 \\
+& & & 12.0 & 0.016 & 3.04 & 4.04 & 0.0503 & 0.0891 & 3345 \\
+& & & 16.0 & 0.010 & 1.92 & 8.52 & 0.1161 & 0.1879 & 2029 \\
 \\
 BGK & No & $10^8$ & 4.0 & 0.033 & 6.05 & 0.68 & 0.0109 & 0.0282 & 2831 \\
-& & & 8.0 & 4.42 & 1.85 & 0.024 & 0.0330 & 0.0670 & 3509 \\
-& & & 12.0 & 3.04 & 4.04 & 0.016 & 0.0788 & 0.1570 & 4838 \\
-& & & 16.0 & 1.92 & 8.52 & 0.010 & 0.1991 & 0.3539 & 3790 \\
+& & & 8.0 & 0.024 & 4.42 & 1.85 & 0.0330 & 0.0670 & 3509 \\
+& & & 12.0 & 0.016 & 3.04 & 4.04 & 0.0788 & 0.1570 & 4838 \\
+& & & 16.0 & 0.010 & 1.92 & 8.52 & 0.1991 & 0.3539 & 3790 \\
 \\
 BGK & Yes & $10^8$ & 4.0 & 0.033 & 6.05 & 0.68 & 0.0100 & 0.0273 & 2903 \\
-& & & 8.0 & 4.42 & 1.85 & 0.024 & 0.0361 & 0.0823 & 3567 \\
-& & & 12.0 & 3.04 & 4.04 & 0.016 & 0.2439 & 0.3832 & 4800 \\
-& & & 16.0 & 1.92 & 8.52 & 0.010 & 0.7533 & 1.0718 & 3507 \\
+& & & 8.0 & 0.024 & 4.42 & 1.85 & 0.0361 & 0.0823 & 3567 \\
+& & & 12.0 & 0.016 & 3.04 & 4.04 & 0.2439 & 0.3832 & 4800 \\
+& & & 16.0 & 0.010 & 1.92 & 8.52 & 0.7533 & 1.0718 & 3507 \\
 \\
 MRT-1 & No & $10^8$ & 4.0 & 0.033 & 6.05 & 0.68 & 0.0013 & 0.0013 & 5914 \\
-& & & 8.0 & 4.42 & 1.85 & 0.024 & 0.0018 & 0.0018 & 7908 \\
-& & & 12.0 & 3.04 & 4.04 & 0.016 &  0.0026 & 0.0026 & 7160 \\
-& & & 16.0 & 1.92 & 8.52 & 0.010 & 0.0041 & 0.0041 & 5559 \\
+& & & 8.0 & 0.024 & 4.42 & 1.85 & 0.0018 & 0.0018 & 7908 \\
+& & & 12.0 & 0.016 & 3.04 & 4.04 & 0.0026 & 0.0026 & 7160 \\
+& & & 16.0 & 0.010 & 1.92 & 8.52 & 0.0041 & 0.0041 & 5559 \\
 \\
 MRT-2 & No & $10^8$ & 4.0 & 0.033 & 6.05 & 0.68 & 0.0012 & 0.0012 & 5284 \\
-& & & 8.0 & 4.42 & 1.85 & 0.024 & 0.0017 & 0.0017 & 5290 \\
-& & & 12.0 & 3.04 & 4.04 & 0.016 & 0.0024 & 0.0024 & 5244 \\
-& & & 16.0 & 1.92 & 8.52 & 0.010 & 0.0038 & 0.0038 & 4532 \\
+& & & 8.0 & 0.024 & 4.42 & 1.85 & 0.0017 & 0.0017 & 5290 \\
+& & & 12.0 & 0.016 & 3.04 & 4.04 & 0.0024 & 0.0024 & 5244 \\
+& & & 16.0 & 0.010 & 1.92 & 8.52 & 0.0038 & 0.0038 & 4532 \\
 \\
 \label{tab:poise-bing}
 \end{tabulary}
@@ -749,6 +749,7 @@ Thus, although the error in the LBE with respect to the Navier-Stokes equations 
 
 A lid-driven benchmark problem was chosen for this numerical study because there are many results available in literature in which to compare with and because the vorticity of the flow coupled with the nonlinear constitutive equations should result in a challenge in terms of stability.
 As was done herein, lid-driven cavity flow is generally characterized by a square cavity where a fluid velocity is prescribed tangential to the upper boundary and the remaining boundaries have a no-slip boundary condition.
+More specifically, the upper boundary is a velocity Zou and He~\cite{zou1997pressure} boundary condition and the remaining boundaries are complete bounceback boundaries.
 The example of lid-driven cavity flow utilized herein is presented schematically in \Fref{fig:lid-driven}.
 
 \begin{figure}
