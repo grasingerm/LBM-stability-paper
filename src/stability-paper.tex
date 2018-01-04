@@ -7,7 +7,7 @@ This work examines various collision operators and methods for stability enhance
 The investigation was carried out as a numerical study looking for qualitative, yet practical, results, including testing the BGK and MRT collision operators, with and without entropic filtering, as applied to Bingham plastics and power-law fluids.
 Two different benchmark problems were chosen for the flows: Poiseuille flow, and lid-driven square cavity flow.
 The results of the numerical study showed that the MRT collision operator can have an advantage in terms of stability and accuracy for a variety of non-Newtonian flow behaviors, but at an increased computing cost that was, in some cases, as much as five times greater than the BGK collision operator.
-It was also shown that, although the cost of artificial dissipation is that it introduces error in the constitutive response of the fluid (and therefore, may not accurately capture the physics of the flow), it can be an effective technique for stabilizing the numerics of non-Newtonian, lid-driven cavity flow simulations, and is particularly effective for stabilizing shear-thinning fluids.
+It was also shown that, although it introduces error in the constitutive response of the fluid (and therefore, may not accurately capture the physics of the flow), artificial dissipation can be an effective technique for stabilizing the numerics of non-Newtonian, lid-driven cavity flow simulations, and is particularly effective for stabilizing shear-thinning fluids.
 
 \section{Introduction}
 
@@ -124,7 +124,7 @@ f_i(\pos + \pvel_i \Delta t, t + \Delta t) = f_i(\pos, t) + \colop_i(\pos, t),
   \caption{Schematic of D2Q9 lattice, each node is connected to its neighbor by one of eight discrete velocity vectors}
   \label{fig:d2q9}
 \end{figure}
-Using Chapman-Enskog multiscale analysis, one can show that in the limit of small Mach number and small Knudsen number (i.e. the ratio of the mean free path to the characteristic length of the flow) the LBE recovers the Navier-Stokes equations.
+Using Chapman-Enskog multiscale analysis, one can show that, in the limit of small Mach number and small Knudsen number (i.e. the ratio of the mean free path to the characteristic length of the flow), the LBE recovers the Navier-Stokes equations.
 
 The macroscopic variables of interest can be calculated from the particle distribution functions, $f(\pos, \pvel, t)$, by integrating moments of $f$ over velocity space.
 Such moments can be computed using a Gaussian-type quadrature.
@@ -200,9 +200,9 @@ Overrelaxation will occur if $\nu \rightarrow 0$ because consequently $\omega \r
 Overrelaxation in subsequent time steps (along the streaming trajectory of $f_i$) could result in nonphysical oscillations.
 Considering the effect oscillations of particle distributions will have on macroscopic variables and, consequently, local quasiequilibriums, positive feedback loops can occur causing the system to diverge or ``pollute'' the system enough to make the results highly nonphysical~\cite{gorban2014enhancement}.
 
-The challenge associated with high viscosity fluids is that particular distributions may never relax as ``far'' toward quasiequilibrium as it is physical because $\omega \rightarrow 0$ as $\nu \rightarrow \infty$, resulting in extreme underrelaxation to the point of being negligible.
+The challenge associated with high viscosity fluids is that some distributions may never relax as ``far'' toward quasiequilibrium as is physical because $\omega \rightarrow 0$ as $\nu \rightarrow \infty$, resulting in underrelaxation.
 Concerns with sharp gradients, overrelaxation, and underrelaxation are particularly relevant in non-Newtonian flow because of the nonlinear constitutive relationship between shear stress and strain-rate.
-The nonlinear constitutive relationship can lead to sharp gradients in $\rho$ or $\mvel$, and depending on the form of the function $\mu_{app}(\dot{\gamma})$, the local collision frequency may result in overrelaxation in certain parts of the domain and extreme underrelaxation in others.
+The nonlinear constitutive relationship can lead to sharp gradients in $\rho$ or $\mvel$, and depending on the form of the function $\mu_{app}(\dot{\gamma})$, the local collision frequency may result in overrelaxation in certain parts of the domain and underrelaxation in others.
 
 Due to the instabilities associated with the collision frequency being too high (e.g. approaching 2) or too low (e.g. approaching 0), a natural, albeit nonphysical, approach to using the BGK collision operator for non-Newtonian flow is to simply put bounds on the values in which the collision frequency may attain (such as in~\citet{svec2011flow,svec2012free,gabbanelli2005lattice}).
 This simple methodology for increasing stability will henceforth be referred to bounded-relaxation time BGK, or BGK-BRT.
@@ -279,8 +279,8 @@ As will be shown later, for certain LBM implementations and non-Newtonian fluid 
 To reduce nonequilibrium fluctuations in LBM, one can introduce artificial dissipation.
 The idea of artificial dissipation is to increase numerical stability while sacrificing some physical accuracy.
 %Lyapanov stability is the idea that solutions at equilibrium stay there.
-A practical goal then would be to use only the necessary amount of artificial dissipation in order to ensure a stable solution.
-From this goal two questions naturally arise: ``under what criteria does one decide that artificial dissipation is necessary?'' and ``how much artificial dissipation does one introduce when it is necessary?''.
+A practical goal then would be to use only the necessary amount of artificial dissipation in order to ensure a stable solution within a reasonable amount of error in the constitutive relation.
+From this goal two questions naturally arise: ``under what criteria does one decide that artificial dissipation should be introduced?'' and ``how much artificial dissipation should be introduced?''.
 
 %To answer the first question, consider the discussion in \Fref{sec:bgk} on problems with overrelaxation and nonphysical oscillations.
 Nonphysical oscillations due to overrelaxation would be damped out more quickly if particle distributions ``far'' from quasiequilibrium were brought closer to quasiequilibrium.
@@ -493,7 +493,7 @@ The choice was made to compare with the analytical solution for a Bingham plasti
 \end{figure}
 
 The relative $L_2$ error, relative $L_{\infty}$ error, and computation time for each simulation are presented in \Fref{tab:poise-bing}.
-The Reynold's number was computed by $Re = \frac{\rho U H}{\mu_p}$, where $U$ is the maximum velocity given by the analytical solution.
+The Reynolds number was computed by $Re = \frac{\rho U H}{\mu_p}$, where $U$ is the maximum velocity given by the analytical solution.
 The Bingham number was computed by $Bn = \frac{\tau_y H}{\mu_p U}$.
 Because the accuracy of LBM in recovering the Navier-Stokes equations depends on the Mach number being small, the Mach number of each simulation is also tabulated.
 
@@ -505,7 +505,7 @@ Because the accuracy of LBM in recovering the Navier-Stokes equations depends on
 \pbox{20cm}{Collision \\ Operator} & \pbox{20cm}{Median \\ Filter} & $m$ & \pbox{20cm}{$\tau_y$ \\ $(\times 10^{-5})$} & $Ma$ & $Re$ & $Bn$ & $L_2$ & $L_\infty$ & \pbox{20cm}{Time \\ (sec)} \\
 \hline \\
 BGK & No & $10^5$ & 4.0 & 0.033 & 6.05 & 0.68 & 0.0062 & 0.0153 & 1857 \\
-& & & 8.0 & & 0.024 4.42 & 1.85 & 0.0204 & 0.0411 & 2329 \\
+& & & 8.0 & 0.024 & 4.42 & 1.85 & 0.0204 & 0.0411 & 2329 \\
 & & & 12.0 & 0.016 & 3.04 & 4.04 & 0.0503 & 0.0891 & 3345 \\
 & & & 16.0 & 0.010 & 1.92 & 8.52 & 0.1161 & 0.1879 & 2029 \\
 \\
@@ -598,9 +598,9 @@ The results of the optimization show that entropic filtering, at best, did not a
 \end{figure}
 
 On average, the LBM model using the MRT-1 collision operator took 2.9 times more computing time than the BGK collision operator with $m = 10^5$; and the model using MRT-2 took 2.1 times more computing time than the BGK collision operator with $m = 10^5$.
-The increased computing for the MRT-1 and MRT-2 with respect to the BGK collision operator with $m = 10^8$ was approximately 2.2 and 1.7, respectively, for the smaller yield stresses ($\tau_y = 4 \times 10^-5, 8 \times 10^-5$).
-For larger yield stresses ($\tau_y = 12 \times 10^-5, 16 \times 10^-5$), the increased computing time was less, namely 1.5 and 1.1, respectively.
-The increased computational efficiency of the BGK collision operator with $m = 10^8$ with respect to its MRT counterparts was less for the larger yield stresses, likely because the nonphysical oscillations in the BGK solutions resulted in requiring more iterations for the constitutive relation to converge.
+The increased computing time for the MRT-1 and MRT-2 with respect to the BGK collision operator with $m = 10^8$ was approximately 2.2 and 1.7, respectively, for the smaller yield stresses ($\tau_y = 4 \times 10^{-5}, 8 \times 10^{-5}$).
+For the larger yield stresses ($\tau_y = 12 \times 10^{-5}, 16 \times 10^{-5}$), the increased computing time was less, namely 1.5 and 1.1, respectively.
+The increased computational efficiency of the BGK collision operator with $m = 10^8$ with respect to its MRT counterparts was less for the larger yield stresses, likely because the nonphysical oscillations in the BGK solutions required more iterations for the constitutive relation to converge.
 However, the increased computing time can be justified for the MRT collision operator because the MRT solutions did not suffer from the same level of nonphysical oscillations as the BGK collision operator when using the more accurate approximation of the Bingham plastic model, i.e. when $m = 10^8$. 
 The MRT collision schemes were, therefore, the most accurate solutions for all cases; and because the difference in accuracy between the MRT-1 and MRT-2 collision schemes was negligible, the remainder of the discussion in this section will focus on comparing the BGK collision schemes and the MRT-1 collision scheme.
 \Fref{fig:feq-vs-f_mrt} compares particle distribution, $f_i$, profiles to their respective quasiequilibrium profiles, $f_i^{eq}$ for the MRT-1 model.
@@ -618,7 +618,7 @@ In contrast to the BGK with $m = 10^8$, there were no significant nonphysical os
 \end{figure}
 
 Recall that: (1) when the relaxation rates $s_0 = s_1 = ... = s_8 = \omega$, the MRT collision operator is equivalent to the BGK collision operator (where $\omega$ is the collision frequency in the BGK sense), and (2) that the relaxation rates $s_1, s_2, s_4$ and $s_6$ are chosen with flexibility and may be tuned in an effort to increase stability.
-Thus, an important question to ask is, if the strength of the MRT collision operator is damping out the nonequilibrium velocity moments with tunable relaxation parameters, then are the nonphysical oscillations for the BGK with $m = 10^8$ (with and without median filtering) a result of these nonequilibrium moments and if so which ones?
+Thus, an important question to ask is, if the strength of the MRT collision operator is damping out the nonequilibrium velocity moments with tunable relaxation parameters, then are the nonphysical oscillations for the BGK with $m = 10^8$ (with and without median filtering) a result of these nonequilibrium moments and, if so, which ones?
 \Fref{fig:epsilon} shows a measure of the nonequilibrium $\epsilon$ moment, $\epsilon^{neq}$, with respect to time for each of the collision schemes, which was calculated as:
 \begin{equation}
 \frac{||\boldsymbol{\epsilon} - \boldsymbol{\epsilon}^{eq}||_2}{||\boldsymbol{\epsilon}^{eq}||_2}
@@ -661,7 +661,7 @@ It is also possible that the nonequilibrium $\epsilon$ and $q_x$ moments cause n
   \int_0^{T} \frac{||\mathbf{q_x}(t) - \mathbf{q_x}^{eq}(t)||_2}{||\mathbf{q_x}^{eq}(t)||_2} dt,
 \end{equation}
 \noindent where $T$ is the current time. 
-\Fref{fig:qx} and \Fref{fig:qx-cumulative} show that both the peak and cumulative values of the relative $L_2$ norm of $\mathbf{q_x}^{neq}$ are much larger than the peak and cumulative values of the relative $L_2$ norm of $\boldsymbol{\epsilon}^{neq}$, which suggests that the nonequilibrium $q_x$ moment may be the dominated source of oscillations.
+\Fref{fig:qx} and \Fref{fig:qx-cumulative} show that both the peak and cumulative values of the relative $L_2$ norm of $\mathbf{q_x}^{neq}$ are much larger than the peak and cumulative values of the relative $L_2$ norm of $\boldsymbol{\epsilon}^{neq}$, which suggests that the nonequilibrium $q_x$ moment may be the dominant source of oscillations.
 It can be inferred that the nonequilibrium $q_x$ moment was much larger than the nonequilibrium $q_y$ moment in this case because the Poiseuille flow was in the x-direction.
 Overall, the results presented suggest that if an LBM collision scheme is to be developed for simulating high yield stress, Poiseuille-type flow that is more accurate than the BGK with $m = 10^5$ and more computationally efficient than the MRT, it may be important to focus on a means of dampening the nonequilibrium energy flux moments, namely $q_x$ and $q_y$.
 
@@ -691,8 +691,8 @@ So although the nonphysical oscillations (in the BGK with $m = 10^8$ and BGK wit
 	\label{fig:pxx}
 \end{figure}
 
-Lastly, simulations with the same collision schemes, Reynold's numbers, and Bingham numbers were run on $128 \times 32$ lattices in order to investigate the effect of grid resolution.
-The plastic viscosity was held constant ($\mu_p = 0.2$.), while the yield stress and pressure gradient were varied in order to match the Reynold's numbers and Bingham numbers in \Fref{tab:poise-bing}.
+Lastly, simulations with the same collision schemes, Reynolds numbers, and Bingham numbers were run on $128 \times 32$ lattices in order to investigate the effect of grid resolution.
+The plastic viscosity was held constant ($\mu_p = 0.2$.), while the yield stress and pressure gradient were varied in order to match the Reynolds numbers and Bingham numbers in \Fref{tab:poise-bing}.
 The relative $L_2$ error, relative $L_{\infty}$ error, and computation time for each simulation are presented in \Fref{tab:poise-bing-2}.
 
 As would be expected from doubling the number of lattice sites, the cost for each corresponding combination of collision scheme, $Re$, and $Bn$ increased by a factor of approximately 2--2.5.
@@ -704,7 +704,7 @@ The MRT collision schemes, even on the coarser lattice, were more accurate (for 
 Again, the difference in the accuracies between the MRT-1 and MRT-2 collision schemes appears to be negligible.
 The difference in computational cost is also low, though the MRT-2 collision scheme took 4\% less computing time on average.
 
-It is also interesting that, despite the finer grid resolution for the same characteristic flow, the MRT-1 and MRT-2 collision operators were less accurate on the $32 \times 128$ lattices than the $32 \times 64$ lattices.
+It is also worth noting that, despite the finer grid resolution for the same characteristic flow, the MRT-1 and MRT-2 collision operators were less accurate on the $32 \times 128$ lattices than the $32 \times 64$ lattices.
 A possible explanation for this nonintuitive result is that, as mentioned in~\cite{conrad2015accuracy}, although non-Newtonian lattice Boltzmann simulations are second order accurate, the accuracy is not preserved for every simulation Mach number.
 Although the LBE recovers the Navier-Stokes equations in the limit of small Mach number, an additional artificial viscosity can be introduced for certain Mach numbers, and the optimal simulation Mach number depends on the constitutive parameters of the non-Newtonian fluid and the collision operator.
 Thus, although the error in the LBE with respect to the Navier-Stokes equations was reduced by lowering the Mach number, an increase in the error in the constitutive relation may have been introduced that caused the MRT-1 and MRT-2 $32 \times 128$ simulations to have a greater net error (with respect to the analytical solution) than their $32 \times 64$ counterparts.
@@ -773,7 +773,7 @@ Note that all results presented as ``-'' indicate that the tests were numericall
 
 \subsubsection{Bingham Plastic Fluids}
 
-For the Bingham plastic numerical tests the Reynold's number was varied with the following values: $\begin{bmatrix}100,&1000,&5000,&10000\end{bmatrix}$, and the Bingham number was varied with the following values: $\begin{bmatrix}1,&10,&100\end{bmatrix}$ ($Bn$ and $Re$ were calculated the same as in \Fref{sec:poise-bing}).
+For the Bingham plastic numerical tests the Reynolds number was varied with the following values: $\begin{bmatrix}100,&1000,&5000,&10000\end{bmatrix}$, and the Bingham number was varied with the following values: $\begin{bmatrix}1,&10,&100\end{bmatrix}$ ($Bn$ and $Re$ were calculated the same as in \Fref{sec:poise-bing}).
 Six collision schemes were tested: (1) BGK with $m = 10^5$, (2) BGK with $m = 10^8$, (3) BGK-BRT with $m = 10^8$, (4) BGK with $m = 10^8$ and median filtering, (5) MRT with $m = 10^8$ and (6) MRT with $m = 10^8$ and median filtering.
 For the MRT relaxation matrix, the free parameters were set to $s_1 = 1.1$, $s_2 = 1.0$, and $s_4 = s_6 = 1.2$ (same as MRT-2 in \Fref{sec:poise-bing}).
 Tables \ref{tab:lid-bing1}--\ref{tab:lid-bing100} compare the center location of the main vortex to literature values taken from~\citet{syrakos2014performance}.
@@ -913,7 +913,7 @@ The MRT collision operator was, in general, 5-10 times slower than any of the BG
 The increase in computational expense is probably not due to the collision process itself (i.e. \eqref{eq:mrt-colop}) but instead due to calculating the strain-rate \eqref{eq:srtensor-mrt} for each iteration of the solution for the apparent viscosity, $\mu_{app}$.
 
 In order to compare the overall flow pattern for each of the collision schemes, the streamline plots for select $Re$ and $Bn$ numbers are presented.
-\Fref{fig:lid-Bn10-Re100}-\ref{fig:lid-Bn100-Re100} show the streamlines for $Bn = 10$, $Re = 100$; $Bn = 10$, $Re = 1000$; and $Bn = 100$, $Re = 100$, respectively.
+Figures \ref{fig:lid-Bn10-Re100}-\ref{fig:lid-Bn100-Re100} show the streamlines for $Bn = 10$, $Re = 100$; $Bn = 10$, $Re = 1000$; and $Bn = 100$, $Re = 100$, respectively.
 Something to note in \Fref{fig:lid-Bn10-Re100} and \Fref{fig:lid-Bn10-Re1000} is that in both cases (1) the streamlines near the main vortex look similar for each collision operator and (2) the collision operators with a more accurate Bingham approximation (i.e. BGK with $m = 10^8$, BGK with $m = 10^8$ and entropic filtering, MRT with $m = 10^8$ and MRT with $m = 10^8$ and entropic filtering) resulted in a less smooth, more complex flow regime in the bottom corners of the cavity.
 Additionally, adding artificial dissipation did not seem to alter the characteristic flow pattern much for either the BGK with $m = 10^8$ or MRT with $m = 10^8$; however, there is a clear difference between the BGK with $m = 10^8$ and MRT with $m = 10^8$ collision operators.
 For the larger Bingham number simulations depicted in \Fref{fig:lid-Bn100-Re100}, one notices significant differences in the flow throughout the cavity, even near the main vortices.
@@ -977,15 +977,15 @@ For the larger Bingham number simulations depicted in \Fref{fig:lid-Bn100-Re100}
 
 In summary, for the lid-driven cavity flow of a Bingham plastic fluid, 
 \begin{itemize}
-    \item for low Reynold's number flow the BGK collision operator with $m = 10^5$ provides an accurate solution with a relatively small amount of computing time,
-    \item for high Reynold's number flow the BGK collision operator requires entropic filtering to remain stable,
+    \item for low Reynolds number flow the BGK collision operator with $m = 10^5$ provides an accurate solution with a relatively small amount of computing time,
+    \item for high Reynolds number flow the BGK collision operator requires entropic filtering to remain stable,
     \item and the MRT collision operator with $m = 10^8$ produces solutions with high accuracy and stability for all of the cases examined herein, but at an increased (approximately 5--10 times more) computing cost.
 \end{itemize} 
 
 \subsubsection{Power-law Fluids}
 
-For the power-law numerical tests the Reynold's number was varied with the following values: $\begin{bmatrix}100,&1000,&5000,&10000\end{bmatrix}$, and the flow behavior index, $n$, was varied with the following values: $\begin{bmatrix}0.5,&1.5\end{bmatrix}$.
-The Reynold's number was calculated as $\rho \frac{U^{2-n} H^n}{k}$.
+For the power-law numerical tests the Reynolds number was varied with the following values: $\begin{bmatrix}100,&1000,&5000,&10000\end{bmatrix}$, and the flow behavior index, $n$, was varied with the following values: $\begin{bmatrix}0.5,&1.5\end{bmatrix}$.
+The Reynolds number was calculated as $\rho \frac{U^{2-n} H^n}{k}$.
 Five collision schemes were tested: (1) BGK, (2) BGK-BRT, (3) BGK with median filtering, (4) MRT and (5) MRT with median filtering.
 \Fref{tab:lid-powerlaw05} and \Fref{tab:lid-powerlaw15} compare the center location of the main vortex to literature values taken from~\citet{li2014simulation}.
 
@@ -1062,22 +1062,22 @@ $n$ & $Re$ & \pbox{20cm}{Collision \\ Operator} & \pbox{20cm}{Median \\ Filter} 
 \label{tab:lid-powerlaw15}
 \end{table}
 
-For the shear-thinning results, $n = 0.5$, at the lowest Reynold's number considered, $Re = 100$, all of the collision schemes produced results that agreed well with the literature value.
-However, the solutions became unstable at higher Reynold's numbers and entropic filtering was necessary to produce a stable solution when $Re \ge 1000$ for the BGK collision operator, and when $Re \ge 5000$ for the MRT collision operator.
+For the shear-thinning results, $n = 0.5$, at the lowest Reynolds number considered, $Re = 100$, all of the collision schemes produced results that agreed well with the literature value.
+However, the solutions became unstable at higher Reynolds numbers and entropic filtering was necessary to produce a stable solution when $Re \ge 1000$ for the BGK collision operator, and when $Re \ge 5000$ for the MRT collision operator.
 Although there still appears to be a tradeoff between computational efficiency and accuracy in regards to the BGK with median filtering and MRT with median filtering, it does not seem to be nearly as significant as when simulating Bingham plastic lid-driven flow (e.g. neither collision scheme consistently agrees with the literature values and the MRT with median filtering is only 2-3 times slower than the BGK with median filtering).
 An example of this tradeoff is the shear-thinning results for $Re = 5000$: the location of the main vortex for the BGK with median filtering differed from the literature by more than 10\% in both the $x$ and $y$ directions, but the MRT with median filtering has approximately twice the computing cost.
 
 For the shear-thickening results, $n = 1.5$, there were no issues of instability.
-What is interesting is that all of the collision schemes produce similar results for each of the cases, with the difference in the location of the main vortex being no greater than 1\% in either the $x$ or $y$ direction for any two collision schemes (with the exception of the high Reynold's number case, $Re = 10000$).
+What is interesting is that all of the collision schemes produce similar results for each of the cases, with the difference in the location of the main vortex being no greater than 1\% in either the $x$ or $y$ direction for any two collision schemes (with the exception of the high Reynolds number case, $Re = 10000$).
 The BGK-BRT consistently needed the least amount of computing time.
 The reason the BGK-BRT may be the most efficient is because the collision frequency, $\omega$, is bounded, and consequently $\mu_{app}$ is bounded, meaning the solution to the constitutive equation may be converging with less iterations than the other collision schemes.
 
-To compare overall flow patterns, the streamlines (for convergent collision schemes) for $n = 0.5, Re = 1000$, $n = 0.5, Re = 10000$, $n = 1.5, Re = 1000$, and $n = 1.5, Re = 10000$ are shown in Figures \ref{fig:lid-n05-Re1000}-\ref{fig:lid-n15-Re10000}, respectively.
-The differences in streamlines between collision schemes that converge for the same flow behavior index and Reynold's number are subtle.
-\Fref{fig:n05-Re1000} shows that each convergent collision scheme for $n = 0.5, Re = 1000$ forms a main vortex near the center of the cavity, and vortices in the top-right, bottom-left, and bottom-right of the cavity.
+To compare overall flow patterns, the streamlines (for convergent collision schemes) for $n = 0.5, Re = 1000$; $n = 0.5, Re = 10000$; $n = 1.5, Re = 1000$; and $n = 1.5, Re = 10000$ are shown in Figures \ref{fig:lid-n05-Re1000}-\ref{fig:lid-n15-Re10000}, respectively.
+The differences in streamlines between collision schemes that converge for the same flow behavior index and Reynolds number are subtle.
+\Fref{fig:lid-n05-Re1000} shows that each convergent collision scheme for $n = 0.5, Re = 1000$ forms a main vortex near the center of the cavity, and vortices in the bottom-left and bottom-right of the cavity.
 There is a slight variation in the shape of the vortices when comparing the BGK with entropic filtering to the two MRT collision schemes.
-For the same flow behavior index but larger Reynolds, $Re = 10000$, \Fref{fig:n05-Re10000}, again, vortices appear in similar locations in the cavity between collision schemes, but with slightly different shape.
-Note, the MRT with entropic filtering solution appears to be more smooth than the BGK with entropic filtering solution.
+For the same flow behavior index but larger Reynolds, $Re = 10000$, \Fref{fig:lid-n05-Re10000}, again, vortices appear in similar locations in the cavity between collision schemes, but with slightly different shape.
+Note that the MRT with entropic filtering solution appears to be more smooth than the BGK with entropic filtering solution.
 \Fref{fig:lid-n15-Re1000} shows almost no difference in streamlines between the various collision schemes for the flow behavior index $n = 1.5$ and $Re = 1000$.
 For the same flow behavior index but larger Reynolds number, $Re = 10000$, \Fref{fig:lid-n15-Re10000} the main difference is between the BGK collision schemes and MRT collision schemes where the former has a single vortex form in the bottom right of the cavity while the latter has two vortices form in the bottom right of the cavity.
 
@@ -1148,7 +1148,7 @@ The results showed that for higher yield stress fluids in Poiseuille-type flow, 
 The oscillations appeared to be due to high nonequilibrium values for the moment related to the square of the energy, $\epsilon$, and the energy flux moment in the direction of flow, $q_x$.
 If a collision scheme is to be developed for higher yield stress, Poiseuille-type flow that is (1) more accurate than the BGK collision operator with $m = 10^5$ and (2) more computationally efficient than the MRT collision operator, then focusing on dampening the nonequilibrium $\epsilon$ moment and energy flux moment (in the direction of flow) may be an effective strategy.
 
-The results of the study suggest that entropic filtering can be an effective technique for enhancing stability in non-Newtonian flow, especially for high Reynold's number flows and flows that tend to produce vortices.
+The results of the study suggest that entropic filtering can be an effective technique for enhancing stability in non-Newtonian flow, especially for high Reynolds number flows and flows that tend to produce vortices.
 However, if the filter is not carefully tuned by properly adjusting the threshold or number of standard deviations then the physical integrity, and consequently accuracy, of the model can be adversely impacted.
 Also, in general, regardless of how the filter is tuned, entropic filtering may not be effective for Bingham plastic, Poiseuille-type flow, and in some cases has the potential to adversely affect the accuracy of the simulation.
 
